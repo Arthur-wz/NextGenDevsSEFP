@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}SEFP{% endblock %}</title>
+</head>
+<body>
+    <header>
+        <h1>Secretaria Educacional Felix Porto</h1>
+        <nav>
+            <a href="/">Home</a> |
+            <a href="/aluno/">Aluno</a> |
+            <a href="/professor/">Professor</a> |
+            <a href="/secretaria/">Secretaria</a> |
+            <a href="/coordenacao/">Coordenação</a> |
+            <a href="/direcao/">Direção</a>
+        </nav>
+        <hr>
+    </header>
+
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>
