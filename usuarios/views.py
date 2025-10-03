@@ -1,42 +1,54 @@
-from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect
-from django.contrib.auth.decorators import login_required
 
-# Função auxiliar: checa se o usuário pertence a um grupo
-def usuario_do_grupo(user, nome_grupo):
-    return user.groups.filter(name=nome_grupo).exists()
 
-# Página inicial (pública)
+def grupo_requerido(nome_grupo):
+    def in_group(user):
+        return user.is_authenticated and user.groups.filter(name=nome_grupo).exists()
+    return user_passes_test(in_group)
+
 def home(request):
     return render(request, 'home.html')
 
-# Painéis protegidos por grupo
 @login_required(login_url='/login/')
+@grupo_requerido("Aluno")
 def aluno(request):
-    if usuario_do_grupo(request.user, "Aluno"):   # 👈 só se for do grupo "Aluno"
-        return render(request, 'aluno.html')
-    return HttpResponse("Acesso negado: você não é aluno.")
+    return render(request, 'aluno.html')
 
 @login_required(login_url='/login/')
+@grupo_requerido("Professor")
 def professor(request):
-    if usuario_do_grupo(request.user, "Professor"):
-        return render(request, 'professor.html')
-    return HttpResponse("Acesso negado: você não é professor.")
+    return render(request, 'professor.html')
 
 @login_required(login_url='/login/')
+@grupo_requerido("Secretaria")
 def secretaria(request):
-    if usuario_do_grupo(request.user, "Secretaria"):
-        return render(request, 'secretaria.html')
-    return HttpResponse("Acesso negado: você não é da secretaria.")
+    return render(request, 'secretaria.html')
 
 @login_required(login_url='/login/')
+@grupo_requerido("Coordenacao")
 def coordenacao(request):
-    if usuario_do_grupo(request.user, "Coordenacao"):
-        return render(request, 'coordenacao.html')
-    return HttpResponse("Acesso negado: você não é da coordenação.")
+    return render(request, 'coordenaxo.html')
 
 @login_required(login_url='/login/')
+@grupo_requerido("Direcao")
 def direcao(request):
-    if usuario_do_grupo(request.user, "Direcao"):
-        return render(request, 'direcao.html')
-    return HttpResponse("Acesso negado: você não é da direção.")
+    return render(request, 'direcao.html')
+
+def erro_403(request, reason=""):
+    return render(request, '403.html', status=403)
+
+def redirecionar_usuario(request):
+    if request.user.groups.filter(name="Aluno").exists():
+        return redirect('aluno')
+    elif request.user.groups.filter(name="Professor").exists():
+        return redirect('professor')
+    elif request.user.groups.filter(name="Secretaria").exists():
+        return redirect('secretaria')
+    elif request.user.groups.filter(name="Coordenacao").exists():
+        return redirect('coordenacao')
+    elif request.user.groups.filter(name="Direcao").exists():
+        return redirect('direcao')
+    else:
+        return redirect('home')
+    

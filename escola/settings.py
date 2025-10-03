@@ -124,4 +124,8 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Depois do login, manda sempre pra home
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/redirecionar/'
+
+CSRF_FAILURE_VIEW = 'usuarios.views.erro_403'
+
+LOGIN_URL = '/login/'
