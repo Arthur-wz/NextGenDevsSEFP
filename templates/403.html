@@ -1,8 +1,6 @@
 {% extends 'base.html' %}
-
 {% block content %}
-<body>
-    <h1>Acesso negado</h1>
-    <p>voce digitou errado alguma informação tente novamente</p>
-</body>
+  <h1> Acesso Negado</h1>
+  <p>Você não tem permissão para acessar esta página.</p>
+  <a href="{% url 'home' %}">Voltar ao início</a>
 {% endblock %}
