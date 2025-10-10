@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Lista de Professores</title>
+</head>
+<body>
+    <h1 style="text-align: center;">Lista de Professores</h1>
+
+    <table border="1">
+        <tr style="text-align: center;">
+            <th>Nome</th>
+            <th>Matrícula</th>
+            <th>Email</th>
+            <th>Disciplina</th>
+        </tr>
+        {% for professor in professores %}
+        <tr>
+            <td>{{ professor.nome }}</td>
+            <td>{{ professor.matricula }}</td>
+            <td>{{ professor.email }}</td>
+            <td>{{ professor.disciplina }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">Nenhum professor cadastrado.</td></tr>
+        {% endfor %}
+    </table>
+
+    <p style="text-align: center;"><a href="{% url 'secretaria' %}">Voltar</a></p>
+</body>
+</html>

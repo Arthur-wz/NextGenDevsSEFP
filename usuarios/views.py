@@ -1,5 +1,7 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect
+from .models import Aluno, Professor
+from .forms import AlunoForm, ProfessorForm
 
 
 # 🔹 Função que checa se o usuário pertence a um grupo
@@ -63,3 +65,47 @@ def redirecionar_usuario(request):
         return redirect('direcao')
     else:
         return redirect('login')
+
+
+# ===============================
+# 🔹 VIEWS - Secretaria (cadastros e listagens)
+# ===============================
+
+@login_required(login_url='/login/')
+@grupo_requerido("Secretaria")
+def cadastrar_aluno(request):
+    if request.method == 'POST':
+        form = AlunoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_alunos')
+    else:
+        form = AlunoForm()
+    return render(request, 'cadastrar_aluno.html', {'form': form})
+
+
+@login_required(login_url='/login/')
+@grupo_requerido("Secretaria")
+def listar_alunos(request):
+    alunos = Aluno.objects.all()
+    return render(request, 'listar_alunos.html', {'alunos': alunos})
+
+
+@login_required(login_url='/login/')
+@grupo_requerido("Secretaria")
+def cadastrar_professor(request):
+    if request.method == 'POST':
+        form = ProfessorForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_professores')
+    else:
+        form = ProfessorForm()
+    return render(request, 'cadastrar_professor.html', {'form': form})
+
+
+@login_required(login_url='/login/')
+@grupo_requerido("Secretaria")
+def listar_professores(request):
+    professores = Professor.objects.all()
+    return render(request, 'listar_professores.html', {'professores': professores})
