@@ -1,0 +1,45 @@
+# =====================================
+# AMBIENTE VIRTUAL (venv)
+# =====================================
+venv/
+env/
+
+# =====================================
+# ARQUIVOS DE CACHE DO PYTHON
+# =====================================
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# =====================================
+# ARQUIVOS DE CACHE DO DJANGO
+# =====================================
+*.log
+local_settings.py
+
+# =====================================
+# BANCO DE DADOS SQLITE (opcional)
+db.sqlite3
+
+# =====================================
+# MIGRAÇÕES DO DJANGO (MANTER, IMPORTANTE!)
+# NÃO ignore as migrations, elas devem ir para o Git
+# (por isso não colocamos nada aqui)
+
+# =====================================
+# ARQUIVOS DO VS CODE
+# =====================================
+.vscode/
+.settings/
+
+# =====================================
+# ARQUIVOS DO SISTEMA (Windows / Mac / Linux)
+# =====================================
+.DS_Store
+Thumbs.db
+
+# =====================================
+# ARQUIVOS DO GITHUB DESKTOP
+# =====================================
+*.orig
