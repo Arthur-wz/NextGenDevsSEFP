@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Sistema Escolar{% endblock %}</title>
+</head>
+<body>
+
+    {% if user.is_authenticated and request.resolver_match.url_name != 'login' %}
+        <nav>
+            <ul>
+                {% with user.groups.all as grupos %}
+                    {% for g in grupos %}
+                        {% if g.name == "Secretaria" %}
+                            <li><a href="{% url 'secretaria' %}">Painel da Secretaria</a></li>
+                        {% elif g.name == "Professor" %}
+                            <li><a href="{% url 'professor' %}">Painel do Professor</a></li>
+                        {% elif g.name == "Aluno" %}
+                            <li><a href="{% url 'aluno' %}">Painel do Aluno</a></li>
+                        {% elif g.name == "Coordenacao" %}
+                            <li><a href="{% url 'coordenacao' %}">Painel da Coordenação</a></li>
+                        {% elif g.name == "Direcao" %}
+                            <li><a href="{% url 'direcao' %}">Painel da Direção</a></li>
+                        {% endif %}
+                    {% endfor %}
+                {% endwith %}
+
+                <!-- Logout seguro (POST) -->
+                <li>
+                    <form action="{% url 'logout' %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit">Sair</button>
+                    </form>
+                </li>
+            </ul>
+        </nav>
+    {% endif %}
+
+    <hr>
+
+    {% block content %}
+    {% endblock %}
+
+</body>
+</html>

@@ -8,6 +8,7 @@ urlpatterns = [
     # Alunos
     path('secretaria/cadastrar_aluno/', views.cadastrar_aluno, name='cadastrar_aluno'),
     path('secretaria/listar_alunos/', views.listar_alunos, name='listar_alunos'),
+    path('secretaria/editar_aluno/<int:id>/', views.editar_aluno, name='editar_aluno'),
 
     # Professores
     path('secretaria/cadastrar_professor/', views.cadastrar_professor, name='cadastrar_professor'),

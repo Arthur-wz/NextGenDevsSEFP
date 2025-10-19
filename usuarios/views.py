@@ -2,13 +2,8 @@ from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect
 from .models import Aluno, Professor
 from .forms import AlunoForm, ProfessorForm
+from .decorators import grupo_requerido
 
-
-# 🔹 Função que checa se o usuário pertence a um grupo
-def grupo_requerido(nome_grupo):
-    def in_group(user):
-        return user.is_authenticated and user.groups.filter(name=nome_grupo).exists()
-    return user_passes_test(in_group)
 
 
 # 🔹 Página padrão (não precisa mais ser "Seja bem-vindo", mas deixei por segurança)
@@ -17,35 +12,30 @@ def home(request):
 
 
 # 🔹 Painel do Aluno
-@login_required(login_url='/login/')
 @grupo_requerido("Aluno")
 def aluno(request):
     return render(request, 'aluno.html')
 
 
 # 🔹 Painel do Professor
-@login_required(login_url='/login/')
 @grupo_requerido("Professor")
 def professor(request):
     return render(request, 'professor.html')
 
 
 # 🔹 Painel da Secretaria
-@login_required(login_url='/login/')
 @grupo_requerido("Secretaria")
 def secretaria(request):
     return render(request, 'secretaria.html')
 
 
 # 🔹 Painel da Coordenação
-@login_required(login_url='/login/')
 @grupo_requerido("Coordenacao")
 def coordenacao(request):
     return render(request, 'coordenacao.html')  # Corrigido o nome do HTML
 
 
 # 🔹 Painel da Direção
-@login_required(login_url='/login/')
 @grupo_requerido("Direcao")
 def direcao(request):
     return render(request, 'direcao.html')
@@ -71,7 +61,6 @@ def redirecionar_usuario(request):
 # 🔹 VIEWS - Secretaria (cadastros e listagens)
 # ===============================
 
-@login_required(login_url='/login/')
 @grupo_requerido("Secretaria")
 def cadastrar_aluno(request):
     if request.method == 'POST':
@@ -84,14 +73,23 @@ def cadastrar_aluno(request):
     return render(request, 'cadastrar_aluno.html', {'form': form})
 
 
-@login_required(login_url='/login/')
 @grupo_requerido("Secretaria")
-def listar_alunos(request):
+def listar_alunos(request): 
     alunos = Aluno.objects.all()
     return render(request, 'listar_alunos.html', {'alunos': alunos})
 
+@grupo_requerido("Secretaria")
+def editar_aluno(request, id):
+    aluno = Aluno.objects.get(id=id)
+    if request.method == 'POST':
+        form = AlunoForm(request.POST, instance=aluno)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_alunos')
+    else:
+        form = AlunoForm(instance=aluno)
+    return render(request, 'editar_aluno.html', {'form': form, 'aluno': aluno})
 
-@login_required(login_url='/login/')
 @grupo_requerido("Secretaria")
 def cadastrar_professor(request):
     if request.method == 'POST':
@@ -104,8 +102,7 @@ def cadastrar_professor(request):
     return render(request, 'cadastrar_professor.html', {'form': form})
 
 
-@login_required(login_url='/login/')
 @grupo_requerido("Secretaria")
 def listar_professores(request):
     professores = Professor.objects.all()
-    return render(request, 'listar_professores.html', {'professores': professores})
+    return render(request, 'listar_professor.html', {'professores': professores})

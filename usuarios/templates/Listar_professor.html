@@ -5,10 +5,10 @@
     <title>Lista de Professores</title>
 </head>
 <body>
-    <h1 style="text-align: center;">Lista de Professores</h1>
+    <h1 style="text-align:center; font-size:36px; margin-top:20px;">Lista de Alunos</h1>
 
-    <table border="1">
-        <tr style="text-align: center;">
+    <table border="1" style="margin-left:10px;">
+        <tr>
             <th>Nome</th>
             <th>Matrícula</th>
             <th>Email</th>
@@ -26,6 +26,6 @@
         {% endfor %}
     </table>
 
-    <p style="text-align: center;"><a href="{% url 'secretaria' %}">Voltar</a></p>
+    <p style="text-align:center; margin-top:20px;"><a href="{% url 'secretaria' %}">Voltar</a></p>
 </body>
 </html>
