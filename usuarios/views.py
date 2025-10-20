@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from .models import Aluno, Professor
 from .forms import AlunoForm, ProfessorForm
 from .decorators import grupo_requerido
+from .models import Professor
 
 
 
@@ -27,6 +28,7 @@ def professor(request):
 @grupo_requerido("Secretaria")
 def secretaria(request):
     return render(request, 'secretaria.html')
+
 
 
 # 🔹 Painel da Coordenação
@@ -90,6 +92,11 @@ def editar_aluno(request, id):
         form = AlunoForm(instance=aluno)
     return render(request, 'editar_aluno.html', {'form': form, 'aluno': aluno})
 
+def deletar_aluno(request, id):
+    aluno = get_object_or_404(Aluno, id=id)
+    aluno.delete()
+    return redirect('listar_alunos')
+
 @grupo_requerido("Secretaria")
 def cadastrar_professor(request):
     if request.method == 'POST':
@@ -106,3 +113,22 @@ def cadastrar_professor(request):
 def listar_professores(request):
     professores = Professor.objects.all()
     return render(request, 'listar_professor.html', {'professores': professores})
+
+@grupo_requerido("Secretaria")
+def editar_professor(request, id):
+    professor = Professor.objects.get(id=id)  # busca o professor pelo ID da URL
+
+    if request.method == 'POST':  # se o formulário foi enviado
+        form = ProfessorForm(request.POST, instance=professor)  # cria o form com os novos dados
+        if form.is_valid():  # valida o formulário
+            form.save()  # salva as alterações no banco
+            return redirect('listar_professores')  # redireciona para a listagem
+    else:
+        form = ProfessorForm(instance=professor)  # carrega o form com os dados antigos
+
+    return render(request, 'editar_professor.html', {'form': form, 'professor': professor})
+
+def deletar_professor(request, id):
+    professor = get_object_or_404(Professor, id=id)
+    professor.delete()
+    return redirect('listar_professores')
