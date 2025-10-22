@@ -76,9 +76,21 @@ def cadastrar_aluno(request):
 
 
 @grupo_requerido("Secretaria")
-def listar_alunos(request): 
-    alunos = Aluno.objects.all()
-    return render(request, 'listar_alunos.html', {'alunos': alunos})
+def listar_alunos(request):
+    # 1️⃣ Pegamos o termo digitado (caso o usuário tenha feito uma busca)
+    termo = request.GET.get('q')
+
+    # 2️⃣ Se o termo tiver conteúdo, filtra os alunos pelo nome (case-insensitive)
+    if termo:
+        alunos = Aluno.objects.filter(nome__icontains=termo)
+    else:
+        alunos = Aluno.objects.all()
+
+    # 3️⃣ Retorna o template com a lista e o termo (pra manter o texto no campo)
+    return render(request, 'listar_alunos.html', {
+        'alunos': alunos,
+        'termo': termo
+    })
 
 @grupo_requerido("Secretaria")
 def editar_aluno(request, id):
@@ -111,8 +123,20 @@ def cadastrar_professor(request):
 
 @grupo_requerido("Secretaria")
 def listar_professores(request):
-    professores = Professor.objects.all()
-    return render(request, 'listar_professor.html', {'professores': professores})
+    # 1️⃣ Pegamos o valor digitado no campo de busca (se existir)
+    termo = request.GET.get('q')  # "q" vem do name do input no HTML
+
+    # 2️⃣ Se tiver algo digitado, filtramos pelo nome (usando case-insensitive)
+    if termo:
+        professores = Professor.objects.filter(nome__icontains=termo)
+    else:
+        professores = Professor.objects.all()
+
+    # 3️⃣ Renderizamos o template e mandamos o termo junto (pra manter no input)
+    return render(request, 'listar_professor.html', {
+        'professores': professores,
+        'termo': termo
+    })
 
 @grupo_requerido("Secretaria")
 def editar_professor(request, id):

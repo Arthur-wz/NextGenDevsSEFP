@@ -6,6 +6,12 @@
 </head>
 <body>
     <h1 style="text-align: center;"> Lista de Alunos</h1>
+    
+    <form method="get" style="margin-left:10px; margin-bottom:10px;">
+    <input type="text" name="q" placeholder="Buscar aluno por nome" value="{{ termo|default:'' }}">
+    <button type="submit">Buscar</button>
+    <a href="{% url 'listar_alunos' %}">Limpar</a>
+    </form>
 
     <table border="1">
         <tr style="text-align: center;">

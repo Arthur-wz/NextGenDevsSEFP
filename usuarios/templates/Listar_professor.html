@@ -6,6 +6,12 @@
 </head>
 <body>
     <h1 style="text-align:center; font-size:36px; margin-top:20px;">Lista de Professores</h1>
+    
+    <form method="get" style="margin-left:10px; margin-bottom:10px;">
+    <input type="text" name="q" placeholder="Buscar professor por nome" value="{{ termo|default:'' }}">
+    <button type="submit">Buscar</button>
+    <a href="{% url 'listar_professores' %}">Limpar</a>
+    </form>
 
     <table border="1" style="margin-left:10px;">
         <tr>
