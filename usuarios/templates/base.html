@@ -12,7 +12,7 @@
                 {% with user.groups.all as grupos %}
                     {% for g in grupos %}
                         {% if g.name == "Secretaria" %}
-                            <li><a href="{% url 'secretaria' %}">Painel de Secretaria</a></li>
+                            <li><a href="{% url 'secretaria' %}">Painel da Secretaria</a></li>
                         {% elif g.name == "Professor" %}
                             <li><a href="{% url 'professor' %}">Painel do Professor</a></li>
                         {% elif g.name == "Aluno" %}
