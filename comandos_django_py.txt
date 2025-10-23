@@ -42,6 +42,9 @@ py manage.py makemigrations
 # Aplicar migrações (criar/atualizar tabelas no banco)
 py manage.py migrate
 
+py manage.py dumpdata --indent 4 > dados.json
+
+py manage.py loaddata dados.json
 
 🔑 USUÁRIOS E AUTENTICAÇÃO
 ---------------------------------
