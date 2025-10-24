@@ -8,7 +8,7 @@
 
     {% if user.is_authenticated and request.resolver_match.url_name != 'login' %}
         <nav>
-            <ul>
+            <ul style="list-style-type: none; padding: 0; margin: 0;">
                 {% with user.groups.all as grupos %}
                     {% for g in grupos %}
                         {% if g.name == "Secretaria" %}
