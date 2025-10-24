@@ -6,13 +6,23 @@
 </head>
 <body>
     <h1 style="text-align: center;"> Cadastrar Professor</h1>
-
+    
+    {% if messages %}
+    <ul style="color: red; text-align:center; list-style:none;">
+        {% for message in messages %}
+            <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+        {% endfor %}
+    </ul>
+    {% endif %}
+    
     <form style="text-align: center;" method="POST">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Salvar</button>
     </form>
 
-    <p style="text-align: center;"><a href="{% url 'secretaria' %}">Voltar</a></p>
+    <p style="text-align: center;">
+        <a href="{% url 'secretaria' %}">Voltar</a>
+    </p>
 </body>
 </html>

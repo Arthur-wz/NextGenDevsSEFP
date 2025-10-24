@@ -1,11 +1,15 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 class Aluno(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)  # 🔹 novo campo
     nome = models.CharField(max_length=100)
-    matricula = models.CharField(max_length=10, unique=True, blank=True)
-    email = models.EmailField()
-    turma = models.CharField(max_length=20)
-    data_nascimento = models.DateField()
+    matricula = models.CharField(max_length=20, unique=True)
+    email = models.EmailField(blank=True, null=True)
+    turma = models.CharField(max_length=50)
+    data_nascimento = models.DateField(null=True, blank=True)
+
 
     def save(self, *args, **kwargs):
         if not self.matricula:  # Só gera se estiver vazio
@@ -18,6 +22,7 @@ class Aluno(models.Model):
         return self.nome
 
 class Professor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)  # 🔹 novo campo
     nome = models.CharField(max_length=100)
     matricula = models.CharField(max_length=10, unique=True, blank=True)
     email = models.EmailField()

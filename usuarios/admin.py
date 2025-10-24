@@ -3,15 +3,18 @@ from .models import Aluno, Professor, Disciplina, Turma
 
 @admin.register(Aluno)
 class AlunoAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'matricula', 'email', 'turmas_list')
+    list_display = ('nome', 'matricula', 'email', 'user', 'turmas_list')
+    search_fields = ('nome', 'matricula', 'email', 'user__username')
+    list_filter = ('turmas',)
 
     def turmas_list(self, obj):
         return ", ".join([t.nome for t in obj.turmas.all()])
-    turmas_list.short_description = 'Turmas'
+        turmas_list.short_description = 'Turmas'
 
 @admin.register(Professor)
 class ProfessorAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'matricula', 'email')
+    list_display = ('nome', 'matricula', 'email', 'user')
+    search_fields = ('nome', 'matricula', 'email', 'user__username')
 
 @admin.register(Disciplina)
 class DisciplinaAdmin(admin.ModelAdmin):

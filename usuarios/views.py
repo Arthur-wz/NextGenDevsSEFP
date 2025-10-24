@@ -4,8 +4,8 @@ from .models import Aluno, Professor
 from .forms import AlunoForm, ProfessorForm
 from .decorators import grupo_requerido
 from .models import Professor
-
-
+from django.contrib.auth.models import User, Group
+from django.contrib import messages
 
 # 🔹 Página padrão (não precisa mais ser "Seja bem-vindo", mas deixei por segurança)
 def home(request):
@@ -13,9 +13,22 @@ def home(request):
 
 
 # 🔹 Painel do Aluno
+@login_required(login_url='/login/')
 @grupo_requerido("Aluno")
 def aluno(request):
-    return render(request, 'aluno.html')
+    try:
+        aluno = Aluno.objects.get(email=request.user.email)
+        # caso exista o modelo Nota:
+        # notas = Nota.objects.filter(aluno=aluno)
+        notas = []  # pode deixar assim por enquanto
+    except Aluno.DoesNotExist:
+        aluno = None
+        notas = []
+
+    return render(request, 'aluno.html', {
+        'aluno': aluno,
+        'notas': notas
+    })
 
 
 # 🔹 Painel do Professor
@@ -68,10 +81,35 @@ def cadastrar_aluno(request):
     if request.method == 'POST':
         form = AlunoForm(request.POST)
         if form.is_valid():
-            form.save()
+            aluno = form.save(commit=False)
+
+            # 🔹 Gera o nome de usuário baseado no nome
+            username = aluno.nome.lower().replace(" ", "_")
+
+            # 🔹 Verifica se já existe um usuário com esse nome
+            if User.objects.filter(username=username).exists():
+                messages.error(request, f"O login '{username}' já existe. Escolha outro nome para o aluno.")
+                return render(request, 'cadastrar_aluno.html', {'form': form})
+
+            # 🔹 Cria o usuário
+            password = "Al123456#"
+            user = User.objects.create_user(username=username, password=password)
+            user.email = aluno.email
+            user.save()
+
+            # 🔹 Adiciona o usuário ao grupo "Aluno"
+            grupo_aluno = Group.objects.get(name="Aluno")
+            user.groups.add(grupo_aluno)
+
+            # 🔹 Vincula o user ao aluno e salva
+            aluno.user = user
+            aluno.save()
+
+            messages.success(request, f"Aluno '{aluno.nome}' cadastrado com sucesso! Login: {username}")
             return redirect('listar_alunos')
     else:
         form = AlunoForm()
+
     return render(request, 'cadastrar_aluno.html', {'form': form})
 
 
@@ -114,12 +152,34 @@ def cadastrar_professor(request):
     if request.method == 'POST':
         form = ProfessorForm(request.POST)
         if form.is_valid():
-            form.save()
+            professor = form.save(commit=False)
+
+            username = professor.nome.lower().replace(" ", "_")
+
+            # 🔹 Verifica se o login já existe
+            if User.objects.filter(username=username).exists():
+                messages.error(request, f"O login '{username}' já existe. Escolha outro nome para o professor.")
+                return render(request, 'cadastrar_professor.html', {'form': form})
+
+            # 🔹 Cria o usuário automaticamente
+            user = User.objects.create_user(
+                username=username,
+                password="Pr123456#",  # senha padrão do professor
+                email=professor.email
+            )
+
+            grupo_prof = Group.objects.get(name="Professor")
+            user.groups.add(grupo_prof)
+
+            # 🔹 Vincula o usuário ao professor e salva
+            professor.user = user
+            professor.save()
+
+            messages.success(request, f"Professor '{professor.nome}' cadastrado com sucesso! Login: {username}")
             return redirect('listar_professores')
     else:
         form = ProfessorForm()
     return render(request, 'cadastrar_professor.html', {'form': form})
-
 
 @grupo_requerido("Secretaria")
 def listar_professores(request):
