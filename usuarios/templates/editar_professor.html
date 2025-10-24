@@ -3,9 +3,9 @@
 {% block title %}Editar Professor{% endblock %}
 
 {% block content %}
-    <h1>Editar Professor: {{ professor.nome }}</h1>
+    <h1 style="text-align: center;">Editar Professor: {{ professor.nome }}</h1>
 
-    <form method="POST">
+    <form style="text-align: center;" method="POST">
         {% csrf_token %}
         {{ form.as_p }}
         <button type="submit">Salvar Alterações</button>

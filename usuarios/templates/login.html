@@ -1,10 +1,13 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h2 style="text-align: center;">Login</h2>
+<body style="background: linear-gradient(to right, rgb(83, 160, 223), rgb(50, 24, 203));">
+  <h1  style="text-align: center;color: #f5f5f5;"><abbr title="Secretaria Educacional Felix Porto">SEFP</abbr></h1>
+  <h2  style="text-align: center; color:whitesmoke">Login</h2>
   <form style="text-align: center;" method="post">
     {% csrf_token %}
     {{ form.as_p }}
     <button style="text-align: center;" type="submit">Entrar</button>
   </form>
+</body>
 {% endblock %}
