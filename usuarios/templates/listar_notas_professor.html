@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Notas Lançadas</h2>
+<a href="{% url 'adicionar_nota' %}">Adicionar Nova Nota</a>
+
+<table>
+    <tr>
+        <th>Aluno</th>
+        <th>Disciplina</th>
+        <th>Nota</th>
+        <th>Data</th>
+    </tr>
+    {% for nota in notas %}
+    <tr>
+        <td>{{ nota.aluno.nome }}</td>
+        <td>{{ nota.disciplina }}</td>
+        <td>{{ nota.valor }}</td>
+        <td>{{ nota.data_lancamento }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

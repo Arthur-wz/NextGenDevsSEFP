@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Aluno, Professor, Disciplina, Turma
+from .models import Aluno, Professor, Disciplina, Turma, Nota
 
 @admin.register(Aluno)
 class AlunoAdmin(admin.ModelAdmin):
@@ -34,3 +34,8 @@ class TurmaAdmin(admin.ModelAdmin):
     def alunos_count(self, obj):
         return obj.alunos.count()
     alunos_count.short_description = 'Nº de Alunos'
+
+@admin.register(Nota)
+class NotaAdmin(admin.ModelAdmin):
+    list_display = ('aluno', 'professor', 'disciplina', 'valor', 'data_lancamento')
+    search_fields = ('aluno__nome', 'disciplina')

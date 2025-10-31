@@ -1,9 +1,8 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Aluno, Professor
-from .forms import AlunoForm, ProfessorForm
+from .models import Aluno, Professor, Nota
+from .forms import AlunoForm, ProfessorForm, Nota
 from .decorators import grupo_requerido
-from .models import Professor
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 
@@ -20,7 +19,7 @@ def aluno(request):
         aluno = Aluno.objects.get(email=request.user.email)
         # caso exista o modelo Nota:
         # notas = Nota.objects.filter(aluno=aluno)
-        notas = []  # pode deixar assim por enquanto
+        notas = Nota.objects.filter(aluno=aluno)
     except Aluno.DoesNotExist:
         aluno = None
         notas = []
@@ -197,6 +196,24 @@ def listar_professores(request):
         'professores': professores,
         'termo': termo
     })
+
+@grupo_requerido("Professor")
+def listar_notas_professor(request):
+    notas = Nota.objects.filter(professor__user=request.user)
+    return render(request, 'listar_notas_professor.html', {'notas': notas})
+
+@grupo_requerido("Professor")
+def adicionar_nota(request):
+    if request.method == 'POST':
+        form = NotaForm(request.POST)
+        if form.is_valid():
+            nota = form.save(commit=False)
+            nota.professor = Professor.objects.get(user=request.user)
+            nota.save()
+            return redirect('listar_notas_professor')
+    else:
+        form = NotaForm()
+    return render(request, 'adicionar_nota.html', {'form': form})
 
 @grupo_requerido("Secretaria")
 def editar_professor(request, id):
