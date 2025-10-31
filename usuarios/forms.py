@@ -4,7 +4,7 @@ from .models import Aluno, Professor, Nota
 class AlunoForm(forms.ModelForm):
     class Meta:
         model = Aluno
-        fields = ['nome', 'email', 'turma', 'data_de_nascimento']
+        fields = ['nome', 'email', 'turma', 'data_nascimento']
         widgets = {
             'data_nascimento': forms.DateInput(
                 format='%d/%m/%Y',
