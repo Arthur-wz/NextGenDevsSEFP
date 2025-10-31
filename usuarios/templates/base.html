@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Sistema Escolar{% endblock %}</title>
+    <title>{% block title %}SEFP{% endblock %}</title>
 </head>
 <body>
 
@@ -29,7 +29,7 @@
                 <li>
                     <form action="{% url 'logout' %}" method="post">
                         {% csrf_token %}
-                        <button style="text-align: center;color: crimson;" type="submit">Sair</button>
+                        <button style="text-align: center;color: #B22222 ;" type="submit">Sair</button>
                     </form>
                 </li>
             </ul>
