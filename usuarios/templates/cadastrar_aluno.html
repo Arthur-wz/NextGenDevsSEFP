@@ -4,16 +4,16 @@
     <meta charset="UTF-8">
     <title>Cadastrar Aluno</title>
 </head>
-<body>
+<body style="background: linear-gradient(to left,whitesmoke,#5dbde6);">
     <h1 style="text-align: center;">Cadastrar Aluno</h1>
 
     <!-- 🔹 Mostra mensagens de erro ou sucesso -->
     {% if messages %}
         <ul style="list-style: none; text-align: center; padding: 0;">
             {% for message in messages %}
-                <li style="color:{% if message.tags == 'error' %}red{% else %}green{% endif %}; font-weight: bold;">
-                    {{ message }}
-                </li>
+            <li style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %}; font-weight: bold;">
+                {{ message }}
+            </li>            
             {% endfor %}
         </ul>
     {% endif %}
