@@ -57,3 +57,12 @@ class Turma(models.Model):
 
     def __str__(self):
         return self.nome
+
+class Nota(models.Model):
+    aluno = models.ForeignKey(Aluno, on_delete=models.CASCADE, related_name='notas')
+    disciplina = models.ForeignKey('Disciplina', on_delete=models.CASCADE, related_name='notas')
+    valor = models.DecimalField(max_digits=5, decimal_places=2)
+    data_lancamento = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.aluno.nome} - {self.disciplina.nome}: {self.valor}"

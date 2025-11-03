@@ -1,10 +1,44 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Professor</title>
-</head>
-<body>
-    <h1 style="text-align: center;">Painel do Professor</h1>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+<h1 style="text-align:center;">Painel do Professor</h1>
+
+{% if messages %}
+    <ul style="color: green; text-align:center; list-style:none;">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+{% if professor %}
+    <p style="text-align:center;"><strong>Bem-vindo, {{ professor.nome }}</strong></p>
+
+    <h3 style="text-align:center;">Lançar Nota</h3>
+    <form method="POST" style="text-align:center;">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Salvar</button>
+    </form>
+
+    <h3 style="text-align:center;">Notas Lançadas</h3>
+    <table border="1" style="margin:auto;">
+        <tr><th>Aluno</th><th>Disciplina</th><th>Nota</th><th>Data</th></tr>
+        {% for nota in notas %}
+            <tr>
+                <td>{{ nota.aluno.nome }}</td>
+                <td>{{ nota.disciplina.nome }}</td>
+                <td>{{ nota.valor }}</td>
+                <td>{{ nota.data_lancamento }}</td>
+            </tr>
+        {% empty %}
+            <tr><td colspan="4">Nenhuma nota lançada ainda.</td></tr>
+        {% endfor %}
+    </table>
+{% else %}
+    <p style="text-align:center;">Professor não encontrado.</p>
+{% endif %}
+
+<div style="text-align:center; margin-top:20px;">
+    <a href="{% url 'logout' %}">Sair</a>
+</div>
+{% endblock %}
