@@ -20,7 +20,6 @@ local_settings.py
 
 # =====================================
 # BANCO DE DADOS SQLITE (opcional)
-#db.sqlite3
 
 # =====================================
 # MIGRAÇÕES DO DJANGO (MANTER, IMPORTANTE!)
