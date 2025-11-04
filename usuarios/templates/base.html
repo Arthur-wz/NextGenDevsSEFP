@@ -27,10 +27,10 @@
 
                 <!-- Logout seguro (POST) -->
                 <li>
-                    <form action="{% url 'logout' %}" method="post">
-                        {% csrf_token %}
-                        <button style="text-align: center;color: #B22222 ;" type="submit">Sair</button>
-                    </form>
+                    <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" style="text-align:center; color:#B22222;">Sair</button>
+                </form>
                 </li>
             </ul>
         </nav>

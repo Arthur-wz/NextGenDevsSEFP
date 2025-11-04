@@ -20,15 +20,19 @@ def main():
     data = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
     backup_nome = f"backup_{data}.json"
 
-    try:
-        call_command('dumpdata', indent=2, output=backup_nome)
-        print(f"Backup automático criado: {backup_nome}")
-    except Exception as e:
-        print(f" Erro ao criar backup automático: {e}")
+    if len(sys.argv) > 1 and sys.argv[1] == 'runserver':
+        try:
+            import django
+            django.setup()  # 🔥 Garante que os apps estão carregados
+            data = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
+            os.makedirs('backups', exist_ok=True)
+            backup_nome = os.path.join('backups', f"backup_{data}.json")
+            call_command('dumpdata', indent=2, output=backup_nome)
+            print(f"💾 Backup automático criado: {backup_nome}")
+        except Exception as e:
+            print(f"⚠️ Erro ao criar backup automático: {e}")
 
-    # 🔹 Agora executa o comando original (ex: runserver, migrate, etc)
     execute_from_command_line(sys.argv)
-
 
 if __name__ == '__main__':
     main()

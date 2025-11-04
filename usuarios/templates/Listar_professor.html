@@ -1,48 +1,42 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Lista de Professores</title>
-</head>
-<body>
-    <h1 style="text-align:center; font-size:36px; margin-top:20px;">Lista de Professores</h1>
-    
-    <form method="get" style="margin-left:10px; margin-bottom:10px;">
+{% extends 'base.html' %}
+{% block content %}
+<h1 style="text-align:center; font-size:36px; margin-top:20px;">Lista de Professores</h1>
+
+<form method="get" style="margin-left:10px; margin-bottom:10px;">
     <input type="text" name="q" placeholder="Buscar professor por nome" value="{{ termo|default:'' }}">
     <button type="submit">Buscar</button>
     <a href="{% url 'listar_professores' %}">Limpar</a>
-    </form>
+</form>
 
-    <table border="1" style="margin-left:10px;">
-        <tr>
-            <th>Nome</th>
-            <th>Matrícula</th>
-            <th>Email</th>
-            <th>Disciplina</th>
-            <th>Ações</th>
-        </tr>
+<table border="1" style="margin-left:10px; width: 98%;">
+    <tr style="text-align: center;">
+        <th>Nome</th>
+        <th>Matrícula</th>
+        <th>Email</th>
+        <th>Disciplina</th>
+        <th>Ações</th>
+    </tr>
 
-        {% for professor in professores %}
-        <tr>
-            <td>{{ professor.nome }}</td>
-            <td>{{ professor.matricula }}</td>
-            <td>{{ professor.email }}</td>
-            <td>{{ professor.disciplina }}</td>
-            <td>
-                <a href="{% url 'editar_professor' professor.id %}">Editar</a>
-                 <a href="{% url 'deletar_professor' professor.id %}" 
-                   onclick="return confirm('Tem certeza que deseja excluir este professor?')">
-                   Excluir
-                </a>
-            </td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="5">Nenhum professor cadastrado.</td></tr>
-        {% endfor %}
-    </table>
+    {% for professor in professores %}
+    <tr style="text-align: center;">
+        <td>{{ professor.nome }}</td>
+        <td>{{ professor.matricula }}</td>
+        <td>{{ professor.email }}</td>
+        <td>{{ professor.disciplina }}</td>
+        <td>
+            <a href="{% url 'editar_professor' professor.id %}">Editar</a> |
+            <a href="{% url 'deletar_professor' professor.id %}" 
+               onclick="return confirm('Tem certeza que deseja excluir este professor?')">
+               Excluir
+            </a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="5" style="text-align:center;">Nenhum professor cadastrado.</td></tr>
+    {% endfor %}
+</table>
 
-    <p style="text-align:center; margin-top:20px;">
-        <a href="{% url 'secretaria' %}">Voltar</a>
-    </p>
-</body>
-</html>
+<p style="text-align:center; margin-top:20px;">
+    <a href="{% url 'secretaria' %}">Voltar</a>
+</p>
+{% endblock %}

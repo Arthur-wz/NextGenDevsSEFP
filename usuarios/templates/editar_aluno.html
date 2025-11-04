@@ -1,4 +1,5 @@
-<body style="background: linear-gradient(to right,whitesmoke,#5dbde6);"></body>
+{% extends 'base.html' %}
+{% block content %}
 <h1 style="text-align: center;">Editar Aluno: {{ aluno.nome }}</h1>
 
 <form style="text-align: center;" method="POST">
@@ -7,5 +8,7 @@
     <button type="submit">Salvar</button>
 </form>
 
-<a href="{% url 'listar_alunos' %}">Voltar</a>
-</body>
+<p style="text-align: center;">
+    <a href="{% url 'listar_alunos' %}">Voltar</a>
+</p>
+{% endblock %}
