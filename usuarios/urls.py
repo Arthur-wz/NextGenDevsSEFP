@@ -16,4 +16,11 @@ urlpatterns = [
     path('secretaria/listar_professores/', views.listar_professores, name='listar_professores'),
     path('secretaria/editar_professor/<int:id>/', views.editar_professor, name='editar_professor'),
     path('secretaria/deletar_professor/<int:id>/', views.deletar_professor, name='deletar_professor'),
+    path('professor/nota/<int:nota_id>/editar/', views.editar_nota, name='editar_nota'),
+    path('professor/nota/<int:nota_id>/deletar/', views.deletar_nota, name='deletar_nota'),
+
+    # Advertências
+    path('advertencia/<int:id>/editar/', views.editar_advertencia, name='editar_advertencia'),
+    path('advertencia/<int:id>/deletar/', views.deletar_advertencia, name='deletar_advertencia'),
 ]
+

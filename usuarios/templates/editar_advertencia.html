@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 style="text-align:center;">Editar Advertência</h2>
+
+<form method="POST" style="text-align:center;">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Salvar Alterações</button>
+</form>
+
+<p style="text-align:center;"><a href="{% url 'coordenacao' %}">Voltar</a></p>
+{% endblock %}

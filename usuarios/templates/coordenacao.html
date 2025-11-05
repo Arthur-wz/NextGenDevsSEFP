@@ -1,4 +1,59 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1 style="text-align: center;">Painel da Coordenação</h1>
+
+<h1 style="text-align:center;">Painel da Coordenação</h1>
+
+{% if messages %}
+    <ul style="color: green; text-align:center; list-style:none;">
+        {% for message in messages %}
+            <li>{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<!-- Formulário -->
+<h3 style="text-align:center;">Registrar Nova Advertência</h3>
+<form method="POST" style="text-align:center;">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Salvar</button>
+</form>
+
+<hr>
+
+<!-- Lista de Advertências -->
+<h3 style="text-align:center;">Advertências Registradas</h3>
+<table border="1" style="margin:auto; text-align:center;">
+    <tr>
+        <th>Aluno</th>
+        <th>Motivo</th>
+        <th>Data</th>
+        <th>Coordenador</th>
+        <th>Status</th>
+        <th>Ações</th>
+    </tr>
+    {% for adv in advertencias %}
+        <tr>
+            <td>{{ adv.aluno.nome }}</td>
+            <td>{{ adv.motivo }}</td>
+            <td>{{ adv.data }}</td>
+            <td>
+                {% if adv.coordenador %}
+                {{ adv.coordenador.get_full_name|default:adv.coordenador.username }}
+                {% else %}
+                <em>Não informado</em>
+                {% endif %}
+            </td>
+            <td>{{ adv.get_status_display }}</td>
+            <td>
+                <a href="{% url 'editar_advertencia' adv.id %}">Editar</a> |
+                <a href="{% url 'deletar_advertencia' adv.id %}" onclick="return confirm('Excluir esta advertência?')">Excluir</a>
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="6">Nenhuma advertência registrada.</td></tr>
+    {% endfor %}
+</table>
+
+
 {% endblock %}

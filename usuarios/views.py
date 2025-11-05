@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Aluno, Professor, Nota
-from .forms import AlunoForm, ProfessorForm, NotaForm
+from .models import Aluno, Professor, Nota, Advertencia
+from .forms import AlunoForm, ProfessorForm, NotaForm, AdvertenciaForm
 from .decorators import grupo_requerido
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
@@ -64,7 +64,23 @@ def secretaria(request):
 # 🔹 Painel da Coordenação
 @grupo_requerido("Coordenacao")
 def coordenacao(request):
-    return render(request, 'coordenacao.html')  # Corrigido o nome do HTML
+    if request.method == 'POST':
+        form = AdvertenciaForm(request.POST)
+        if form.is_valid():
+            advertencia = form.save(commit=False)
+            advertencia.coordenador = request.user  # força salvar o user logado
+            advertencia.save()
+            messages.success(request, 'Advertência registrada com sucesso!')
+            return redirect('coordenacao')
+    else:
+        form = AdvertenciaForm()
+
+    advertencias = Advertencia.objects.select_related('aluno', 'coordenador').order_by('-data')
+
+    return render(request, 'coordenacao.html', {
+        'form': form,
+        'advertencias': advertencias
+    })
 
 
 # 🔹 Painel da Direção
@@ -229,6 +245,26 @@ def adicionar_nota(request):
         form = NotaForm()
     return render(request, 'adicionar_nota.html', {'form': form})
 
+def editar_nota(request, nota_id):
+    nota = get_object_or_404(Nota, id=nota_id)
+    
+    if request.method == 'POST':
+        form = NotaForm(request.POST, instance=nota)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Nota atualizada com sucesso!')
+            return redirect('professor')  # redireciona de volta ao painel
+    else:
+        form = NotaForm(instance=nota)
+    
+    return render(request, 'editar_nota.html', {'form': form, 'nota': nota})
+
+def deletar_nota(request, nota_id):
+    nota = get_object_or_404(Nota, id=nota_id)
+    nota.delete()
+    messages.success(request, 'Nota excluída com sucesso!')
+    return redirect('professor')
+
 @grupo_requerido("Secretaria")
 def editar_professor(request, id):
     professor = Professor.objects.get(id=id)  # busca o professor pelo ID da URL
@@ -247,3 +283,24 @@ def deletar_professor(request, id):
     professor = get_object_or_404(Professor, id=id)
     professor.delete()
     return redirect('listar_professores')
+
+@grupo_requerido("Coordenacao")
+def editar_advertencia(request, id):
+    advertencia = get_object_or_404(Advertencia, id=id)
+    if request.method == 'POST':
+        form = AdvertenciaForm(request.POST, instance=advertencia)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Advertência atualizada com sucesso!')
+            return redirect('coordenacao')
+    else:
+        form = AdvertenciaForm(instance=advertencia)
+    return render(request, 'editar_advertencia.html', {'form': form, 'advertencia': advertencia})
+
+
+@grupo_requerido("Coordenacao")
+def deletar_advertencia(request, id):
+    advertencia = get_object_or_404(Advertencia, id=id)
+    advertencia.delete()
+    messages.success(request, 'Advertência excluída com sucesso!')
+    return redirect('coordenacao')

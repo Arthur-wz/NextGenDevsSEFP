@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+
 <h1 style="text-align:center;">Painel do Professor</h1>
 
 {% if messages %}
@@ -13,6 +14,9 @@
 {% if professor %}
     <p style="text-align:center;"><strong>Bem-vindo, {{ professor.nome }}</strong></p>
 
+    <hr>
+
+    <!-- FORMULÁRIO DE LANÇAR NOTA -->
     <h3 style="text-align:center;">Lançar Nota</h3>
     <form method="POST" style="text-align:center;">
         {% csrf_token %}
@@ -20,20 +24,34 @@
         <button type="submit">Salvar</button>
     </form>
 
+    <hr>
+
+    <!-- LISTAGEM DE NOTAS -->
     <h3 style="text-align:center;">Notas Lançadas</h3>
-    <table border="1" style="margin:auto;">
-        <tr><th>Aluno</th><th>Disciplina</th><th>Nota</th><th>Data</th></tr>
+    <table border="1" style="margin:auto; text-align:center;">
+        <tr>
+            <th>Aluno</th>
+            <th>Disciplina</th>
+            <th>Nota</th>
+            <th>Data</th>
+            <th>Ações</th>
+        </tr>
         {% for nota in notas %}
             <tr>
                 <td>{{ nota.aluno.nome }}</td>
                 <td>{{ nota.disciplina.nome }}</td>
                 <td>{{ nota.valor }}</td>
                 <td>{{ nota.data_lancamento }}</td>
+                <td>
+                    <a href="{% url 'editar_nota' nota.id %}">Editar</a> |
+                    <a href="{% url 'deletar_nota' nota.id %}" onclick="return confirm('Excluir esta nota?')">Excluir</a>
+                </td>
             </tr>
         {% empty %}
-            <tr><td colspan="4">Nenhuma nota lançada ainda.</td></tr>
+            <tr><td colspan="5">Nenhuma nota lançada ainda.</td></tr>
         {% endfor %}
     </table>
+
 {% else %}
     <p style="text-align:center;">Professor não encontrado.</p>
 {% endif %}

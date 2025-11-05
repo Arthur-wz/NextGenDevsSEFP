@@ -66,3 +66,27 @@ class Nota(models.Model):
 
     def __str__(self):
         return f"{self.aluno.nome} - {self.disciplina.nome}: {self.valor}"
+    
+# 🔹 MODELO DE ADVERTÊNCIAS
+class Advertencia(models.Model):
+    STATUS_CHOICES = [
+        ('em_andamento', 'Em andamento'),
+        ('finalizada', 'Finalizada'),
+    ]
+
+    aluno = models.ForeignKey('Aluno', on_delete=models.CASCADE, related_name='advertencias')
+    coordenador = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    motivo = models.TextField()
+    data = models.DateField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='em_andamento')
+
+    def __str__(self):
+        return f"{self.aluno.nome} - {self.get_status_display()}"
+
+class Coordenador(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    nome = models.CharField(max_length=100)
+    email = models.EmailField()
+
+    def __str__(self):
+        return self.nome
