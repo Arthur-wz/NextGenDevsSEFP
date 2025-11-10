@@ -27,6 +27,7 @@ class Professor(models.Model):
     matricula = models.CharField(max_length=10, unique=True, blank=True)
     email = models.EmailField()
     disciplina = models.CharField(max_length=100)
+    turmas = models.ManyToManyField('Turma', related_name='professores', blank=True)
 
     def save(self, *args, **kwargs):
         if not self.matricula:  # Gera matrícula automática

@@ -22,5 +22,10 @@ urlpatterns = [
     # Advertências
     path('advertencia/<int:id>/editar/', views.editar_advertencia, name='editar_advertencia'),
     path('advertencia/<int:id>/deletar/', views.deletar_advertencia, name='deletar_advertencia'),
+
+    # Painéis administrativos
+    path('coordenacao/painel/', views.painel_administrativo_coordenacao, name='painel_admin_coordenacao'),
+    path('direcao/painel/', views.painel_administrativo_direcao, name='painel_admin_direcao'),
+
 ]
 

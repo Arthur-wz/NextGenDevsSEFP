@@ -1,11 +1,12 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Aluno, Professor, Nota, Advertencia
+from .models import Aluno, Professor, Nota, Advertencia, Turma , Disciplina
 from .forms import AlunoForm, ProfessorForm, NotaForm, AdvertenciaForm
 from .decorators import grupo_requerido
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.utils.text import slugify
+from django.db.models import Prefetch
 
 # 🔹 Página padrão (não precisa mais ser "Seja bem-vindo", mas deixei por segurança)
 def home(request):
@@ -33,26 +34,37 @@ def aluno(request):
 @grupo_requerido("Professor")
 def professor(request):
     professor = Professor.objects.filter(user=request.user).first()
-    disciplinas = professor.disciplinas.all() if professor else []
+    if not professor:
+        messages.error(request, "Professor não encontrado.")
+        return redirect('login')
 
-    # Lançamento de notas
+    # Turmas e alunos relacionados a esse professor
+    turmas = professor.turmas.all()
+    alunos = Aluno.objects.filter(turmas__in=turmas).distinct()
+
+    # Notas e advertências desses alunos
+    notas = Nota.objects.filter(aluno__in=alunos)
+    advertencias = Advertencia.objects.filter(aluno__in=alunos)
+
+    form = NotaForm()
+
+    # Criar nova nota
     if request.method == 'POST':
         form = NotaForm(request.POST)
         if form.is_valid():
-            nota = form.save()
-            messages.success(request, f"Nota {nota.valor} lançada com sucesso!")
+            form.save()
+            messages.success(request, "Nota lançada com sucesso!")
             return redirect('professor')
-    else:
-        form = NotaForm()
 
-    notas = Nota.objects.filter(disciplina__in=disciplinas)
-
-    return render(request, 'professor.html', {
+    context = {
         'professor': professor,
-        'disciplinas': disciplinas,
-        'form': form,
-        'notas': notas
-    })
+        'turmas': turmas,
+        'alunos': alunos,
+        'notas': notas,
+        'advertencias': advertencias,
+        'form': form
+    }
+    return render(request, 'professor.html', context)
 
 # 🔹 Painel da Secretaria
 @grupo_requerido("Secretaria")
@@ -304,3 +316,44 @@ def deletar_advertencia(request, id):
     advertencia.delete()
     messages.success(request, 'Advertência excluída com sucesso!')
     return redirect('coordenacao')
+
+# ===============================
+# 🔹 Painel administrativo interno (Coordenação / Direção)
+# ===============================
+
+@grupo_requerido("Coordenacao")
+def painel_administrativo_coordenacao(request):
+    turmas = Turma.objects.prefetch_related(
+        Prefetch('alunos', queryset=Aluno.objects.all()),
+        Prefetch('disciplinas', queryset=Disciplina.objects.all())
+    )
+    professores = Professor.objects.all()
+    alunos = Aluno.objects.all()
+    advertencias = Advertencia.objects.select_related('aluno', 'coordenador').order_by('-data')
+    notas = Nota.objects.select_related('aluno', 'disciplina').order_by('-data_lancamento')
+
+    contexto = {
+        'turmas': turmas,
+        'professores': professores,
+        'alunos': alunos,
+        'advertencias': advertencias,
+        'notas': notas,
+    }
+    return render(request, 'painel_admin_coordenacao.html', contexto)
+
+
+
+@grupo_requerido("Direcao")
+def painel_administrativo_direcao(request):
+    professores = Professor.objects.all()
+    alunos = Aluno.objects.all()
+    advertencias = Advertencia.objects.select_related('aluno', 'coordenador')
+    notas = Nota.objects.select_related('aluno', 'disciplina')
+
+    contexto = {
+        'professores': professores,
+        'alunos': alunos,
+        'advertencias': advertencias,
+        'notas': notas,
+    }
+    return render(request, 'painel_admin_direcao.html', contexto)

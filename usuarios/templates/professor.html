@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% block content %}
-
 <h1 style="text-align:center;">Painel do Professor</h1>
 
 {% if messages %}
@@ -14,46 +13,112 @@
 {% if professor %}
     <p style="text-align:center;"><strong>Bem-vindo, {{ professor.nome }}</strong></p>
 
+    <!-- BOTÕES DE SEÇÃO -->
+    <div style="text-align:center; margin:20px;">
+        <button onclick="mostrarSecao('info')">Informações Pessoais</button>
+        <button onclick="mostrarSecao('turmas')">Turmas</button>
+        <button onclick="mostrarSecao('alunos')">Alunos</button>
+        <button onclick="mostrarSecao('notas')">Notas</button>
+        <button onclick="mostrarSecao('advertencias')">Advertências</button>
+    </div>
+
     <hr>
 
-    <!-- FORMULÁRIO DE LANÇAR NOTA -->
-    <h3 style="text-align:center;">Lançar Nota</h3>
-    <form method="POST" style="text-align:center;">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Salvar</button>
-    </form>
+    <!-- SEÇÃO: INFORMAÇÕES PESSOAIS -->
+    <div id="info" class="secao">
+        <h3>Informações Pessoais</h3>
+        <p><strong>Nome:</strong> {{ professor.nome }}</p>
+        <p><strong>Email:</strong> {{ professor.email }}</p>
+        <p><strong>Disciplina:</strong> {{ professor.disciplina }}</p>
+        <p><strong>Matrícula:</strong> {{ professor.matricula }}</p>
+    </div>
 
-    <hr>
+    <!-- SEÇÃO: TURMAS -->
+    <div id="turmas" class="secao" style="display:none;">
+        <h3>Turmas</h3>
+        <ul>
+            {% for turma in turmas %}
+                <li>{{ turma.nome }}</li>
+            {% empty %}
+                <li>Nenhuma turma cadastrada.</li>
+            {% endfor %}
+        </ul>
+    </div>
 
-    <!-- LISTAGEM DE NOTAS -->
-    <h3 style="text-align:center;">Notas Lançadas</h3>
-    <table border="1" style="margin:auto; text-align:center;">
-        <tr>
-            <th>Aluno</th>
-            <th>Disciplina</th>
-            <th>Nota</th>
-            <th>Data</th>
-            <th>Ações</th>
-        </tr>
-        {% for nota in notas %}
+    <!-- SEÇÃO: ALUNOS -->
+    <div id="alunos" class="secao" style="display:none;">
+        <h3>Alunos das suas turmas</h3>
+        <ul>
+            {% for aluno in alunos %}
+                <li>{{ aluno.nome }} ({{ aluno.turma }})</li>
+            {% empty %}
+                <li>Nenhum aluno encontrado.</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- SEÇÃO: NOTAS -->
+    <div id="notas" class="secao" style="display:none;">
+        <h3>Lançar Nota</h3>
+        <form method="POST">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Salvar</button>
+        </form>
+
+        <h3>Notas Lançadas</h3>
+        <table border="1" style="margin:auto;">
             <tr>
-                <td>{{ nota.aluno.nome }}</td>
-                <td>{{ nota.disciplina.nome }}</td>
-                <td>{{ nota.valor }}</td>
-                <td>{{ nota.data_lancamento }}</td>
-                <td>
-                    <a href="{% url 'editar_nota' nota.id %}">Editar</a> |
-                    <a href="{% url 'deletar_nota' nota.id %}" onclick="return confirm('Excluir esta nota?')">Excluir</a>
-                </td>
+                <th>Aluno</th>
+                <th>Disciplina</th>
+                <th>Nota</th>
+                <th>Data</th>
             </tr>
-        {% empty %}
-            <tr><td colspan="5">Nenhuma nota lançada ainda.</td></tr>
-        {% endfor %}
-    </table>
+            {% for nota in notas %}
+                <tr>
+                    <td>{{ nota.aluno.nome }}</td>
+                    <td>{{ nota.disciplina.nome }}</td>
+                    <td>{{ nota.valor }}</td>
+                    <td>{{ nota.data_lancamento }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4">Nenhuma nota lançada ainda.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
+
+    <!-- SEÇÃO: ADVERTÊNCIAS -->
+    <div id="advertencias" class="secao" style="display:none;">
+        <h3>Advertências dos seus alunos</h3>
+        <table border="1" style="margin:auto;">
+            <tr>
+                <th>Aluno</th>
+                <th>Motivo</th>
+                <th>Status</th>
+                <th>Data</th>
+            </tr>
+            {% for adv in advertencias %}
+                <tr>
+                    <td>{{ adv.aluno.nome }}</td>
+                    <td>{{ adv.motivo }}</td>
+                    <td>{{ adv.get_status_display }}</td>
+                    <td>{{ adv.data }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4">Nenhuma advertência registrada.</td></tr>
+            {% endfor %}
+        </table>
+    </div>
 
 {% else %}
     <p style="text-align:center;">Professor não encontrado.</p>
 {% endif %}
+
+<script>
+function mostrarSecao(id) {
+    document.querySelectorAll('.secao').forEach(sec => sec.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+}
+</script>
 
 {% endblock %}

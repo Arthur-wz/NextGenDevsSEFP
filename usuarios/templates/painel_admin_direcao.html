@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 style="text-align:center;">Painel Administrativo - Direção</h1>
+<hr>
+
+<h2>Professores</h2>
+<ul>
+{% for prof in professores %}
+  <li>{{ prof.nome }} - {{ prof.disciplina }}</li>
+{% endfor %}
+</ul>
+
+<h2>Alunos e Notas</h2>
+<table border="1" style="margin:auto;">
+<tr><th>Aluno</th><th>Disciplina</th><th>Nota</th></tr>
+{% for nota in notas %}
+<tr>
+  <td>{{ nota.aluno.nome }}</td>
+  <td>{{ nota.disciplina.nome }}</td>
+  <td>{{ nota.valor }}</td>
+</tr>
+{% empty %}
+<tr><td colspan="3">Nenhuma nota lançada.</td></tr>
+{% endfor %}
+</table>
+
+<h2>Notas Lançadas</h2>
+<table border="1" style="margin:auto;">
+<tr><th>Aluno</th><th>Disciplina</th><th>Nota</th><th>Ações</th></tr>
+{% for nota in notas %}
+<tr>
+  <td>{{ nota.aluno.nome }}</td>
+  <td>{{ nota.disciplina.nome }}</td>
+  <td>{{ nota.valor }}</td>
+  <td>
+    <a href="{% url 'editar_nota' nota.id %}"> Editar</a> |
+    <a href="{% url 'deletar_nota' nota.id %}" 
+       onclick="return confirm('Excluir esta nota?')"> Excluir</a>
+  </td>
+</tr>
+{% empty %}
+<tr><td colspan="4">Nenhuma nota lançada.</td></tr>
+{% endfor %}
+</table>
+
+{% endblock %}

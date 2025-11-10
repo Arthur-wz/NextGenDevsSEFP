@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% block content %}
+<h1 style="text-align:center;">Painel Administrativo da Coordenação</h1>
+
+<div style="text-align:center; margin:20px;">
+  <button onclick="mostrarSecao('turmas')">Turmas</button>
+  <button onclick="mostrarSecao('professores')">Professores</button>
+  <button onclick="mostrarSecao('alunos')">Alunos</button>
+  <button onclick="mostrarSecao('advertencias')">Advertências</button>
+  <button onclick="mostrarSecao('notas')">Notas</button>
+</div>
+
+<hr>
+
+<!-- TURMAS -->
+<div id="turmas" class="secao">
+  <h3>Turmas</h3>
+  <table border="1" style="margin:auto; text-align:center;">
+    <tr>
+      <th>Nome</th>
+      <th>Alunos</th>
+      <th>Disciplinas</th>
+    </tr>
+    {% for turma in turmas %}
+    <tr>
+      <td>{{ turma.nome }}</td>
+      <td>
+        {% for aluno in turma.alunos.all %}
+          {{ aluno.nome }}<br>
+        {% empty %}
+          <em>Sem alunos</em>
+        {% endfor %}
+      </td>
+      <td>
+        {% for disc in turma.disciplinas.all %}
+          {{ disc.nome }}<br>
+        {% empty %}
+          <em>Sem disciplinas</em>
+        {% endfor %}
+      </td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="3">Nenhuma turma cadastrada.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<!-- PROFESSORES -->
+<div id="professores" class="secao" style="display:none;">
+  <h3>Professores</h3>
+  <table border="1" style="margin:auto; text-align:center;">
+    <tr>
+      <th>Nome</th>
+      <th>Email</th>
+      <th>Disciplina</th>
+    </tr>
+    {% for prof in professores %}
+    <tr>
+      <td>{{ prof.nome }}</td>
+      <td>{{ prof.email }}</td>
+      <td>{{ prof.disciplina }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="3">Nenhum professor cadastrado.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<!-- ALUNOS -->
+<div id="alunos" class="secao" style="display:none;">
+  <h3>Alunos</h3>
+  <table border="1" style="margin:auto; text-align:center;">
+    <tr>
+      <th>Nome</th>
+      <th>Email</th>
+      <th>Turma</th>
+    </tr>
+    {% for aluno in alunos %}
+    <tr>
+      <td>{{ aluno.nome }}</td>
+      <td>{{ aluno.email }}</td>
+      <td>{{ aluno.turma }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="3">Nenhum aluno cadastrado.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<!-- ADVERTÊNCIAS -->
+<div id="advertencias" class="secao" style="display:none;">
+  <h3>Advertências</h3>
+  <table border="1" style="margin:auto; text-align:center;">
+    <tr>
+      <th>Aluno</th>
+      <th>Motivo</th>
+      <th>Status</th>
+      <th>Data</th>
+    </tr>
+    {% for adv in advertencias %}
+    <tr>
+      <td>{{ adv.aluno.nome }}</td>
+      <td>{{ adv.motivo }}</td>
+      <td>{{ adv.get_status_display }}</td>
+      <td>{{ adv.data }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">Nenhuma advertência registrada.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<!-- NOTAS -->
+<div id="notas" class="secao" style="display:none;">
+  <h3>Notas</h3>
+  <table border="1" style="margin:auto; text-align:center;">
+    <tr>
+      <th>Aluno</th>
+      <th>Disciplina</th>
+      <th>Valor</th>
+      <th>Data</th>
+    </tr>
+    {% for nota in notas %}
+    <tr>
+      <td>{{ nota.aluno.nome }}</td>
+      <td>{{ nota.disciplina.nome }}</td>
+      <td>{{ nota.valor }}</td>
+      <td>{{ nota.data_lancamento }}</td>
+    </tr>
+    {% empty %}
+    <tr><td colspan="4">Nenhuma nota lançada.</td></tr>
+    {% endfor %}
+  </table>
+</div>
+
+<script>
+function mostrarSecao(id) {
+  document.querySelectorAll('.secao').forEach(sec => sec.style.display = 'none');
+  document.getElementById(id).style.display = 'block';
+}
+</script>
+
+{% endblock %}
