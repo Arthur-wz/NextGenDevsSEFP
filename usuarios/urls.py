@@ -26,6 +26,14 @@ urlpatterns = [
     # Painéis administrativos
     path('coordenacao/painel/', views.painel_administrativo_coordenacao, name='painel_admin_coordenacao'),
     path('direcao/painel/', views.painel_administrativo_direcao, name='painel_admin_direcao'),
+    # === CRUD DE TURMAS (Coordenação) ===
+    path('coordenacao/cadastrar_turma/', views.cadastrar_turma, name='cadastrar_turma'),
+    path('coordenacao/editar_turma/<int:id>/', views.editar_turma, name='editar_turma'),
+    path('coordenacao/deletar_turma/<int:id>/', views.deletar_turma, name='deletar_turma'),
+    # CRUD Disciplina
+    path('coordenacao/cadastrar_disciplina/', views.cadastrar_disciplina, name='cadastrar_disciplina'),
+    path('coordenacao/editar_disciplina/<int:id>/', views.editar_disciplina, name='editar_disciplina'),
+    path('coordenacao/deletar_disciplina/<int:id>/', views.deletar_disciplina, name='deletar_disciplina'),
 
 ]
 

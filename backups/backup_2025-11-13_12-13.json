@@ -1196,6 +1196,19 @@
   }
 },
 {
+  "model": "admin.logentry",
+  "pk": 93,
+  "fields": {
+    "action_time": "2025-11-13T14:49:07.879Z",
+    "user": 9,
+    "content_type": 4,
+    "object_id": "33",
+    "object_repr": "Adalberto",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+  }
+},
+{
   "model": "auth.permission",
   "pk": 1,
   "fields": {
@@ -1746,7 +1759,7 @@
   "pk": 7,
   "fields": {
     "password": "pbkdf2_sha256$1000000$rJeBCbsYm5cMdCRiGya5CS$IG2RMKn0rK29e+XWk1sU8gdPNdxHvIqEv5al+2ikKHo=",
-    "last_login": "2025-10-24T14:40:52.510Z",
+    "last_login": "2025-11-10T21:27:28.558Z",
     "is_superuser": false,
     "username": "valter",
     "first_name": "",
@@ -1766,7 +1779,7 @@
   "pk": 8,
   "fields": {
     "password": "pbkdf2_sha256$1000000$F14uFsRmwFEM0F5ncmwPNf$Wn1UCB4CQRqbzdNuILw22HyiZchQU7MD7v+VJIl62SM=",
-    "last_login": "2025-11-10T20:47:27.823Z",
+    "last_login": "2025-11-13T15:05:17.763Z",
     "is_superuser": false,
     "username": "enzo",
     "first_name": "",
@@ -1786,7 +1799,7 @@
   "pk": 9,
   "fields": {
     "password": "pbkdf2_sha256$1000000$g1pD4rMzLQGaZWgzoEO3VW$AaxiTdQEmpMZDSY+qCdpThggWIEdV2FXdETMvT8wd2I=",
-    "last_login": "2025-11-10T21:05:51.673Z",
+    "last_login": "2025-11-13T14:48:07.847Z",
     "is_superuser": true,
     "username": "arthur",
     "first_name": "",
@@ -1864,7 +1877,7 @@
   "pk": 29,
   "fields": {
     "password": "pbkdf2_sha256$1000000$kD86RsNdl3RHNCXybIUiVe$CAjOmzTyA4DIXvP65IieGLsqc2XvQdbsMBqMEcKvkAA=",
-    "last_login": "2025-11-04T15:09:58.633Z",
+    "last_login": "2025-11-10T21:12:28.542Z",
     "is_superuser": false,
     "username": "astolfo",
     "first_name": "",
@@ -1941,7 +1954,7 @@
   "model": "auth.user",
   "pk": 33,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$smTcRfNUTDOVtPkxJrrWq3$Bt+1J8i6PPqSyiVX3kKdpor9aQhVYhEj35iFbnwGNHk=",
+    "password": "pbkdf2_sha256$1000000$Wh4skNIZUZUle1IpsPBoKB$B8X3xyp4aPHrHLSMsnYEKW3YoGGQ1AH6dIuR50AZJSw=",
     "last_login": null,
     "is_superuser": true,
     "username": "Adalberto",
@@ -2069,14 +2082,6 @@
 },
 {
   "model": "sessions.session",
-  "pk": "9id57cfz8tjglsqycduzht4xpa6s0o44",
-  "fields": {
-    "session_data": ".eJxVjMsOwiAQRf-FtSEMU4Fx6d5vIDymUjWQlHZl_HfbpAvd3nPOfQsf1qX4tfPspywugsTpd4shPbnuID9CvTeZWl3mKcpdkQft8tYyv66H-3dQQi9bfU6EQwSDPKrBsSJHCROSs-DYxA0zuhEQQFu2SDqCMhysg6iJghKfL8TdNs8:1vIZ5D:Z1JLt68NU4P9VMLkAYS1O7mlNPPeu7lTlGg35Em4Rtw",
-    "expire_date": "2025-11-24T21:05:51.679Z"
-  }
-},
-{
-  "model": "sessions.session",
   "pk": "cogvfqub7cylqothsksdbc6a4e8dyibz",
   "fields": {
     "session_data": ".eJxVjDsOwjAQBe_iGlkh6y8lPWewdu01DiBbipMKcXdkKQW0b2beWwTctxL2zmtYkrgIK06_G2F8ch0gPbDem4ytbutCcijyoF3eWuLX9XD_Dgr2MmplImqOCiA7TcDklTdnVp5mmNFaz9llyjlqA5xoMuzYe-IpKx0BxecLAYo45Q:1vCICt:m8ds1oSzM6r4ZcJA1gz8iayEzeUtcMsyLUU285xtyh4",
@@ -2101,10 +2106,26 @@
 },
 {
   "model": "sessions.session",
+  "pk": "qyet6rpq5tb5jkkr31sufl9gencr81tv",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hBoGWBcuvcMhIHBVg0kpV0Z765NutDtf-_9lwhxW6ewdV7CnMVZeHH63SimB9cd5HustyZTq-syk9wVedAury3z83K4fwdT7NO3RleYUCltLKSc3UCWwFEyLjEMBSMl70ZlLQzRWEbt1agRgJEKIIF4fwDl-TeR:1vIZRP:DAQHUM93SKcF-GzfmWGftVeM4YwIC4HkqBmeBdzoH9A",
+    "expire_date": "2025-11-24T21:28:47.321Z"
+  }
+},
+{
+  "model": "sessions.session",
   "pk": "ra0myi6nx04hgtlav8gzpi64u3ohd3dc",
   "fields": {
     "session_data": ".eJxVjEEOwiAQRe_C2pCBFDq4dO8ZyDCAVA0kpV0Z764kXej2v_f-S3jat-L3nla_RHEW2onT7xiIH6kOEu9Ub01yq9u6BDkUedAury2m5-Vw_w4K9TJqpSwiUUKIThmdZofAyWk2kCEEiznyFBgBzGwnJGty_soKjFYOJvH-AAWtN34:1vGIfW:RdLkFBx2f7Sw4PZjt9EHfTCW9_dzgc871lGPH5J1F78",
     "expire_date": "2025-11-18T15:09:58.640Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "xdjoqis5adf7w47rbbtnoxh5j6ftgkc3",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hBoGWBcuvcMhIHBVg0kpV0Z765NutDtf-_9lwhxW6ewdV7CnMVZeHH63SimB9cd5HustyZTq-syk9wVedAury3z83K4fwdT7NO3RleYUCltLKSc3UCWwFEyLjEMBSMl70ZlLQzRWEbt1agRgJEKIIF4fwDl-TeR:1vJYsv:oXq7l5u97RteegNTNMX6I7gQdVYJ2CkuaHabpWVFiBE",
+    "expire_date": "2025-11-27T15:05:17.797Z"
   }
 },
 {
@@ -2142,4 +2163,92 @@
     "turma": "2°A",
     "data_nascimento": "2009-05-17"
   }
+},
+{
+  "model": "usuarios.professor",
+  "pk": 10,
+  "fields": {
+    "user": 29,
+    "nome": "astolfo",
+    "matricula": "PROF001",
+    "email": "123@gmail.com",
+    "disciplina": "matematica",
+    "turmas": []
+  }
+},
+{
+  "model": "usuarios.professor",
+  "pk": 11,
+  "fields": {
+    "user": 30,
+    "nome": "roberto",
+    "matricula": "PROF011",
+    "email": "1234@gmail.com",
+    "disciplina": "geografia",
+    "turmas": []
+  }
+},
+{
+  "model": "usuarios.professor",
+  "pk": 12,
+  "fields": {
+    "user": 31,
+    "nome": "cleito",
+    "matricula": "PROF012",
+    "email": "12345@gmail.com",
+    "disciplina": "ingles",
+    "turmas": []
+  }
+},
+{
+  "model": "usuarios.disciplina",
+  "pk": 6,
+  "fields": {
+    "nome": "matematica",
+    "professor": 10
+  }
+},
+{
+  "model": "usuarios.disciplina",
+  "pk": 7,
+  "fields": {
+    "nome": "geografia",
+    "professor": 11
+  }
+},
+{
+  "model": "usuarios.disciplina",
+  "pk": 8,
+  "fields": {
+    "nome": "ingles",
+    "professor": 12
+  }
+},
+{
+  "model": "usuarios.turma",
+  "pk": 1,
+  "fields": {
+    "nome": "2°A",
+    "alunos": [
+      12,
+      13,
+      14
+    ],
+    "disciplinas": [
+      6,
+      7,
+      8
+    ]
+  }
+},
+{
+  "model": "usuarios.nota",
+  "pk": 1,
+  "fields": {
+    "aluno": 12,
+    "disciplina": 8,
+    "valor": "9.00",
+    "data_lancamento": "2025-11-03"
+  }
 }
+]

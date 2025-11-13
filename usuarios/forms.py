@@ -29,3 +29,18 @@ class AdvertenciaForm(forms.ModelForm):
     class Meta:
         model = Advertencia
         fields = ['aluno', 'motivo', 'status']
+
+class TurmaForm(forms.ModelForm):
+    class Meta:
+        model = Turma
+        fields = ['nome', 'alunos', 'disciplinas']
+        widgets = {
+            'alunos': forms.CheckboxSelectMultiple(),
+            'disciplinas': forms.CheckboxSelectMultiple(),
+        }
+
+
+class DisciplinaForm(forms.ModelForm):
+    class Meta:
+        model = Disciplina
+        fields = ['nome', 'professor']

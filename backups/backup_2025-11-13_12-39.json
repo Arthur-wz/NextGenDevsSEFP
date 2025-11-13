@@ -1196,6 +1196,19 @@
   }
 },
 {
+  "model": "admin.logentry",
+  "pk": 93,
+  "fields": {
+    "action_time": "2025-11-13T14:49:07.879Z",
+    "user": 9,
+    "content_type": 4,
+    "object_id": "33",
+    "object_repr": "Adalberto",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+  }
+},
+{
   "model": "auth.permission",
   "pk": 1,
   "fields": {
@@ -1766,7 +1779,7 @@
   "pk": 8,
   "fields": {
     "password": "pbkdf2_sha256$1000000$F14uFsRmwFEM0F5ncmwPNf$Wn1UCB4CQRqbzdNuILw22HyiZchQU7MD7v+VJIl62SM=",
-    "last_login": "2025-11-10T21:28:47.315Z",
+    "last_login": "2025-11-13T15:15:43.989Z",
     "is_superuser": false,
     "username": "enzo",
     "first_name": "",
@@ -1786,7 +1799,7 @@
   "pk": 9,
   "fields": {
     "password": "pbkdf2_sha256$1000000$g1pD4rMzLQGaZWgzoEO3VW$AaxiTdQEmpMZDSY+qCdpThggWIEdV2FXdETMvT8wd2I=",
-    "last_login": "2025-11-10T21:05:51.673Z",
+    "last_login": "2025-11-13T14:48:07.847Z",
     "is_superuser": true,
     "username": "arthur",
     "first_name": "",
@@ -1941,7 +1954,7 @@
   "model": "auth.user",
   "pk": 33,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$smTcRfNUTDOVtPkxJrrWq3$Bt+1J8i6PPqSyiVX3kKdpor9aQhVYhEj35iFbnwGNHk=",
+    "password": "pbkdf2_sha256$1000000$Wh4skNIZUZUle1IpsPBoKB$B8X3xyp4aPHrHLSMsnYEKW3YoGGQ1AH6dIuR50AZJSw=",
     "last_login": null,
     "is_superuser": true,
     "username": "Adalberto",
@@ -2105,6 +2118,14 @@
   "fields": {
     "session_data": ".eJxVjEEOwiAQRe_C2pCBFDq4dO8ZyDCAVA0kpV0Z764kXej2v_f-S3jat-L3nla_RHEW2onT7xiIH6kOEu9Ub01yq9u6BDkUedAury2m5-Vw_w4K9TJqpSwiUUKIThmdZofAyWk2kCEEiznyFBgBzGwnJGty_soKjFYOJvH-AAWtN34:1vGIfW:RdLkFBx2f7Sw4PZjt9EHfTCW9_dzgc871lGPH5J1F78",
     "expire_date": "2025-11-18T15:09:58.640Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "xdjoqis5adf7w47rbbtnoxh5j6ftgkc3",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hBoGWBcuvcMhIHBVg0kpV0Z765NutDtf-_9lwhxW6ewdV7CnMVZeHH63SimB9cd5HustyZTq-syk9wVedAury3z83K4fwdT7NO3RleYUCltLKSc3UCWwFEyLjEMBSMl70ZlLQzRWEbt1agRgJEKIIF4fwDl-TeR:1vJZ32:PP0rCnxtKgE1AIlaDqFlMDmGcop0tKUX1TmusHj8bTM",
+    "expire_date": "2025-11-27T15:15:44.016Z"
   }
 },
 {

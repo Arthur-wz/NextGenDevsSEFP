@@ -1,7 +1,7 @@
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import Aluno, Professor, Nota, Advertencia, Turma , Disciplina
-from .forms import AlunoForm, ProfessorForm, NotaForm, AdvertenciaForm
+from .forms import AlunoForm, ProfessorForm, NotaForm, AdvertenciaForm, TurmaForm, DisciplinaForm
 from .decorators import grupo_requerido
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
@@ -276,6 +276,41 @@ def deletar_nota(request, nota_id):
     nota.delete()
     messages.success(request, 'Nota excluída com sucesso!')
     return redirect('professor')
+from .models import Turma
+from django import forms
+
+# Formulário para cadastrar turmas
+class TurmaForm(forms.ModelForm):
+    class Meta:
+        model = Turma
+        fields = ['nome', 'alunos', 'disciplinas']
+        widgets = {
+            'alunos': forms.CheckboxSelectMultiple,
+            'disciplinas': forms.CheckboxSelectMultiple,
+        }
+
+@grupo_requerido("Coordenacao")
+def editar_turma(request, id):
+    turma = get_object_or_404(Turma, id=id)
+    if request.method == 'POST':
+        form = TurmaForm(request.POST, instance=turma)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Turma atualizada com sucesso!")
+            return redirect('painel_admin_coordenacao')
+    else:
+        form = TurmaForm(instance=turma)
+    return render(request, 'cadastrar_turma.html', {'form': form, 'editar': True})
+
+
+@grupo_requerido("Coordenacao")
+def deletar_turma(request, id):
+    turma = get_object_or_404(Turma, id=id)
+    turma.delete()
+    messages.success(request, "Turma excluída com sucesso!")
+    return redirect('painel_admin_coordenacao')
+
+
 
 @grupo_requerido("Secretaria")
 def editar_professor(request, id):
@@ -356,4 +391,109 @@ def painel_administrativo_direcao(request):
         'advertencias': advertencias,
         'notas': notas,
     }
+    from .forms import TurmaForm  # garanta que está no topo, junto com os outros imports
+
+
+@grupo_requerido("Coordenacao")
+def cadastrar_turma(request):
+    if request.method == 'POST':
+        form = TurmaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Turma cadastrada com sucesso!")
+            return redirect('painel_admin_coordenacao')
+    else:
+        form = TurmaForm()
+    return render(request, 'cadastrar_turma.html', {'form': form})
+
+
+@grupo_requerido("Coordenacao")
+def editar_turma(request, id):
+    turma = get_object_or_404(Turma, id=id)
+    if request.method == 'POST':
+        form = TurmaForm(request.POST, instance=turma)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Turma atualizada com sucesso!")
+            return redirect('painel_admin_coordenacao')
+    else:
+        form = TurmaForm(instance=turma)
+    return render(request, 'editar_turma.html', {'form': form, 'turma': turma})
+
+
+@grupo_requerido("Coordenacao")
+def deletar_turma(request, id):
+    turma = get_object_or_404(Turma, id=id)
+    turma.delete()
+    messages.success(request, "Turma excluída com sucesso!")
+    return redirect('painel_admin_coordenacao')
     return render(request, 'painel_admin_direcao.html', contexto)
+
+@grupo_requerido("Coordenacao")
+def cadastrar_turma(request):
+    if request.method == 'POST':
+        form = TurmaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Turma criada com sucesso!')
+            return redirect('painel_admin_coordenacao')
+    else:
+        form = TurmaForm()
+    return render(request, 'cadastrar_turma.html', {'form': form})
+
+
+@grupo_requerido("Coordenacao")
+def editar_turma(request, id):
+    turma = get_object_or_404(Turma, id=id)
+    if request.method == 'POST':
+        form = TurmaForm(request.POST, instance=turma)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Turma atualizada com sucesso!')
+            return redirect('painel_admin_coordenacao')
+    else:
+        form = TurmaForm(instance=turma)
+    return render(request, 'editar_turma.html', {'form': form, 'turma': turma})
+
+
+@grupo_requerido("Coordenacao")
+def deletar_turma(request, id):
+    turma = get_object_or_404(Turma, id=id)
+    turma.delete()
+    messages.success(request, 'Turma excluída com sucesso!')
+    return redirect('painel_admin_coordenacao')
+
+
+@grupo_requerido("Coordenacao")
+def cadastrar_disciplina(request):
+    if request.method == 'POST':
+        form = DisciplinaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Disciplina criada com sucesso!')
+            return redirect('painel_admin_coordenacao')
+    else:
+        form = DisciplinaForm()
+    return render(request, 'cadastrar_disciplina.html', {'form': form})
+
+
+@grupo_requerido("Coordenacao")
+def editar_disciplina(request, id):
+    disciplina = get_object_or_404(Disciplina, id=id)
+    if request.method == 'POST':
+        form = DisciplinaForm(request.POST, instance=disciplina)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Disciplina atualizada com sucesso!')
+            return redirect('painel_admin_coordenacao')
+    else:
+        form = DisciplinaForm(instance=disciplina)
+    return render(request, 'editar_disciplina.html', {'form': form, 'disciplina': disciplina})
+
+
+@grupo_requerido("Coordenacao")
+def deletar_disciplina(request, id):
+    disciplina = get_object_or_404(Disciplina, id=id)
+    disciplina.delete()
+    messages.success(request, 'Disciplina excluída com sucesso!')
+    return redirect('painel_admin_coordenacao')

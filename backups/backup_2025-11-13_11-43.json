@@ -1746,7 +1746,7 @@
   "pk": 7,
   "fields": {
     "password": "pbkdf2_sha256$1000000$rJeBCbsYm5cMdCRiGya5CS$IG2RMKn0rK29e+XWk1sU8gdPNdxHvIqEv5al+2ikKHo=",
-    "last_login": "2025-10-24T14:40:52.510Z",
+    "last_login": "2025-11-10T21:27:28.558Z",
     "is_superuser": false,
     "username": "valter",
     "first_name": "",
@@ -1766,7 +1766,7 @@
   "pk": 8,
   "fields": {
     "password": "pbkdf2_sha256$1000000$F14uFsRmwFEM0F5ncmwPNf$Wn1UCB4CQRqbzdNuILw22HyiZchQU7MD7v+VJIl62SM=",
-    "last_login": "2025-11-05T19:50:07.322Z",
+    "last_login": "2025-11-13T14:41:44.657Z",
     "is_superuser": false,
     "username": "enzo",
     "first_name": "",
@@ -1786,7 +1786,7 @@
   "pk": 9,
   "fields": {
     "password": "pbkdf2_sha256$1000000$g1pD4rMzLQGaZWgzoEO3VW$AaxiTdQEmpMZDSY+qCdpThggWIEdV2FXdETMvT8wd2I=",
-    "last_login": "2025-11-04T15:30:22.825Z",
+    "last_login": "2025-11-10T21:05:51.673Z",
     "is_superuser": true,
     "username": "arthur",
     "first_name": "",
@@ -1864,7 +1864,7 @@
   "pk": 29,
   "fields": {
     "password": "pbkdf2_sha256$1000000$kD86RsNdl3RHNCXybIUiVe$CAjOmzTyA4DIXvP65IieGLsqc2XvQdbsMBqMEcKvkAA=",
-    "last_login": "2025-11-04T15:09:58.633Z",
+    "last_login": "2025-11-10T21:12:28.542Z",
     "is_superuser": false,
     "username": "astolfo",
     "first_name": "",
@@ -2061,10 +2061,10 @@
 },
 {
   "model": "sessions.session",
-  "pk": "336ltbyjb19kfifjgs1uxm9xuw7eof9a",
+  "pk": "12ks8d7wnlul4kn0lyc50296729wfth1",
   "fields": {
-    "session_data": ".eJxVjEEOwiAQRe_C2hBoGWBcuvcMhIHBVg0kpV0Z765NutDtf-_9lwhxW6ewdV7CnMVZeHH63SimB9cd5HustyZTq-syk9wVedAury3z83K4fwdT7NO3RleYUCltLKSc3UCWwFEyLjEMBSMl70ZlLQzRWEbt1agRgJEKIIF4fwDl-TeR:1vGjWB:PU9FV3HB5MuxDsdi67jNTBvsbP1EtrOEyeLrf1M0Qh4",
-    "expire_date": "2025-11-19T19:50:07.328Z"
+    "session_data": ".eJxVjEEOwiAQRe_C2hBoGWBcuvcMhIHBVg0kpV0Z765NutDtf-_9lwhxW6ewdV7CnMVZeHH63SimB9cd5HustyZTq-syk9wVedAury3z83K4fwdT7NO3RleYUCltLKSc3UCWwFEyLjEMBSMl70ZlLQzRWEbt1agRgJEKIIF4fwDl-TeR:1vJYW8:Ik5yS6O7-ZinvkRuTK3wTGNKs-5op47J5Mhj2s44D2o",
+    "expire_date": "2025-11-27T14:41:44.667Z"
   }
 },
 {
@@ -2097,6 +2097,14 @@
   "fields": {
     "session_data": ".eJxVjMsOwiAQRf-FtSEMU4Fx6d5vIDymUjWQlHZl_HfbpAvd3nPOfQsf1qX4tfPspywugsTpd4shPbnuID9CvTeZWl3mKcpdkQft8tYyv66H-3dQQi9bfU6EQwSDPKrBsSJHCROSs-DYxA0zuhEQQFu2SDqCMhysg6iJghKfL8TdNs8:1vGIzG:4bP5uNAxCcVjKZu5R4WtWGynvviAg2LF8RIsIPgJt8s",
     "expire_date": "2025-11-18T15:30:22.834Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "qyet6rpq5tb5jkkr31sufl9gencr81tv",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hBoGWBcuvcMhIHBVg0kpV0Z765NutDtf-_9lwhxW6ewdV7CnMVZeHH63SimB9cd5HustyZTq-syk9wVedAury3z83K4fwdT7NO3RleYUCltLKSc3UCWwFEyLjEMBSMl70ZlLQzRWEbt1agRgJEKIIF4fwDl-TeR:1vIZRP:DAQHUM93SKcF-GzfmWGftVeM4YwIC4HkqBmeBdzoH9A",
+    "expire_date": "2025-11-24T21:28:47.321Z"
   }
 },
 {
@@ -2151,7 +2159,8 @@
     "nome": "astolfo",
     "matricula": "PROF001",
     "email": "123@gmail.com",
-    "disciplina": "matematica"
+    "disciplina": "matematica",
+    "turmas": []
   }
 },
 {
@@ -2162,7 +2171,8 @@
     "nome": "roberto",
     "matricula": "PROF011",
     "email": "1234@gmail.com",
-    "disciplina": "geografia"
+    "disciplina": "geografia",
+    "turmas": []
   }
 },
 {
@@ -2173,7 +2183,8 @@
     "nome": "cleito",
     "matricula": "PROF012",
     "email": "12345@gmail.com",
-    "disciplina": "ingles"
+    "disciplina": "ingles",
+    "turmas": []
   }
 },
 {
@@ -2225,28 +2236,6 @@
     "disciplina": 8,
     "valor": "9.00",
     "data_lancamento": "2025-11-03"
-  }
-},
-{
-  "model": "usuarios.advertencia",
-  "pk": 1,
-  "fields": {
-    "aluno": 14,
-    "coordenador": null,
-    "motivo": "gay",
-    "data": "2025-11-05",
-    "status": "em_andamento"
-  }
-},
-{
-  "model": "usuarios.advertencia",
-  "pk": 2,
-  "fields": {
-    "aluno": 14,
-    "coordenador": 8,
-    "motivo": "gay",
-    "data": "2025-11-05",
-    "status": "em_andamento"
   }
 }
 ]
