@@ -1,11 +1,158 @@
 {% extends 'base.html' %}
 {% block content %}
-<h1 style="text-align: center;">Painel da Direção</h1>
-<a href="{% url 'painel_admin_direcao' %}" 
-   style="display:block; text-align:center; margin:10px auto; padding:10px; width:200px;
-          background:#007bff; color:white; text-decoration:none; border-radius:8px;">
-    Painel Administrativo
-</a>
+
+<style>
+    body {
+        background: linear-gradient(to right, #4a8adc, #003c8f);
+        color: white;
+        font-family: Arial, sans-serif;
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 20px;
+        font-size: 28px;
+        font-weight: bold;
+    }
+
+    .painel-btns {
+        text-align: center;
+        margin: 20px 0;
+    }
+
+    .painel-btns button {
+        background-color: whitesmoke;
+        color: #003c8f;
+        border: none;
+        padding: 10px 20px;
+        margin: 5px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.2s;
+    }
+
+    .painel-btns button:hover {
+        background-color: #e3e3e3;
+        transform: scale(1.05);
+    }
+
+    .secao {
+        display: none;
+        background-color: rgba(255, 255, 255, 0.15);
+        border-radius: 10px;
+        padding: 15px;
+        margin: 15px auto;
+        width: 90%;
+        color: white;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+        background-color: rgba(255,255,255,0.15);
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+
+    th {
+        background-color: rgba(0, 0, 0, 0.3);
+    }
+</style>
+
+<h1>Painel Administrativo - Direção</h1>
+
+<div class="painel-btns">
+    <button onclick="mostrarSecao('professores')">Professores</button>
+    <button onclick="mostrarSecao('alunos')">Alunos</button>
+    <button onclick="mostrarSecao('notas')">Notas</button>
+    <button onclick="mostrarSecao('advertencias')">Advertências</button>
+</div>
+
+{% if messages %}
+    <ul style="text-align:center; list-style:none;">
+        {% for message in messages %}
+            <li style="color: yellow;">{{ message }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+<!-- SEÇÃO PROFESSORES -->
+<div id="professores" class="secao">
+    <h2>Professores</h2>
+    <table>
+        <tr><th>Nome</th><th>Disciplina</th></tr>
+        {% for prof in professores %}
+        <tr>
+            <td>{{ prof.nome }}</td>
+            <td>{{ prof.disciplina }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="2">Nenhum professor encontrado.</td></tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- SEÇÃO ALUNOS -->
+<div id="alunos" class="secao">
+    <h2>Alunos</h2>
+    <table>
+        <tr><th>Nome</th><th>Email</th></tr>
+        {% for aluno in alunos %}
+        <tr>
+            <td>{{ aluno.nome }}</td>
+            <td>{{ aluno.email }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="2">Nenhum aluno encontrado.</td></tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- SEÇÃO NOTAS -->
+<div id="notas" class="secao">
+    <h2>Notas Lançadas</h2>
+    <table>
+        <tr><th>Aluno</th><th>Disciplina</th><th>Nota</th></tr>
+        {% for nota in notas %}
+        <tr>
+            <td>{{ nota.aluno.nome }}</td>
+            <td>{{ nota.disciplina.nome }}</td>
+            <td>{{ nota.valor }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">Nenhuma nota encontrada.</td></tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- SEÇÃO ADVERTÊNCIAS -->
+<div id="advertencias" class="secao">
+    <h2>Advertências</h2>
+    <table>
+        <tr><th>Aluno</th><th>Motivo</th><th>Data</th></tr>
+        {% for adv in advertencias %}
+        <tr>
+            <td>{{ adv.aluno.nome }}</td>
+            <td>{{ adv.motivo }}</td>
+            <td>{{ adv.data }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="3">Nenhuma advertência encontrada.</td></tr>
+        {% endfor %}
+    </table>
+</div>
+
+<script>
+    function mostrarSecao(id) {
+        document.querySelectorAll('.secao').forEach(s => s.style.display = 'none');
+        document.getElementById(id).style.display = 'block';
+    }
+</script>
 
 {% endblock %}
-

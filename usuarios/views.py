@@ -1,19 +1,27 @@
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Aluno, Professor, Nota, Advertencia, Turma , Disciplina
-from .forms import AlunoForm, ProfessorForm, NotaForm, AdvertenciaForm, TurmaForm, DisciplinaForm
+from .models import Aluno, Professor, Nota, Advertencia, Turma, Disciplina
+from .forms import (
+    AlunoForm, ProfessorForm, NotaForm,
+    AdvertenciaForm, TurmaForm, DisciplinaForm
+)
 from .decorators import grupo_requerido
 from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.utils.text import slugify
 from django.db.models import Prefetch
 
-# 🔹 Página padrão (não precisa mais ser "Seja bem-vindo", mas deixei por segurança)
+
+# =============================
+# 🔹 HOME
+# =============================
 def home(request):
     return redirect('login')
 
 
-# 🔹 Painel do Aluno
+# =============================
+# 🔹 ALUNO
+# =============================
 @login_required(login_url='/login/')
 @grupo_requerido("Aluno")
 def aluno(request):
@@ -30,97 +38,52 @@ def aluno(request):
     })
 
 
-# 🔹 Painel do Professor
+# =============================
+# 🔹 PROFESSOR
+# =============================
 @grupo_requerido("Professor")
 def professor(request):
     professor = Professor.objects.filter(user=request.user).first()
+
     if not professor:
         messages.error(request, "Professor não encontrado.")
         return redirect('login')
 
-    # Turmas e alunos relacionados a esse professor
     turmas = professor.turmas.all()
     alunos = Aluno.objects.filter(turmas__in=turmas).distinct()
-
-    # Notas e advertências desses alunos
     notas = Nota.objects.filter(aluno__in=alunos)
     advertencias = Advertencia.objects.filter(aluno__in=alunos)
 
-    form = NotaForm()
-
-    # Criar nova nota
     if request.method == 'POST':
         form = NotaForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, "Nota lançada com sucesso!")
             return redirect('professor')
+    else:
+        form = NotaForm()
 
-    context = {
+    return render(request, 'professor.html', {
         'professor': professor,
         'turmas': turmas,
         'alunos': alunos,
         'notas': notas,
         'advertencias': advertencias,
         'form': form
-    }
-    return render(request, 'professor.html', context)
+    })
 
-# 🔹 Painel da Secretaria
+
+# =============================
+# 🔹 SECRETARIA
+# =============================
 @grupo_requerido("Secretaria")
 def secretaria(request):
     return render(request, 'secretaria.html')
 
 
-
-# 🔹 Painel da Coordenação
-@grupo_requerido("Coordenacao")
-def coordenacao(request):
-    if request.method == 'POST':
-        form = AdvertenciaForm(request.POST)
-        if form.is_valid():
-            advertencia = form.save(commit=False)
-            advertencia.coordenador = request.user  # força salvar o user logado
-            advertencia.save()
-            messages.success(request, 'Advertência registrada com sucesso!')
-            return redirect('coordenacao')
-    else:
-        form = AdvertenciaForm()
-
-    advertencias = Advertencia.objects.select_related('aluno', 'coordenador').order_by('-data')
-
-    return render(request, 'coordenacao.html', {
-        'form': form,
-        'advertencias': advertencias
-    })
-
-
-# 🔹 Painel da Direção
-@grupo_requerido("Direcao")
-def direcao(request):
-    return render(request, 'direcao.html')
-
-
-# 🔹 Redireciona o usuário conforme o grupo dele
-def redirecionar_usuario(request):
-    if request.user.groups.filter(name="Aluno").exists():
-        return redirect('aluno')
-    elif request.user.groups.filter(name="Professor").exists():
-        return redirect('professor')
-    elif request.user.groups.filter(name="Secretaria").exists():
-        return redirect('secretaria')
-    elif request.user.groups.filter(name="Coordenacao").exists():
-        return redirect('coordenacao')
-    elif request.user.groups.filter(name="Direcao").exists():
-        return redirect('direcao')
-    else:
-        return redirect('login')
-
-
-# ===============================
-# 🔹 VIEWS - Secretaria (cadastros e listagens)
-# ===============================
-
+# =============================
+# 🔹 CRUD ALUNOS
+# =============================
 @grupo_requerido("Secretaria")
 def cadastrar_aluno(request):
     if request.method == 'POST':
@@ -128,56 +91,38 @@ def cadastrar_aluno(request):
         if form.is_valid():
             aluno = form.save(commit=False)
 
-            # → normaliza o nome para gerar username consistente (remove espaços, acentos, etc.)
-            base_username = slugify(aluno.nome).replace('-', '_')  # ex: "joao_silva"
-            username = base_username
+            username = slugify(aluno.nome).replace('-', '_')
 
-            # → se já existir, **não** cria outro automaticamente: mostra erro e pede alteração
             if User.objects.filter(username=username).exists():
-                messages.error(request, f"O login '{username}' já existe. Por favor escolha outro nome ou edite o username antes de salvar.")
+                messages.error(request, f"O login '{username}' já existe.")
                 return render(request, 'cadastrar_aluno.html', {'form': form})
 
-            # → cria o usuário com senha padrão
             password = "Al123456#"
-            user = User.objects.create_user(username=username, password=password, email=aluno.email or '')
-            user.save()
+            user = User.objects.create_user(username=username, password=password, email=aluno.email)
+            user.groups.add(Group.objects.get(name="Aluno"))
 
-            # → adiciona ao grupo
-            grupo_aluno = Group.objects.get(name="Aluno")
-            user.groups.add(grupo_aluno)
-
-            # → vincula e salva o aluno
             aluno.user = user
             aluno.save()
 
-            messages.success(request, f"Aluno '{aluno.nome}' cadastrado com sucesso! Login: {username} (senha padrão: {password})")
+            messages.success(request, f"Aluno '{aluno.nome}' cadastrado! Login: {username}")
             return redirect('listar_alunos')
     else:
         form = AlunoForm()
-    return render(request, 'cadastrar_aluno.html', {'form': form})
 
+    return render(request, 'cadastrar_aluno.html', {'form': form})
 
 
 @grupo_requerido("Secretaria")
 def listar_alunos(request):
-    # 1️⃣ Pegamos o termo digitado (caso o usuário tenha feito uma busca)
     termo = request.GET.get('q')
+    alunos = Aluno.objects.filter(nome__icontains=termo) if termo else Aluno.objects.all()
+    return render(request, 'listar_alunos.html', {'alunos': alunos, 'termo': termo})
 
-    # 2️⃣ Se o termo tiver conteúdo, filtra os alunos pelo nome (case-insensitive)
-    if termo:
-        alunos = Aluno.objects.filter(nome__icontains=termo)
-    else:
-        alunos = Aluno.objects.all()
-
-    # 3️⃣ Retorna o template com a lista e o termo (pra manter o texto no campo)
-    return render(request, 'listar_alunos.html', {
-        'alunos': alunos,
-        'termo': termo
-    })
 
 @grupo_requerido("Secretaria")
 def editar_aluno(request, id):
-    aluno = Aluno.objects.get(id=id)
+    aluno = get_object_or_404(Aluno, id=id)
+
     if request.method == 'POST':
         form = AlunoForm(request.POST, instance=aluno)
         if form.is_valid():
@@ -185,13 +130,19 @@ def editar_aluno(request, id):
             return redirect('listar_alunos')
     else:
         form = AlunoForm(instance=aluno)
+
     return render(request, 'editar_aluno.html', {'form': form, 'aluno': aluno})
 
+
+@grupo_requerido("Secretaria")
 def deletar_aluno(request, id):
-    aluno = get_object_or_404(Aluno, id=id)
-    aluno.delete()
+    get_object_or_404(Aluno, id=id).delete()
     return redirect('listar_alunos')
 
+
+# =============================
+# 🔹 CRUD PROFESSORES
+# =============================
 @grupo_requerido("Secretaria")
 def cadastrar_professor(request):
     if request.method == 'POST':
@@ -199,163 +150,171 @@ def cadastrar_professor(request):
         if form.is_valid():
             professor = form.save(commit=False)
 
-            base_username = slugify(professor.nome).replace('-', '_')
-            username = base_username
+            username = slugify(professor.nome).replace('-', '_')
 
             if User.objects.filter(username=username).exists():
-                messages.error(request, f"O login '{username}' já existe. Por favor escolha outro nome ou edite o username antes de salvar.")
+                messages.error(request, f"O login '{username}' já existe.")
                 return render(request, 'cadastrar_professor.html', {'form': form})
 
             password = "Pr123456#"
-            user = User.objects.create_user(username=username, password=password, email=professor.email or '')
-            user.save()
-
-            grupo_prof = Group.objects.get(name="Professor")
-            user.groups.add(grupo_prof)
+            user = User.objects.create_user(username=username, password=password, email=professor.email)
+            user.groups.add(Group.objects.get(name="Professor"))
 
             professor.user = user
             professor.save()
 
-            messages.success(request, f"Professor '{professor.nome}' cadastrado com sucesso! Login: {username} (senha padrão: {password})")
+            messages.success(request, "Professor cadastrado!")
             return redirect('listar_professores')
     else:
         form = ProfessorForm()
+
     return render(request, 'cadastrar_professor.html', {'form': form})
+
 
 @grupo_requerido("Secretaria")
 def listar_professores(request):
-    # 1️⃣ Pegamos o valor digitado no campo de busca (se existir)
-    termo = request.GET.get('q')  # "q" vem do name do input no HTML
+    termo = request.GET.get('q')
+    professores = Professor.objects.filter(nome__icontains=termo) if termo else Professor.objects.all()
 
-    # 2️⃣ Se tiver algo digitado, filtramos pelo nome (usando case-insensitive)
-    if termo:
-        professores = Professor.objects.filter(nome__icontains=termo)
-    else:
-        professores = Professor.objects.all()
-
-    # 3️⃣ Renderizamos o template e mandamos o termo junto (pra manter no input)
     return render(request, 'listar_professor.html', {
         'professores': professores,
         'termo': termo
     })
 
-@grupo_requerido("Professor")
-def listar_notas_professor(request):
-    notas = Nota.objects.filter(professor__user=request.user)
-    return render(request, 'listar_notas_professor.html', {'notas': notas})
-
-@grupo_requerido("Professor")
-def adicionar_nota(request):
-    if request.method == 'POST':
-        form = NotaForm(request.POST)
-        if form.is_valid():
-            nota = form.save(commit=False)
-            nota.professor = Professor.objects.get(user=request.user)
-            nota.save()
-            return redirect('listar_notas_professor')
-    else:
-        form = NotaForm()
-    return render(request, 'adicionar_nota.html', {'form': form})
-
-def editar_nota(request, nota_id):
-    nota = get_object_or_404(Nota, id=nota_id)
-    
-    if request.method == 'POST':
-        form = NotaForm(request.POST, instance=nota)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Nota atualizada com sucesso!')
-            return redirect('professor')  # redireciona de volta ao painel
-    else:
-        form = NotaForm(instance=nota)
-    
-    return render(request, 'editar_nota.html', {'form': form, 'nota': nota})
-
-def deletar_nota(request, nota_id):
-    nota = get_object_or_404(Nota, id=nota_id)
-    nota.delete()
-    messages.success(request, 'Nota excluída com sucesso!')
-    return redirect('professor')
-from .models import Turma
-from django import forms
-
-# Formulário para cadastrar turmas
-class TurmaForm(forms.ModelForm):
-    class Meta:
-        model = Turma
-        fields = ['nome', 'alunos', 'disciplinas']
-        widgets = {
-            'alunos': forms.CheckboxSelectMultiple,
-            'disciplinas': forms.CheckboxSelectMultiple,
-        }
-
-@grupo_requerido("Coordenacao")
-def editar_turma(request, id):
-    turma = get_object_or_404(Turma, id=id)
-    if request.method == 'POST':
-        form = TurmaForm(request.POST, instance=turma)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Turma atualizada com sucesso!")
-            return redirect('painel_admin_coordenacao')
-    else:
-        form = TurmaForm(instance=turma)
-    return render(request, 'cadastrar_turma.html', {'form': form, 'editar': True})
-
-
-@grupo_requerido("Coordenacao")
-def deletar_turma(request, id):
-    turma = get_object_or_404(Turma, id=id)
-    turma.delete()
-    messages.success(request, "Turma excluída com sucesso!")
-    return redirect('painel_admin_coordenacao')
-
-
 
 @grupo_requerido("Secretaria")
 def editar_professor(request, id):
-    professor = Professor.objects.get(id=id)  # busca o professor pelo ID da URL
+    professor = get_object_or_404(Professor, id=id)
 
-    if request.method == 'POST':  # se o formulário foi enviado
-        form = ProfessorForm(request.POST, instance=professor)  # cria o form com os novos dados
-        if form.is_valid():  # valida o formulário
-            form.save()  # salva as alterações no banco
-            return redirect('listar_professores')  # redireciona para a listagem
+    if request.method == 'POST':
+        form = ProfessorForm(request.POST, instance=professor)
+        if form.is_valid():
+            form.save()
+            return redirect('listar_professores')
     else:
-        form = ProfessorForm(instance=professor)  # carrega o form com os dados antigos
+        form = ProfessorForm(instance=professor)
 
     return render(request, 'editar_professor.html', {'form': form, 'professor': professor})
 
+
+@grupo_requerido("Secretaria")
 def deletar_professor(request, id):
-    professor = get_object_or_404(Professor, id=id)
-    professor.delete()
+    get_object_or_404(Professor, id=id).delete()
     return redirect('listar_professores')
 
+
+# =============================
+# 🔹 ADVERTÊNCIAS
+# =============================
 @grupo_requerido("Coordenacao")
 def editar_advertencia(request, id):
     advertencia = get_object_or_404(Advertencia, id=id)
-    if request.method == 'POST':
+
+    if request.method == "POST":
         form = AdvertenciaForm(request.POST, instance=advertencia)
         if form.is_valid():
             form.save()
-            messages.success(request, 'Advertência atualizada com sucesso!')
+            messages.success(request, "Advertência atualizada!")
             return redirect('coordenacao')
     else:
         form = AdvertenciaForm(instance=advertencia)
-    return render(request, 'editar_advertencia.html', {'form': form, 'advertencia': advertencia})
+
+    return render(request, "editar_advertencia.html", {
+        "form": form,
+        "advertencia": advertencia
+    })
 
 
 @grupo_requerido("Coordenacao")
 def deletar_advertencia(request, id):
-    advertencia = get_object_or_404(Advertencia, id=id)
-    advertencia.delete()
-    messages.success(request, 'Advertência excluída com sucesso!')
+    get_object_or_404(Advertencia, id=id).delete()
+    messages.success(request, "Advertência excluída!")
     return redirect('coordenacao')
 
-# ===============================
-# 🔹 Painel administrativo interno (Coordenação / Direção)
-# ===============================
 
+# =============================
+# 🔹 TURMAS
+# =============================
+@grupo_requerido("Coordenacao")
+def cadastrar_turma(request):
+    if request.method == 'POST':
+        form = TurmaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Turma criada!")
+            return redirect('painel_admin_coordenacao')
+    else:
+        form = TurmaForm()
+
+    return render(request, 'cadastrar_turma.html', {'form': form})
+
+
+@grupo_requerido("Coordenacao")
+def editar_turma(request, id):
+    turma = get_object_or_404(Turma, id=id)
+
+    if request.method == 'POST':
+        form = TurmaForm(request.POST, instance=turma)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Turma atualizada!")
+            return redirect('painel_admin_coordenacao')
+    else:
+        form = TurmaForm(instance=turma)
+
+    return render(request, 'editar_turma.html', {'form': form, 'turma': turma})
+
+
+@grupo_requerido("Coordenacao")
+def deletar_turma(request, id):
+    get_object_or_404(Turma, id=id).delete()
+    messages.success(request, "Turma excluída!")
+    return redirect('painel_admin_coordenacao')
+
+
+# =============================
+# 🔹 DISCIPLINAS
+# =============================
+@grupo_requerido("Coordenacao")
+def cadastrar_disciplina(request):
+    if request.method == 'POST':
+        form = DisciplinaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Disciplina criada!")
+            return redirect('painel_admin_coordenacao')
+    else:
+        form = DisciplinaForm()
+
+    return render(request, 'cadastrar_disciplina.html', {'form': form})
+
+
+@grupo_requerido("Coordenacao")
+def editar_disciplina(request, id):
+    disciplina = get_object_or_404(Disciplina, id=id)
+
+    if request.method == 'POST':
+        form = DisciplinaForm(request.POST, instance=disciplina)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Disciplina atualizada!")
+            return redirect('painel_admin_coordenacao')
+    else:
+        form = DisciplinaForm(instance=disciplina)
+
+    return render(request, 'editar_disciplina.html', {'form': form, 'disciplina': disciplina})
+
+
+@grupo_requerido("Coordenacao")
+def deletar_disciplina(request, id):
+    get_object_or_404(Disciplina, id=id).delete()
+    messages.success(request, "Disciplina excluída!")
+    return redirect('painel_admin_coordenacao')
+
+
+# =============================
+# 🔹 PAINÉIS
+# =============================
 @grupo_requerido("Coordenacao")
 def painel_administrativo_coordenacao(request):
     turmas = Turma.objects.prefetch_related(
@@ -364,136 +323,30 @@ def painel_administrativo_coordenacao(request):
     )
     professores = Professor.objects.all()
     alunos = Aluno.objects.all()
-    advertencias = Advertencia.objects.select_related('aluno', 'coordenador').order_by('-data')
-    notas = Nota.objects.select_related('aluno', 'disciplina').order_by('-data_lancamento')
+    disciplinas = Disciplina.objects.all()
+    advertencias = Advertencia.objects.all()
+    notas = Nota.objects.all()
 
-    contexto = {
+    return render(request, 'painel_admin_coordenacao.html', {
         'turmas': turmas,
         'professores': professores,
         'alunos': alunos,
+        'disciplinas': disciplinas,
         'advertencias': advertencias,
-        'notas': notas,
-    }
-    return render(request, 'painel_admin_coordenacao.html', contexto)
-
+        'notas': notas
+    })
 
 
 @grupo_requerido("Direcao")
 def painel_administrativo_direcao(request):
     professores = Professor.objects.all()
     alunos = Aluno.objects.all()
-    advertencias = Advertencia.objects.select_related('aluno', 'coordenador')
-    notas = Nota.objects.select_related('aluno', 'disciplina')
+    advertencias = Advertencia.objects.all()
+    notas = Nota.objects.all()
 
-    contexto = {
+    return render(request, 'painel_admin_direcao.html', {
         'professores': professores,
         'alunos': alunos,
         'advertencias': advertencias,
-        'notas': notas,
-    }
-    from .forms import TurmaForm  # garanta que está no topo, junto com os outros imports
-
-
-@grupo_requerido("Coordenacao")
-def cadastrar_turma(request):
-    if request.method == 'POST':
-        form = TurmaForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Turma cadastrada com sucesso!")
-            return redirect('painel_admin_coordenacao')
-    else:
-        form = TurmaForm()
-    return render(request, 'cadastrar_turma.html', {'form': form})
-
-
-@grupo_requerido("Coordenacao")
-def editar_turma(request, id):
-    turma = get_object_or_404(Turma, id=id)
-    if request.method == 'POST':
-        form = TurmaForm(request.POST, instance=turma)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Turma atualizada com sucesso!")
-            return redirect('painel_admin_coordenacao')
-    else:
-        form = TurmaForm(instance=turma)
-    return render(request, 'editar_turma.html', {'form': form, 'turma': turma})
-
-
-@grupo_requerido("Coordenacao")
-def deletar_turma(request, id):
-    turma = get_object_or_404(Turma, id=id)
-    turma.delete()
-    messages.success(request, "Turma excluída com sucesso!")
-    return redirect('painel_admin_coordenacao')
-    return render(request, 'painel_admin_direcao.html', contexto)
-
-@grupo_requerido("Coordenacao")
-def cadastrar_turma(request):
-    if request.method == 'POST':
-        form = TurmaForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Turma criada com sucesso!')
-            return redirect('painel_admin_coordenacao')
-    else:
-        form = TurmaForm()
-    return render(request, 'cadastrar_turma.html', {'form': form})
-
-
-@grupo_requerido("Coordenacao")
-def editar_turma(request, id):
-    turma = get_object_or_404(Turma, id=id)
-    if request.method == 'POST':
-        form = TurmaForm(request.POST, instance=turma)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Turma atualizada com sucesso!')
-            return redirect('painel_admin_coordenacao')
-    else:
-        form = TurmaForm(instance=turma)
-    return render(request, 'editar_turma.html', {'form': form, 'turma': turma})
-
-
-@grupo_requerido("Coordenacao")
-def deletar_turma(request, id):
-    turma = get_object_or_404(Turma, id=id)
-    turma.delete()
-    messages.success(request, 'Turma excluída com sucesso!')
-    return redirect('painel_admin_coordenacao')
-
-
-@grupo_requerido("Coordenacao")
-def cadastrar_disciplina(request):
-    if request.method == 'POST':
-        form = DisciplinaForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Disciplina criada com sucesso!')
-            return redirect('painel_admin_coordenacao')
-    else:
-        form = DisciplinaForm()
-    return render(request, 'cadastrar_disciplina.html', {'form': form})
-
-
-@grupo_requerido("Coordenacao")
-def editar_disciplina(request, id):
-    disciplina = get_object_or_404(Disciplina, id=id)
-    if request.method == 'POST':
-        form = DisciplinaForm(request.POST, instance=disciplina)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Disciplina atualizada com sucesso!')
-            return redirect('painel_admin_coordenacao')
-    else:
-        form = DisciplinaForm(instance=disciplina)
-    return render(request, 'editar_disciplina.html', {'form': form, 'disciplina': disciplina})
-
-
-@grupo_requerido("Coordenacao")
-def deletar_disciplina(request, id):
-    disciplina = get_object_or_404(Disciplina, id=id)
-    disciplina.delete()
-    messages.success(request, 'Disciplina excluída com sucesso!')
-    return redirect('painel_admin_coordenacao')
+        'notas': notas
+    })
