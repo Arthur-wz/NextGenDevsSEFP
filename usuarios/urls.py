@@ -6,8 +6,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Login & Home
-    path('', views.home, name='home'),
-    path('login/', views.login_view, name='login'),
+    #path('', views.home, name='home'),
+    #path('login/', views.login_view, name='login'),
 
     # Aluno
     path('aluno/', views.aluno, name='aluno'),

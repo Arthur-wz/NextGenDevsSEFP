@@ -11,13 +11,11 @@ from django.contrib import messages
 from django.utils.text import slugify
 from django.db.models import Prefetch
 
-
 # =============================
 # 🔹 HOME
 # =============================
 def home(request):
     return redirect('login')
-
 
 # =============================
 # 🔹 ALUNO
@@ -37,7 +35,6 @@ def aluno(request):
         'notas': notas
     })
 
-
 # =============================
 # 🔹 PROFESSOR
 # =============================
@@ -49,7 +46,7 @@ def professor(request):
         messages.error(request, "Professor não encontrado.")
         return redirect('login')
 
-    turmas = professor.turmas.all()
+    turmas = Turma.objects.filter(disciplinas__professor=professor).distinct()
     alunos = Aluno.objects.filter(turmas__in=turmas).distinct()
     notas = Nota.objects.filter(aluno__in=alunos)
     advertencias = Advertencia.objects.filter(aluno__in=alunos)
@@ -72,6 +69,34 @@ def professor(request):
         'form': form
     })
 
+# =============================
+# 🔹 NOVAS FUNÇÕES: EDITAR / EXCLUIR NOTA
+# =============================
+@grupo_requerido("Professor")
+def editar_nota(request, nota_id):
+    nota = get_object_or_404(Nota, id=nota_id)
+
+    if request.method == "POST":
+        form = NotaForm(request.POST, instance=nota)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Nota atualizada com sucesso!")
+            return redirect('professor')
+    else:
+        form = NotaForm(instance=nota)
+
+    return render(request, 'editar_nota.html', {
+        'form': form,
+        'nota': nota
+    })
+
+
+@grupo_requerido("Professor")
+def deletar_nota(request, nota_id):
+    nota = get_object_or_404(Nota, id=nota_id)
+    nota.delete()
+    messages.success(request, "Nota excluída!")
+    return redirect('professor')
 
 # =============================
 # 🔹 SECRETARIA
@@ -79,7 +104,6 @@ def professor(request):
 @grupo_requerido("Secretaria")
 def secretaria(request):
     return render(request, 'secretaria.html')
-
 
 # =============================
 # 🔹 CRUD ALUNOS
@@ -111,13 +135,11 @@ def cadastrar_aluno(request):
 
     return render(request, 'cadastrar_aluno.html', {'form': form})
 
-
 @grupo_requerido("Secretaria")
 def listar_alunos(request):
     termo = request.GET.get('q')
     alunos = Aluno.objects.filter(nome__icontains=termo) if termo else Aluno.objects.all()
     return render(request, 'listar_alunos.html', {'alunos': alunos, 'termo': termo})
-
 
 @grupo_requerido("Secretaria")
 def editar_aluno(request, id):
@@ -133,12 +155,10 @@ def editar_aluno(request, id):
 
     return render(request, 'editar_aluno.html', {'form': form, 'aluno': aluno})
 
-
 @grupo_requerido("Secretaria")
 def deletar_aluno(request, id):
     get_object_or_404(Aluno, id=id).delete()
     return redirect('listar_alunos')
-
 
 # =============================
 # 🔹 CRUD PROFESSORES
@@ -170,7 +190,6 @@ def cadastrar_professor(request):
 
     return render(request, 'cadastrar_professor.html', {'form': form})
 
-
 @grupo_requerido("Secretaria")
 def listar_professores(request):
     termo = request.GET.get('q')
@@ -180,7 +199,6 @@ def listar_professores(request):
         'professores': professores,
         'termo': termo
     })
-
 
 @grupo_requerido("Secretaria")
 def editar_professor(request, id):
@@ -196,12 +214,10 @@ def editar_professor(request, id):
 
     return render(request, 'editar_professor.html', {'form': form, 'professor': professor})
 
-
 @grupo_requerido("Secretaria")
 def deletar_professor(request, id):
     get_object_or_404(Professor, id=id).delete()
     return redirect('listar_professores')
-
 
 # =============================
 # 🔹 ADVERTÊNCIAS
@@ -224,13 +240,11 @@ def editar_advertencia(request, id):
         "advertencia": advertencia
     })
 
-
 @grupo_requerido("Coordenacao")
 def deletar_advertencia(request, id):
     get_object_or_404(Advertencia, id=id).delete()
     messages.success(request, "Advertência excluída!")
     return redirect('coordenacao')
-
 
 # =============================
 # 🔹 TURMAS
@@ -248,7 +262,6 @@ def cadastrar_turma(request):
 
     return render(request, 'cadastrar_turma.html', {'form': form})
 
-
 @grupo_requerido("Coordenacao")
 def editar_turma(request, id):
     turma = get_object_or_404(Turma, id=id)
@@ -264,17 +277,15 @@ def editar_turma(request, id):
 
     return render(request, 'editar_turma.html', {'form': form, 'turma': turma})
 
-
 @grupo_requerido("Coordenacao")
 def deletar_turma(request, id):
     get_object_or_404(Turma, id=id).delete()
     messages.success(request, "Turma excluída!")
     return redirect('painel_admin_coordenacao')
 
-
 # =============================
 # 🔹 DISCIPLINAS
-# =============================
+# ============================= 
 @grupo_requerido("Coordenacao")
 def cadastrar_disciplina(request):
     if request.method == 'POST':
@@ -287,7 +298,6 @@ def cadastrar_disciplina(request):
         form = DisciplinaForm()
 
     return render(request, 'cadastrar_disciplina.html', {'form': form})
-
 
 @grupo_requerido("Coordenacao")
 def editar_disciplina(request, id):
@@ -304,13 +314,11 @@ def editar_disciplina(request, id):
 
     return render(request, 'editar_disciplina.html', {'form': form, 'disciplina': disciplina})
 
-
 @grupo_requerido("Coordenacao")
 def deletar_disciplina(request, id):
     get_object_or_404(Disciplina, id=id).delete()
     messages.success(request, "Disciplina excluída!")
     return redirect('painel_admin_coordenacao')
-
 
 # =============================
 # 🔹 PAINÉIS
@@ -336,7 +344,6 @@ def painel_administrativo_coordenacao(request):
         'notas': notas
     })
 
-
 @grupo_requerido("Direcao")
 def painel_administrativo_direcao(request):
     professores = Professor.objects.all()
@@ -344,9 +351,54 @@ def painel_administrativo_direcao(request):
     advertencias = Advertencia.objects.all()
     notas = Nota.objects.all()
 
-    return render(request, 'painel_admin_direcao.html', {
+    return render(request, 'direcao.html', {
         'professores': professores,
         'alunos': alunos,
         'advertencias': advertencias,
         'notas': notas
     })
+
+# =============================
+# 🔹 COORDENAÇÃO
+# =============================
+@grupo_requerido("Coordenacao")
+def coordenacao(request):
+    return redirect('painel_admin_coordenacao')
+
+# =============================
+# 🔹 DIREÇÃO
+# =============================
+@grupo_requerido("Direcao")
+def direcao(request):
+    return redirect('painel_admin_direcao')
+
+# =============================
+# 🔹 REDIRECIONAR APÓS LOGIN
+# =============================
+def redirecionar_usuario(request):
+    user = request.user
+
+    if not user.is_authenticated:
+        return redirect('login')
+
+    grupo = user.groups.first()
+
+    if not grupo:
+        return redirect('login')
+
+    if grupo.name == "Aluno":
+        return redirect('aluno')
+
+    if grupo.name == "Professor":
+        return redirect('professor')
+
+    if grupo.name == "Secretaria":
+        return redirect('secretaria')
+
+    if grupo.name == "Coordenacao":
+        return redirect('coordenacao')
+
+    if grupo.name == "Direcao":
+        return redirect('direcao')
+
+    return redirect('login')

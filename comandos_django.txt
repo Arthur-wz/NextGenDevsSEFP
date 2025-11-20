@@ -46,6 +46,8 @@ python manage.py dumpdata --indent 4 > dados.json
 
 python manage.py loaddata dados.json
 
+python manage.py loaddata backups\dados.json
+
 🔑 USUÁRIOS E AUTENTICAÇÃO
 ---------------------------------
 # Criar superusuário (admin)

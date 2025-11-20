@@ -68,22 +68,29 @@
 
         <h3>Notas Lançadas</h3>
         <table border="1" style="margin:auto;">
-            <tr>
-                <th>Aluno</th>
-                <th>Disciplina</th>
-                <th>Nota</th>
-                <th>Data</th>
-            </tr>
-            {% for nota in notas %}
-                <tr>
-                    <td>{{ nota.aluno.nome }}</td>
-                    <td>{{ nota.disciplina.nome }}</td>
-                    <td>{{ nota.valor }}</td>
-                    <td>{{ nota.data_lancamento }}</td>
-                </tr>
-            {% empty %}
-                <tr><td colspan="4">Nenhuma nota lançada ainda.</td></tr>
-            {% endfor %}
+    <tr>
+        <th>Aluno</th>
+        <th>Disciplina</th>
+        <th>Nota</th>
+        <th>Data</th>
+        <th>Ações</th>
+    </tr>
+    {% for nota in notas %}
+        <tr>
+            <td>{{ nota.aluno.nome }}</td>
+            <td>{{ nota.disciplina.nome }}</td>
+            <td>{{ nota.valor }}</td>
+            <td>{{ nota.data_lancamento }}</td>
+            <td>
+                <a href="{% url 'editar_nota' nota.id %}">Editar</a> |
+                <a href="{% url 'deletar_nota' nota.id %}" onclick="return confirm('Excluir esta nota?')">
+                    Excluir
+                </a>
+            </td>
+        </tr>
+    {% empty %}
+        <tr><td colspan="5">Nenhuma nota lançada ainda.</td></tr>
+    {% endfor %}
         </table>
     </div>
 

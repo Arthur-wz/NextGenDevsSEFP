@@ -670,7 +670,7 @@
     "user": 9,
     "content_type": 4,
     "object_id": "12",
-    "object_repr": "joão_silva",
+    "object_repr": "joao_silva",
     "action_flag": 3,
     "change_message": ""
   }
@@ -683,7 +683,7 @@
     "user": 9,
     "content_type": 4,
     "object_id": "13",
-    "object_repr": "joão_silva1",
+    "object_repr": "joao_silva1",
     "action_flag": 3,
     "change_message": ""
   }
@@ -852,7 +852,7 @@
     "user": 9,
     "content_type": 10,
     "object_id": "1",
-    "object_repr": "2°A",
+    "object_repr": "2A",
     "action_flag": 2,
     "change_message": "[{\"changed\": {\"fields\": [\"Nome\", \"Alunos\"]}}]"
   }
@@ -891,7 +891,7 @@
     "user": 9,
     "content_type": 10,
     "object_id": "1",
-    "object_repr": "2°A",
+    "object_repr": "2A",
     "action_flag": 2,
     "change_message": "[{\"changed\": {\"fields\": [\"Disciplinas\"]}}]"
   }
@@ -1125,7 +1125,7 @@
     "user": 9,
     "content_type": 10,
     "object_id": "1",
-    "object_repr": "2°A",
+    "object_repr": "2A",
     "action_flag": 2,
     "change_message": "[{\"changed\": {\"fields\": [\"Alunos\", \"Disciplinas\"]}}]"
   }
@@ -1193,6 +1193,32 @@
     "object_repr": "Kauan",
     "action_flag": 2,
     "change_message": "[{\"changed\": {\"fields\": [\"Superuser status\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 93,
+  "fields": {
+    "action_time": "2025-11-13T14:49:07.879Z",
+    "user": 9,
+    "content_type": 4,
+    "object_id": "33",
+    "object_repr": "Adalberto",
+    "action_flag": 2,
+    "change_message": "[{\"changed\": {\"fields\": [\"password\"]}}]"
+  }
+},
+{
+  "model": "admin.logentry",
+  "pk": 94,
+  "fields": {
+    "action_time": "2025-11-13T15:57:35.780Z",
+    "user": 9,
+    "content_type": 9,
+    "object_id": "6",
+    "object_repr": "matematica",
+    "action_flag": 3,
+    "change_message": ""
   }
 },
 {
@@ -1726,7 +1752,7 @@
   "pk": 2,
   "fields": {
     "password": "pbkdf2_sha256$1000000$dzEQm4iuKmDtmIuI1DeB46$EFTir7HWIYjhCHBDaVrooW6WJS41PJb4Dub4SjfSXAM=",
-    "last_login": "2025-11-03T22:15:55.203Z",
+    "last_login": "2025-11-14T14:34:30.915Z",
     "is_superuser": false,
     "username": "mohamed",
     "first_name": "",
@@ -1746,7 +1772,7 @@
   "pk": 7,
   "fields": {
     "password": "pbkdf2_sha256$1000000$rJeBCbsYm5cMdCRiGya5CS$IG2RMKn0rK29e+XWk1sU8gdPNdxHvIqEv5al+2ikKHo=",
-    "last_login": "2025-11-10T21:27:28.558Z",
+    "last_login": "2025-11-14T14:35:21.905Z",
     "is_superuser": false,
     "username": "valter",
     "first_name": "",
@@ -1766,7 +1792,7 @@
   "pk": 8,
   "fields": {
     "password": "pbkdf2_sha256$1000000$F14uFsRmwFEM0F5ncmwPNf$Wn1UCB4CQRqbzdNuILw22HyiZchQU7MD7v+VJIl62SM=",
-    "last_login": "2025-11-13T14:43:53.219Z",
+    "last_login": "2025-11-14T14:32:38.246Z",
     "is_superuser": false,
     "username": "enzo",
     "first_name": "",
@@ -1786,7 +1812,7 @@
   "pk": 9,
   "fields": {
     "password": "pbkdf2_sha256$1000000$g1pD4rMzLQGaZWgzoEO3VW$AaxiTdQEmpMZDSY+qCdpThggWIEdV2FXdETMvT8wd2I=",
-    "last_login": "2025-11-10T21:05:51.673Z",
+    "last_login": "2025-11-13T15:57:13.915Z",
     "is_superuser": true,
     "username": "arthur",
     "first_name": "",
@@ -1804,7 +1830,7 @@
   "pk": 26,
   "fields": {
     "password": "pbkdf2_sha256$1000000$2XtmmLJSw7bwRHAFMwHwun$TyWfjD/GvKWNfRxlcU+rR/jGSVNTBpYE0DwGJ8zNRSI=",
-    "last_login": "2025-11-04T15:09:11.092Z",
+    "last_login": "2025-11-14T14:36:05.246Z",
     "is_superuser": false,
     "username": "jorge",
     "first_name": "",
@@ -1864,7 +1890,7 @@
   "pk": 29,
   "fields": {
     "password": "pbkdf2_sha256$1000000$kD86RsNdl3RHNCXybIUiVe$CAjOmzTyA4DIXvP65IieGLsqc2XvQdbsMBqMEcKvkAA=",
-    "last_login": "2025-11-10T21:12:28.542Z",
+    "last_login": "2025-11-14T14:33:49.735Z",
     "is_superuser": false,
     "username": "astolfo",
     "first_name": "",
@@ -1941,7 +1967,7 @@
   "model": "auth.user",
   "pk": 33,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$smTcRfNUTDOVtPkxJrrWq3$Bt+1J8i6PPqSyiVX3kKdpor9aQhVYhEj35iFbnwGNHk=",
+    "password": "pbkdf2_sha256$1000000$Wh4skNIZUZUle1IpsPBoKB$B8X3xyp4aPHrHLSMsnYEKW3YoGGQ1AH6dIuR50AZJSw=",
     "last_login": null,
     "is_superuser": true,
     "username": "Adalberto",
@@ -2061,14 +2087,6 @@
 },
 {
   "model": "sessions.session",
-  "pk": "12ks8d7wnlul4kn0lyc50296729wfth1",
-  "fields": {
-    "session_data": ".eJxVjEEOwiAQRe_C2hBoGWBcuvcMhIHBVg0kpV0Z765NutDtf-_9lwhxW6ewdV7CnMVZeHH63SimB9cd5HustyZTq-syk9wVedAury3z83K4fwdT7NO3RleYUCltLKSc3UCWwFEyLjEMBSMl70ZlLQzRWEbt1agRgJEKIIF4fwDl-TeR:1vJYYD:x4f3CL8GilpML59pk1ZVVqgix3Uq02-s0GlPJY6fPwg",
-    "expire_date": "2025-11-27T14:43:53.244Z"
-  }
-},
-{
-  "model": "sessions.session",
   "pk": "8lbwppljnob9208hg6mcml1dz8nwxzvr",
   "fields": {
     "session_data": ".eJxVjMsOwiAQRf-FtSEMU4Fx6d5vIDymUjWQlHZl_HfbpAvd3nPOfQsf1qX4tfPspywugsTpd4shPbnuID9CvTeZWl3mKcpdkQft8tYyv66H-3dQQi9bfU6EQwSDPKrBsSJHCROSs-DYxA0zuhEQQFu2SDqCMhysg6iJghKfL8TdNs8:1vG3Kd:LF9G4fNjUzqsVnRYQyj7nj8bP2xLSpCK0h5WSxNbe2c",
@@ -2081,6 +2099,14 @@
   "fields": {
     "session_data": ".eJxVjDsOwjAQBe_iGlkh6y8lPWewdu01DiBbipMKcXdkKQW0b2beWwTctxL2zmtYkrgIK06_G2F8ch0gPbDem4ytbutCcijyoF3eWuLX9XD_Dgr2MmplImqOCiA7TcDklTdnVp5mmNFaz9llyjlqA5xoMuzYe-IpKx0BxecLAYo45Q:1vCICt:m8ds1oSzM6r4ZcJA1gz8iayEzeUtcMsyLUU285xtyh4",
     "expire_date": "2025-11-07T13:51:51.358Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "h6rn2623sd2qc573nya24rb0fwy6mam5",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hBKCzPj0r1nIDNApWpoUtqV8e7apAvd_vfef6nA21rC1vISpqTOynp1-h2F4yPXnaQ719us41zXZRK9K_qgTV_nlJ-Xw_07KNzKt0YGy8woRkzvSBIQ9ilKRwNRJIOQGJ0YBznbUUh8N1gATygOcCT1_gANSzfR:1vJuuD:yKHwGTh1z1gjYzHkpwItWyhfdjgPw1XUomPabRVAOdM",
+    "expire_date": "2025-11-28T14:36:05.255Z"
   }
 },
 {
@@ -2123,7 +2149,7 @@
     "nome": "jorge",
     "matricula": "ALU001",
     "email": "00@gmail.com",
-    "turma": "2°A",
+    "turma": "2A",
     "data_nascimento": "2009-05-18"
   }
 },
@@ -2135,7 +2161,7 @@
     "nome": "claudio",
     "matricula": "ALU013",
     "email": "01@gmail.com",
-    "turma": "2°A",
+    "turma": "2A",
     "data_nascimento": "2009-06-18"
   }
 },
@@ -2147,7 +2173,7 @@
     "nome": "flavio",
     "matricula": "ALU014",
     "email": "02@gmail.com",
-    "turma": "2°A",
+    "turma": "2A",
     "data_nascimento": "2009-05-17"
   }
 },
@@ -2189,14 +2215,6 @@
 },
 {
   "model": "usuarios.disciplina",
-  "pk": 6,
-  "fields": {
-    "nome": "matematica",
-    "professor": 10
-  }
-},
-{
-  "model": "usuarios.disciplina",
   "pk": 7,
   "fields": {
     "nome": "geografia",
@@ -2212,17 +2230,24 @@
   }
 },
 {
+  "model": "usuarios.disciplina",
+  "pk": 9,
+  "fields": {
+    "nome": "matematica",
+    "professor": 10
+  }
+},
+{
   "model": "usuarios.turma",
   "pk": 1,
   "fields": {
-    "nome": "2°A",
+    "nome": "2A",
     "alunos": [
       12,
       13,
       14
     ],
     "disciplinas": [
-      6,
       7,
       8
     ]
