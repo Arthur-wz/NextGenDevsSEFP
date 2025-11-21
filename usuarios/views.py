@@ -10,12 +10,20 @@ from django.contrib.auth.models import User, Group
 from django.contrib import messages
 from django.utils.text import slugify
 from django.db.models import Prefetch
+from django.contrib.auth import logout
 
 # =============================
-# 🔹 HOME
+# HOME
 # =============================
 def home(request):
     return redirect('login')
+
+#login
+
+def login_limpo(request):
+    logout(request)            # encerra sessão anterior
+    request.session.flush()    # limpa cookies/sessão
+    return redirect('login_puro')
 
 # =============================
 # 🔹 ALUNO
@@ -36,7 +44,7 @@ def aluno(request):
     })
 
 # =============================
-# 🔹 PROFESSOR
+# PROFESSOR
 # =============================
 @grupo_requerido("Professor")
 def professor(request):
@@ -46,19 +54,48 @@ def professor(request):
         messages.error(request, "Professor não encontrado.")
         return redirect('login')
 
-    turmas = Turma.objects.filter(disciplinas__professor=professor).distinct()
+    # Disciplinas do professor (via ForeignKey real)
+    disciplinas_professor = Disciplina.objects.filter(professor=professor)
+
+    # Turmas onde essas disciplinas são lecionadas
+    turmas = Turma.objects.filter(disciplinas__in=disciplinas_professor).distinct()
+
+    # Alunos dessas turmas
     alunos = Aluno.objects.filter(turmas__in=turmas).distinct()
-    notas = Nota.objects.filter(aluno__in=alunos)
+
+    # Notas dessas disciplinas e desses alunos
+    notas = Nota.objects.filter(
+        disciplina__in=disciplinas_professor,
+        aluno__in=alunos
+    )
+
+    # Advertências dos alunos
     advertencias = Advertencia.objects.filter(aluno__in=alunos)
 
+    form = NotaForm() 
+
+    # Formulário para lançar nota
     if request.method == 'POST':
         form = NotaForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Nota lançada com sucesso!")
+    if form.is_valid():
+        nova_nota = form.save(commit=False)
+
+        # pega a disciplina do professor
+        disciplina_prof = disciplinas_professor.first()
+
+        if not disciplina_prof:
+            messages.error(request, "Você não possui disciplina cadastrada.")
             return redirect('professor')
+
+        # atribui corretamente
+        nova_nota.disciplina = disciplina_prof
+
+        nova_nota.save()
+        messages.success(request, "Nota lançada com sucesso!")
+        return redirect('professor')
     else:
         form = NotaForm()
+
 
     return render(request, 'professor.html', {
         'professor': professor,
@@ -69,8 +106,9 @@ def professor(request):
         'form': form
     })
 
+
 # =============================
-# 🔹 NOVAS FUNÇÕES: EDITAR / EXCLUIR NOTA
+#  NOVAS FUNÇÕES: EDITAR / EXCLUIR NOTA
 # =============================
 @grupo_requerido("Professor")
 def editar_nota(request, nota_id):
@@ -99,14 +137,14 @@ def deletar_nota(request, nota_id):
     return redirect('professor')
 
 # =============================
-# 🔹 SECRETARIA
+# SECRETARIA
 # =============================
 @grupo_requerido("Secretaria")
 def secretaria(request):
     return render(request, 'secretaria.html')
 
 # =============================
-# 🔹 CRUD ALUNOS
+# CRUD ALUNOS
 # =============================
 @grupo_requerido("Secretaria")
 def cadastrar_aluno(request):
@@ -161,7 +199,7 @@ def deletar_aluno(request, id):
     return redirect('listar_alunos')
 
 # =============================
-# 🔹 CRUD PROFESSORES
+# CRUD PROFESSORES
 # =============================
 @grupo_requerido("Secretaria")
 def cadastrar_professor(request):
@@ -220,7 +258,7 @@ def deletar_professor(request, id):
     return redirect('listar_professores')
 
 # =============================
-# 🔹 ADVERTÊNCIAS
+# ADVERTÊNCIAS
 # =============================
 @grupo_requerido("Coordenacao")
 def editar_advertencia(request, id):
@@ -247,7 +285,7 @@ def deletar_advertencia(request, id):
     return redirect('coordenacao')
 
 # =============================
-# 🔹 TURMAS
+# TURMAS
 # =============================
 @grupo_requerido("Coordenacao")
 def cadastrar_turma(request):
@@ -284,7 +322,7 @@ def deletar_turma(request, id):
     return redirect('painel_admin_coordenacao')
 
 # =============================
-# 🔹 DISCIPLINAS
+#DISCIPLINAS
 # ============================= 
 @grupo_requerido("Coordenacao")
 def cadastrar_disciplina(request):
@@ -321,7 +359,7 @@ def deletar_disciplina(request, id):
     return redirect('painel_admin_coordenacao')
 
 # =============================
-# 🔹 PAINÉIS
+#PAINÉIS
 # =============================
 @grupo_requerido("Coordenacao")
 def painel_administrativo_coordenacao(request):
@@ -359,21 +397,21 @@ def painel_administrativo_direcao(request):
     })
 
 # =============================
-# 🔹 COORDENAÇÃO
+#COORDENAÇÃO
 # =============================
 @grupo_requerido("Coordenacao")
 def coordenacao(request):
     return redirect('painel_admin_coordenacao')
 
 # =============================
-# 🔹 DIREÇÃO
+#DIREÇÃO
 # =============================
 @grupo_requerido("Direcao")
 def direcao(request):
     return redirect('painel_admin_direcao')
 
 # =============================
-# 🔹 REDIRECIONAR APÓS LOGIN
+# REDIRECIONAR APÓS LOGIN
 # =============================
 def redirecionar_usuario(request):
     user = request.user

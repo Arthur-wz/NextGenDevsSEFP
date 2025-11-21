@@ -33,7 +33,11 @@ urlpatterns = [
     path('', redirecionar_para_login, name='home'),
 
     # 👇 Rotas de login/logout padrão do Django
-    path('login/', auth_views.LoginView.as_view(template_name='login.html'), name='login'),
+
+    # login que limpa sessão
+    path('login/', views.login_limpo, name='login'),
+    # login real do Django
+    path('login-puro/', auth_views.LoginView.as_view(template_name='login.html'), name='login_puro'),
     path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
 
     # 👇 Painéis de cada grupo

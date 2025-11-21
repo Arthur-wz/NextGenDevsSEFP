@@ -23,7 +23,7 @@ class ProfessorForm(forms.ModelForm):
 class NotaForm(forms.ModelForm):
     class Meta:
         model = Nota
-        fields = ['aluno', 'disciplina', 'valor']
+        fields = ['aluno', 'valor']
 
 class AdvertenciaForm(forms.ModelForm):
     class Meta:
