@@ -1729,6 +1729,42 @@
   }
 },
 {
+  "model": "auth.permission",
+  "pk": 53,
+  "fields": {
+    "name": "Can add secretaria",
+    "content_type": 14,
+    "codename": "add_secretaria"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 54,
+  "fields": {
+    "name": "Can change secretaria",
+    "content_type": 14,
+    "codename": "change_secretaria"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 55,
+  "fields": {
+    "name": "Can delete secretaria",
+    "content_type": 14,
+    "codename": "delete_secretaria"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 56,
+  "fields": {
+    "name": "Can view secretaria",
+    "content_type": 14,
+    "codename": "view_secretaria"
+  }
+},
+{
   "model": "auth.group",
   "pk": 1,
   "fields": {
@@ -1791,7 +1827,7 @@
   "pk": 2,
   "fields": {
     "password": "pbkdf2_sha256$1000000$dzEQm4iuKmDtmIuI1DeB46$EFTir7HWIYjhCHBDaVrooW6WJS41PJb4Dub4SjfSXAM=",
-    "last_login": "2025-11-19T21:06:37.546Z",
+    "last_login": "2025-11-25T14:22:46.152Z",
     "is_superuser": false,
     "username": "mohamed",
     "first_name": "",
@@ -1811,7 +1847,7 @@
   "pk": 7,
   "fields": {
     "password": "pbkdf2_sha256$1000000$rJeBCbsYm5cMdCRiGya5CS$IG2RMKn0rK29e+XWk1sU8gdPNdxHvIqEv5al+2ikKHo=",
-    "last_login": "2025-11-19T21:07:44.214Z",
+    "last_login": "2025-11-25T14:24:43.730Z",
     "is_superuser": false,
     "username": "valter",
     "first_name": "",
@@ -1831,7 +1867,7 @@
   "pk": 8,
   "fields": {
     "password": "pbkdf2_sha256$1000000$F14uFsRmwFEM0F5ncmwPNf$Wn1UCB4CQRqbzdNuILw22HyiZchQU7MD7v+VJIl62SM=",
-    "last_login": "2025-11-19T21:07:51.306Z",
+    "last_login": "2025-11-25T14:23:05.049Z",
     "is_superuser": false,
     "username": "enzo",
     "first_name": "",
@@ -1869,7 +1905,7 @@
   "pk": 26,
   "fields": {
     "password": "pbkdf2_sha256$1000000$2XtmmLJSw7bwRHAFMwHwun$TyWfjD/GvKWNfRxlcU+rR/jGSVNTBpYE0DwGJ8zNRSI=",
-    "last_login": "2025-11-19T21:09:57.020Z",
+    "last_login": "2025-11-25T14:25:05.695Z",
     "is_superuser": false,
     "username": "jorge",
     "first_name": "",
@@ -1929,7 +1965,7 @@
   "pk": 29,
   "fields": {
     "password": "pbkdf2_sha256$1000000$kD86RsNdl3RHNCXybIUiVe$CAjOmzTyA4DIXvP65IieGLsqc2XvQdbsMBqMEcKvkAA=",
-    "last_login": "2025-11-19T21:12:30.313Z",
+    "last_login": "2025-11-25T14:23:17.310Z",
     "is_superuser": false,
     "username": "astolfo",
     "first_name": "",
@@ -2125,6 +2161,14 @@
   }
 },
 {
+  "model": "contenttypes.contenttype",
+  "pk": 14,
+  "fields": {
+    "app_label": "usuarios",
+    "model": "secretaria"
+  }
+},
+{
   "model": "sessions.session",
   "pk": "8lbwppljnob9208hg6mcml1dz8nwxzvr",
   "fields": {
@@ -2142,26 +2186,18 @@
 },
 {
   "model": "sessions.session",
-  "pk": "h6rn2623sd2qc573nya24rb0fwy6mam5",
-  "fields": {
-    "session_data": ".eJxVjEEOwiAQRe_C2hBKCzPj0r1nIDNApWpoUtqV8e7apAvd_vfef6nA21rC1vISpqTOynp1-h2F4yPXnaQ719us41zXZRK9K_qgTV_nlJ-Xw_07KNzKt0YGy8woRkzvSBIQ9ilKRwNRJIOQGJ0YBznbUUh8N1gATygOcCT1_gANSzfR:1vJuuD:yKHwGTh1z1gjYzHkpwItWyhfdjgPw1XUomPabRVAOdM",
-    "expire_date": "2025-11-28T14:36:05.255Z"
-  }
-},
-{
-  "model": "sessions.session",
-  "pk": "hbh01wahyemdstgdbdosbq59gh2n3kit",
-  "fields": {
-    "session_data": ".eJxVjMsOwiAQRf-FtSEMU4Fx6d5vIDymUjWQlHZl_HfbpAvd3nPOfQsf1qX4tfPspywugsTpd4shPbnuID9CvTeZWl3mKcpdkQft8tYyv66H-3dQQi9bfU6EQwSDPKrBsSJHCROSs-DYxA0zuhEQQFu2SDqCMhysg6iJghKfL8TdNs8:1vLpXU:fRwf_GZD7FCR9qRqsm11Iv5PuMnoAqysmPW0Sisewoo",
-    "expire_date": "2025-12-03T21:16:32.412Z"
-  }
-},
-{
-  "model": "sessions.session",
   "pk": "jozo1xc5uqhnztnbbmx0fvihwkx6p5g9",
   "fields": {
     "session_data": ".eJxVjDsOwjAQBe_iGlnyL_ZS0nMGa9dr4wBypDipIu5OIqWAdmbe20TEdalx7XmOI4urUOLyywjTK7dD8BPbY5Jpass8kjwSedou7xPn9-1s_w4q9rqvPRQFADZY7bRLOuisqAwEpJCzM4NHXXas2BprtCsJA0OhYpC8JxKfL8vOOBI:1vBx7t:hy3x5irGKsAt_c1iNt5RwWoiURWlQ6SHOSUnJaQ-VWY",
     "expire_date": "2025-11-06T15:21:17.565Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "lzcb6bc4dyhmr0ue0jjxg2qpuk65uhxy",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hBKCzPj0r1nIDNApWpoUtqV8e7apAvd_vfef6nA21rC1vISpqTOynp1-h2F4yPXnaQ719us41zXZRK9K_qgTV_nlJ-Xw_07KNzKt0YGy8woRkzvSBIQ9ilKRwNRJIOQGJ0YBznbUUh8N1gATygOcCT1_gANSzfR:1vNtyb:hXY_tJzd5lgkCDXRagS8AuQi3UYPuh5dVJ8Nugn6qqs",
+    "expire_date": "2025-12-09T14:25:05.701Z"
   }
 },
 {
@@ -2181,6 +2217,14 @@
   }
 },
 {
+  "model": "sessions.session",
+  "pk": "tzth37ymkn32lkoq8bxwvurwktnvx1aw",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlmOE_8o6TmDtd714gCypTipEHeHSCmgfTPzXiLCtpa49bzEmcRZaHH63RLgI9cd0B3qrUlsdV3mJHdFHrTLa6P8vBzu30GBXr614YFwAIWePQOOPumgyaXkVCAyFtII5AwF5UYMPDmwRKwVoDWMehLvDw2wOPI:1vNgYT:STKdi12Wg7KBYu8Qv4tzsmxguaztjaWe38zpqVBn5b4",
+    "expire_date": "2025-12-09T00:05:13.973Z"
+  }
+},
+{
   "model": "usuarios.aluno",
   "pk": 12,
   "fields": {
@@ -2189,7 +2233,19 @@
     "matricula": "ALU001",
     "email": "00@gmail.com",
     "turma": "2A",
-    "data_nascimento": "2009-05-18"
+    "data_nascimento": "2009-05-18",
+    "cpf": null,
+    "cartao_sus": null,
+    "telefone_responsaveis": null,
+    "tem_deficiencia": false,
+    "deficiencia_descricao": null,
+    "restricao_alimentar": false,
+    "restricao_alimentar_descricao": null,
+    "alergia_medicacao": false,
+    "alergia_medicacao_descricao": null,
+    "autorizacao_ir_sozinho": false,
+    "pessoas_autorizadas_retirar": null,
+    "observacoes_medicas": null
   }
 },
 {
@@ -2201,7 +2257,19 @@
     "matricula": "ALU013",
     "email": "01@gmail.com",
     "turma": "2A",
-    "data_nascimento": "2009-06-18"
+    "data_nascimento": "2009-06-18",
+    "cpf": null,
+    "cartao_sus": null,
+    "telefone_responsaveis": null,
+    "tem_deficiencia": false,
+    "deficiencia_descricao": null,
+    "restricao_alimentar": false,
+    "restricao_alimentar_descricao": null,
+    "alergia_medicacao": false,
+    "alergia_medicacao_descricao": null,
+    "autorizacao_ir_sozinho": false,
+    "pessoas_autorizadas_retirar": null,
+    "observacoes_medicas": null
   }
 },
 {
@@ -2213,7 +2281,19 @@
     "matricula": "ALU014",
     "email": "02@gmail.com",
     "turma": "2A",
-    "data_nascimento": "2009-05-17"
+    "data_nascimento": "2009-05-17",
+    "cpf": null,
+    "cartao_sus": null,
+    "telefone_responsaveis": null,
+    "tem_deficiencia": false,
+    "deficiencia_descricao": null,
+    "restricao_alimentar": false,
+    "restricao_alimentar_descricao": null,
+    "alergia_medicacao": false,
+    "alergia_medicacao_descricao": null,
+    "autorizacao_ir_sozinho": false,
+    "pessoas_autorizadas_retirar": null,
+    "observacoes_medicas": null
   }
 },
 {
@@ -2294,23 +2374,15 @@
   }
 },
 {
-  "model": "usuarios.nota",
+  "model": "usuarios.secretaria",
   "pk": 1,
   "fields": {
-    "aluno": 12,
-    "disciplina": 8,
-    "valor": "9.00",
-    "data_lancamento": "2025-11-03"
-  }
-},
-{
-  "model": "usuarios.nota",
-  "pk": 2,
-  "fields": {
-    "aluno": 12,
-    "disciplina": 7,
-    "valor": "2.00",
-    "data_lancamento": "2025-11-19"
+    "user": 2,
+    "nome": "mohamed",
+    "email": "",
+    "telefone": null,
+    "setor": null,
+    "observacoes": null
   }
 }
 ]

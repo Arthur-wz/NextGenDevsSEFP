@@ -60,38 +60,6 @@ def aluno(request):
         'boletim': boletim,   # dicionário organizado
         'disciplinas': disciplinas,
     })
-@login_required(login_url='/login/')
-@grupo_requerido("Aluno")
-def aluno(request):
-    try:
-        aluno = Aluno.objects.get(email=request.user.email)
-    except Aluno.DoesNotExist:
-        return render(request, 'aluno.html', {
-            'aluno': None,
-            'notas': [],
-        })
-
-    # Disciplinas das turmas do aluno
-    disciplinas = Disciplina.objects.filter(turmas__alunos=aluno).distinct()
-
-    # Todas as notas do aluno
-    notas = Nota.objects.filter(aluno=aluno)
-
-    # Montar estrutura: disciplina -> bimestre -> nota
-    boletim = {}
-
-    for disciplina in disciplinas:
-        boletim[disciplina] = {1: None, 2: None, 3: None, 4: None}
-
-    for nota in notas:
-        if nota.disciplina in boletim:
-            boletim[nota.disciplina][nota.bimestre] = nota.valor
-
-    return render(request, 'aluno.html', {
-        'aluno': aluno,
-        'boletim': boletim,   # dicionário organizado
-        'disciplinas': disciplinas,
-    })
 
 # =============================
 # PROFESSOR
@@ -104,48 +72,31 @@ def professor(request):
         messages.error(request, "Professor não encontrado.")
         return redirect('login')
 
-    # Disciplinas do professor (via ForeignKey real)
     disciplinas_professor = Disciplina.objects.filter(professor=professor)
-
-    # Turmas onde essas disciplinas são lecionadas
     turmas = Turma.objects.filter(disciplinas__in=disciplinas_professor).distinct()
-
-    # Alunos dessas turmas
     alunos = Aluno.objects.filter(turmas__in=turmas).distinct()
-
-    # Notas dessas disciplinas e desses alunos
-    notas = Nota.objects.filter(
-        disciplina__in=disciplinas_professor,
-        aluno__in=alunos
-    )
-
-    # Advertências dos alunos
+    notas = Nota.objects.filter(disciplina__in=disciplinas_professor, aluno__in=alunos)
     advertencias = Advertencia.objects.filter(aluno__in=alunos)
 
-    form = NotaForm() 
+    # cria o form por padrão (GET)
+    form = NotaForm()
 
-    # Formulário para lançar nota
     if request.method == 'POST':
         form = NotaForm(request.POST)
-    if form.is_valid():
-        nova_nota = form.save(commit=False)
+        if form.is_valid():
+            nova_nota = form.save(commit=False)
 
-        # pega a disciplina do professor
-        disciplina_prof = disciplinas_professor.first()
+            # se o professor tem múltiplas disciplinas, idealmente o form deveria permitir selecionar;
+            # aqui usamos a primeira — ajuste futuro: permitir seleção limitada às disciplinas do professor
+            disciplina_prof = disciplinas_professor.first()
+            if not disciplina_prof:
+                messages.error(request, "Você não possui disciplina cadastrada.")
+                return redirect('professor')
 
-        if not disciplina_prof:
-            messages.error(request, "Você não possui disciplina cadastrada.")
+            nova_nota.disciplina = disciplina_prof
+            nova_nota.save()
+            messages.success(request, "Nota lançada com sucesso!")
             return redirect('professor')
-
-        # atribui corretamente
-        nova_nota.disciplina = disciplina_prof
-
-        nova_nota.save()
-        messages.success(request, "Nota lançada com sucesso!")
-        return redirect('professor')
-    else:
-        form = NotaForm()
-
 
     return render(request, 'professor.html', {
         'professor': professor,
@@ -155,7 +106,6 @@ def professor(request):
         'advertencias': advertencias,
         'form': form
     })
-
 
 # =============================
 #  NOVAS FUNÇÕES: EDITAR / EXCLUIR NOTA

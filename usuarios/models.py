@@ -129,3 +129,18 @@ class Secretaria(models.Model):
 
     def __str__(self):
         return self.nome
+
+class Diretor(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+
+    nome = models.CharField(max_length=100)
+    email = models.EmailField()
+
+    cpf = models.CharField(max_length=14, blank=True, null=True)
+    telefone = models.CharField(max_length=20, blank=True, null=True)
+    cargo = models.CharField(max_length=50, default="Diretor")
+    unidade = models.CharField(max_length=100, blank=True, null=True)
+    observacoes = models.TextField(blank=True, null=True)
+
+    def __str__(self):
+        return self.nome
