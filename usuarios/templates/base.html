@@ -3,43 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <title>{% block title %}SEFP{% endblock %}</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: none;
+            color: black;
+        }
+
+        nav {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        nav ul {
+            display: flex;
+            gap: 20px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            align-items: center;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: black;
+        }
+
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: black;
+            cursor: pointer;
+        }
+
+        .logout-btn:hover {
+            text-decoration: underline;
+        }
+
+        .content {
+            width: 95%;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 10px;
+        }
+    </style>
 </head>
+
 <body>
 
     {% if user.is_authenticated and request.resolver_match.url_name != 'login' %}
         <nav>
-            <ul style="list-style-type: none; padding: 0; margin: 0;">
+            <ul>
                 {% with user.groups.all as grupos %}
                     {% for g in grupos %}
                         {% if g.name == "Secretaria" %}
-                            <li><a href="{% url 'secretaria' %}">Painel da Secretaria</a></li>
+                            <li><a href="{% url 'secretaria' %}">Secretaria</a></li>
+
                         {% elif g.name == "Professor" %}
-                            <li><a href="{% url 'professor' %}">Painel do Professor</a></li>
+                            <li><a href="{% url 'professor' %}">Professor</a></li>
+
                         {% elif g.name == "Aluno" %}
-                            <li><a href="{% url 'aluno' %}">Painel do Aluno</a></li>
+                            <li><a href="{% url 'aluno' %}">Aluno</a></li>
+
                         {% elif g.name == "Coordenacao" %}
-                            <li><a href="{% url 'coordenacao' %}">Painel da Coordenação</a></li>
+                            <li><a href="{% url 'coordenacao' %}">Coordenação</a></li>
+
                         {% elif g.name == "Direcao" %}
-                            <li><a href="{% url 'direcao' %}">Painel da Direção</a></li>
+                            <li><a href="{% url 'direcao' %}">Direção</a></li>
                         {% endif %}
                     {% endfor %}
                 {% endwith %}
 
-                <!-- Logout seguro (POST) -->
+                <!-- Logout -->
                 <li>
                     <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" style="text-align:center; color:#B22222;">Sair</button>
-                </form>
+                        {% csrf_token %}
+                        <button class="logout-btn" type="submit">Sair</button>
+                    </form>
                 </li>
             </ul>
         </nav>
     {% endif %}
 
-    <hr>
-
-    {% block content %}
-    {% endblock %}
+    <div class="content">
+        {% block content %}
+        {% endblock %}
+    </div>
 
 </body>
 </html>

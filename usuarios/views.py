@@ -1,9 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Aluno, Professor, Nota, Advertencia, Turma, Disciplina
+from .models import Aluno, Professor, Nota, Advertencia, Turma, Disciplina, Secretaria
 from .forms import (
     AlunoForm, ProfessorForm, NotaForm,
-    AdvertenciaForm, TurmaForm, DisciplinaForm
+    AdvertenciaForm, TurmaForm, DisciplinaForm, SecretariaForm
 )
 from .decorators import grupo_requerido
 from django.contrib.auth.models import User, Group
@@ -33,14 +33,64 @@ def login_limpo(request):
 def aluno(request):
     try:
         aluno = Aluno.objects.get(email=request.user.email)
-        notas = Nota.objects.filter(aluno=aluno)
     except Aluno.DoesNotExist:
-        aluno = None
-        notas = []
+        return render(request, 'aluno.html', {
+            'aluno': None,
+            'notas': [],
+        })
+
+    # Disciplinas das turmas do aluno
+    disciplinas = Disciplina.objects.filter(turmas__alunos=aluno).distinct()
+
+    # Todas as notas do aluno
+    notas = Nota.objects.filter(aluno=aluno)
+
+    # Montar estrutura: disciplina -> bimestre -> nota
+    boletim = {}
+
+    for disciplina in disciplinas:
+        boletim[disciplina] = {1: None, 2: None, 3: None, 4: None}
+
+    for nota in notas:
+        if nota.disciplina in boletim:
+            boletim[nota.disciplina][nota.bimestre] = nota.valor
 
     return render(request, 'aluno.html', {
         'aluno': aluno,
-        'notas': notas
+        'boletim': boletim,   # dicionário organizado
+        'disciplinas': disciplinas,
+    })
+@login_required(login_url='/login/')
+@grupo_requerido("Aluno")
+def aluno(request):
+    try:
+        aluno = Aluno.objects.get(email=request.user.email)
+    except Aluno.DoesNotExist:
+        return render(request, 'aluno.html', {
+            'aluno': None,
+            'notas': [],
+        })
+
+    # Disciplinas das turmas do aluno
+    disciplinas = Disciplina.objects.filter(turmas__alunos=aluno).distinct()
+
+    # Todas as notas do aluno
+    notas = Nota.objects.filter(aluno=aluno)
+
+    # Montar estrutura: disciplina -> bimestre -> nota
+    boletim = {}
+
+    for disciplina in disciplinas:
+        boletim[disciplina] = {1: None, 2: None, 3: None, 4: None}
+
+    for nota in notas:
+        if nota.disciplina in boletim:
+            boletim[nota.disciplina][nota.bimestre] = nota.valor
+
+    return render(request, 'aluno.html', {
+        'aluno': aluno,
+        'boletim': boletim,   # dicionário organizado
+        'disciplinas': disciplinas,
     })
 
 # =============================
@@ -141,7 +191,19 @@ def deletar_nota(request, nota_id):
 # =============================
 @grupo_requerido("Secretaria")
 def secretaria(request):
-    return render(request, 'secretaria.html')
+
+    # procura o registro da secretaria pelo usuário conectado
+    secretaria = Secretaria.objects.filter(user=request.user).first()
+
+    # cria automaticamente caso não exista
+    if not secretaria:
+        secretaria = Secretaria.objects.create(
+            user=request.user,
+            nome=request.user.get_full_name() or request.user.username,
+            email=request.user.email
+        )
+
+    return render(request, 'secretaria.html', {'secretaria': secretaria})
 
 # =============================
 # CRUD ALUNOS

@@ -1,103 +1,106 @@
 {% extends 'base.html' %}
 {% block content %}
 
-<style>
-    body {
-        background: linear-gradient(to right, #5dbde6, #004aad);
-        color: white;
-        font-family: Arial, sans-serif;
-    }
+<h1 style="text-align:center;">Painel da Coordenação</h1>
 
-    h1 {
-        text-align: center;
-        margin-top: 20px;
-    }
-
-    .painel-btns {
-        text-align: center;
-        margin: 20px 0;
-    }
-
-    .painel-btns button {
-        background-color: whitesmoke;
-        color: #004aad;
-        border: none;
-        padding: 10px 20px;
-        margin: 5px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: all 0.2s;
-    }
-
-    .painel-btns button:hover {
-        background-color: #e3e3e3;
-        transform: scale(1.05);
-    }
-
-    .secao {
-        display: none;
-        background-color: rgba(255, 255, 255, 0.15);
-        border-radius: 10px;
-        padding: 15px;
-        margin: 15px auto;
-        width: 90%;
-        color: white;
-    }
-
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-    }
-
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: center;
-    }
-
-    th {
-        background-color: rgba(0, 0, 0, 0.3);
-    }
-
-    a.btn {
-        text-decoration: none;
-        color: #004aad;
-        background: whitesmoke;
-        padding: 6px 10px;
-        border-radius: 6px;
-        margin: 0 3px;
-    }
-
-    a.btn:hover {
-        background-color: #ddd;
-    }
-</style>
-
-<h1>Painel Administrativo - Coordenação</h1>
-
-<div class="painel-btns">
+<!-- BOTÕES DAS SEÇÕES -->
+<div style="text-align:center; margin:20px;">
+    <button onclick="mostrarSecao('info')">Informações Pessoais</button>
+    <button onclick="mostrarSecao('alunos')">Alunos</button>
+    <button onclick="mostrarSecao('professores')">Professores</button>
     <button onclick="mostrarSecao('turmas')">Turmas</button>
     <button onclick="mostrarSecao('disciplinas')">Disciplinas</button>
     <button onclick="mostrarSecao('notas')">Notas</button>
     <button onclick="mostrarSecao('advertencias')">Advertências</button>
 </div>
 
-{% if messages %}
-    <ul style="text-align:center; list-style:none;">
-        {% for message in messages %}
-            <li style="color: yellow;">{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+<hr>
 
-<!-- SEÇÃO TURMAS -->
-<div id="turmas" class="secao">
-    <h2>Gerenciar Turmas</h2>
-    <a href="{% url 'cadastrar_turma' %}" class="btn">+ Nova Turma</a>
-    <table>
-        <tr><th>Nome</th><th>Disciplinas</th><th>Alunos</th><th>Ações</th></tr>
+<!-- ====================== -->
+<!-- 1) INFORMAÇÕES PESSOAIS -->
+<!-- ====================== -->
+
+<div id="info" class="secao">
+    <h3>Informações Pessoais</h3>
+
+    <p><strong>Nome:</strong> {{ coordenador.nome }}</p>
+    <p><strong>Email:</strong> {{ coordenador.email }}</p>
+</div>
+
+<!-- ============ -->
+<!-- 2) ALUNOS -->
+<!-- ============ -->
+
+<div id="alunos" class="secao" style="display:none;">
+    <h3>Gerenciar Alunos</h3>
+
+    <a href="{% url 'cadastrar_aluno' %}">Cadastrar Aluno</a><br><br>
+
+    <table border="1" style="width:90%; margin:auto;">
+        <tr><th>Nome</th><th>Matrícula</th><th>Email</th><th>Ações</th></tr>
+
+        {% for aluno in alunos %}
+        <tr>
+            <td>{{ aluno.nome }}</td>
+            <td>{{ aluno.matricula }}</td>
+            <td>{{ aluno.email }}</td>
+            <td>
+                <a href="{% url 'editar_aluno' aluno.id %}">Editar</a> |
+                <a href="{% url 'deletar_aluno' aluno.id %}"
+                   onclick="return confirm('Excluir aluno?')">Excluir</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">Nenhum aluno cadastrado.</td></tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- ================ -->
+<!-- 3) PROFESSORES -->
+<!-- ================ -->
+
+<div id="professores" class="secao" style="display:none;">
+    <h3>Gerenciar Professores</h3>
+
+    <a href="{% url 'cadastrar_professor' %}">Cadastrar Professor</a><br><br>
+
+    <table border="1" style="width:90%; margin:auto;">
+        <tr><th>Nome</th><th>Email</th><th>Disciplina</th><th>Ações</th></tr>
+
+        {% for p in professores %}
+        <tr>
+            <td>{{ p.nome }}</td>
+            <td>{{ p.email }}</td>
+            <td>{{ p.disciplina }}</td>
+            <td>
+                <a href="{% url 'editar_professor' p.id %}">Editar</a> |
+                <a href="{% url 'deletar_professor' p.id %}"
+                   onclick="return confirm('Excluir professor?')">Excluir</a>
+            </td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">Nenhum professor cadastrado.</td></tr>
+        {% endfor %}
+    </table>
+</div>
+
+<!-- ========= -->
+<!-- 4) TURMAS -->
+<!-- ========= -->
+
+<div id="turmas" class="secao" style="display:none;">
+    <h3>Gerenciar Turmas</h3>
+
+    <a href="{% url 'cadastrar_turma' %}">+ Nova Turma</a><br><br>
+
+    <table border="1" style="width:90%; margin:auto;">
+        <tr>
+            <th>Nome</th>
+            <th>Disciplinas</th>
+            <th>Alunos</th>
+            <th>Ações</th>
+        </tr>
         {% for turma in turmas %}
         <tr>
             <td>{{ turma.nome }}</td>
@@ -116,9 +119,9 @@
                 {% endfor %}
             </td>
             <td>
-                <a href="{% url 'editar_turma' turma.id %}" class="btn">Editar</a>
-                <a href="{% url 'deletar_turma' turma.id %}" class="btn"
-                   onclick="return confirm('Excluir esta turma?')">Excluir</a>
+                <a href="{% url 'editar_turma' turma.id %}">Editar</a> |
+                <a href="{% url 'deletar_turma' turma.id %}"
+                   onclick="return confirm('Excluir turma?')">Excluir</a>
             </td>
         </tr>
         {% empty %}
@@ -127,20 +130,26 @@
     </table>
 </div>
 
-<!-- SEÇÃO DISCIPLINAS -->
-<div id="disciplinas" class="secao">
-    <h2>Gerenciar Disciplinas</h2>
-    <a href="{% url 'cadastrar_disciplina' %}" class="btn">+ Nova Disciplina</a>
-    <table>
+<!-- =============== -->
+<!-- 5) DISCIPLINAS -->
+<!-- =============== -->
+
+<div id="disciplinas" class="secao" style="display:none;">
+    <h3>Gerenciar Disciplinas</h3>
+
+    <a href="{% url 'cadastrar_disciplina' %}">+ Nova Disciplina</a><br><br>
+
+    <table border="1" style="width:90%; margin:auto;">
         <tr><th>Nome</th><th>Professor</th><th>Ações</th></tr>
+
         {% for disc in disciplinas %}
         <tr>
             <td>{{ disc.nome }}</td>
             <td>{{ disc.professor.nome }}</td>
             <td>
-                <a href="{% url 'editar_disciplina' disc.id %}" class="btn">Editar</a>
-                <a href="{% url 'deletar_disciplina' disc.id %}" class="btn"
-                   onclick="return confirm('Excluir esta disciplina?')">Excluir</a>
+                <a href="{% url 'editar_disciplina' disc.id %}">Editar</a> |
+                <a href="{% url 'deletar_disciplina' disc.id %}"
+                   onclick="return confirm('Excluir disciplina?')">Excluir</a>
             </td>
         </tr>
         {% empty %}
@@ -149,11 +158,16 @@
     </table>
 </div>
 
-<!-- SEÇÃO NOTAS -->
-<div id="notas" class="secao">
-    <h2>Notas Lançadas</h2>
-    <table>
+<!-- ====== -->
+<!-- 6) NOTAS -->
+<!-- ====== -->
+
+<div id="notas" class="secao" style="display:none;">
+    <h3>Notas Lançadas</h3>
+
+    <table border="1" style="width:90%; margin:auto;">
         <tr><th>Aluno</th><th>Disciplina</th><th>Nota</th><th>Data</th></tr>
+
         {% for nota in notas %}
         <tr>
             <td>{{ nota.aluno.nome }}</td>
@@ -167,12 +181,18 @@
     </table>
 </div>
 
-<!-- SEÇÃO ADVERTÊNCIAS -->
-<div id="advertencias" class="secao">
-    <h2>Advertências</h2>
-    <a href="{% url 'coordenacao' %}" class="btn">+ Nova Advertência</a>
-    <table>
+<!-- =============== -->
+<!-- 7) ADVERTÊNCIAS -->
+<!-- =============== -->
+
+<div id="advertencias" class="secao" style="display:none;">
+    <h3>Advertências</h3>
+
+    <a href="{% url 'coordenacao' %}">+ Nova Advertência</a><br><br>
+
+    <table border="1" style="width:90%; margin:auto;">
         <tr><th>Aluno</th><th>Motivo</th><th>Data</th><th>Status</th><th>Ações</th></tr>
+
         {% for adv in advertencias %}
         <tr>
             <td>{{ adv.aluno.nome }}</td>
@@ -180,9 +200,9 @@
             <td>{{ adv.data }}</td>
             <td>{{ adv.get_status_display }}</td>
             <td>
-                <a href="{% url 'editar_advertencia' adv.id %}" class="btn">Editar</a>
-                <a href="{% url 'deletar_advertencia' adv.id %}" class="btn"
-                   onclick="return confirm('Excluir esta advertência?')">Excluir</a>
+                <a href="{% url 'editar_advertencia' adv.id %}">Editar</a> |
+                <a href="{% url 'deletar_advertencia' adv.id %}"
+                   onclick="return confirm('Excluir advertência?')">Excluir</a>
             </td>
         </tr>
         {% empty %}
@@ -192,10 +212,10 @@
 </div>
 
 <script>
-    function mostrarSecao(id) {
-        document.querySelectorAll('.secao').forEach(s => s.style.display = 'none');
-        document.getElementById(id).style.display = 'block';
-    }
+function mostrarSecao(id) {
+    document.querySelectorAll('.secao').forEach(s => s.style.display = 'none');
+    document.getElementById(id).style.display = 'block';
+}
 </script>
 
 {% endblock %}
