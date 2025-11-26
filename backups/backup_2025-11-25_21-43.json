@@ -1765,6 +1765,42 @@
   }
 },
 {
+  "model": "auth.permission",
+  "pk": 57,
+  "fields": {
+    "name": "Can add diretor",
+    "content_type": 15,
+    "codename": "add_diretor"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 58,
+  "fields": {
+    "name": "Can change diretor",
+    "content_type": 15,
+    "codename": "change_diretor"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 59,
+  "fields": {
+    "name": "Can delete diretor",
+    "content_type": 15,
+    "codename": "delete_diretor"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 60,
+  "fields": {
+    "name": "Can view diretor",
+    "content_type": 15,
+    "codename": "view_diretor"
+  }
+},
+{
   "model": "auth.group",
   "pk": 1,
   "fields": {
@@ -2169,6 +2205,14 @@
   }
 },
 {
+  "model": "contenttypes.contenttype",
+  "pk": 15,
+  "fields": {
+    "app_label": "usuarios",
+    "model": "diretor"
+  }
+},
+{
   "model": "sessions.session",
   "pk": "8lbwppljnob9208hg6mcml1dz8nwxzvr",
   "fields": {
@@ -2372,17 +2416,4 @@
       9
     ]
   }
-},
-{
-  "model": "usuarios.secretaria",
-  "pk": 1,
-  "fields": {
-    "user": 2,
-    "nome": "mohamed",
-    "email": "",
-    "telefone": null,
-    "setor": null,
-    "observacoes": null
-  }
 }
-]

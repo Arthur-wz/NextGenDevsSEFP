@@ -1,158 +1,224 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+
+{% block title %}Direção - Painel{% endblock %}
+
 {% block content %}
 
+<h1 style="text-align:center; margin-bottom:20px;">Painel da Direção</h1>
+
 <style>
-    body {
-        background: linear-gradient(to right, #4a8adc, #003c8f);
-        color: white;
-        font-family: Arial, sans-serif;
+    .tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+        justify-content: center;
     }
-
-    h1 {
-        text-align: center;
-        margin-top: 20px;
-        font-size: 28px;
-        font-weight: bold;
-    }
-
-    .painel-btns {
-        text-align: center;
-        margin: 20px 0;
-    }
-
-    .painel-btns button {
-        background-color: whitesmoke;
-        color: #003c8f;
+    .tab-btn {
+        padding: 10px 15px;
         border: none;
-        padding: 10px 20px;
-        margin: 5px;
-        border-radius: 8px;
-        cursor: pointer;
-        font-weight: bold;
-        transition: all 0.2s;
-    }
-
-    .painel-btns button:hover {
-        background-color: #e3e3e3;
-        transform: scale(1.05);
-    }
-
-    .secao {
-        display: none;
-        background-color: rgba(255, 255, 255, 0.15);
-        border-radius: 10px;
-        padding: 15px;
-        margin: 15px auto;
-        width: 90%;
+        background: #0050b3;
         color: white;
+        cursor: pointer;
+        border-radius: 6px;
+        font-weight: bold;
+        transition: 0.2s;
+    }
+    .tab-btn:hover {
+        background: #003d80;
+    }
+    .tab-btn.active {
+        background: #002e5c;
     }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
+    .tab-content {
+        display: none;
+        margin-top: 20px;
+    }
+    .tab-content.active {
+        display: block;
+    }
+
+    .card {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 12px;
+        box-shadow: 0px 0px 6px #ccc;
+    }
+
+    .edit-btn {
         margin-top: 10px;
-        background-color: rgba(255,255,255,0.15);
-    }
-
-    th, td {
-        border: 1px solid #ddd;
-        padding: 8px;
-        text-align: center;
-    }
-
-    th {
-        background-color: rgba(0, 0, 0, 0.3);
+        padding: 8px 12px;
+        background: #008cff;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
     }
 </style>
 
-<h1>Painel Administrativo - Direção</h1>
-
-<div class="painel-btns">
-    <button onclick="mostrarSecao('professores')">Professores</button>
-    <button onclick="mostrarSecao('alunos')">Alunos</button>
-    <button onclick="mostrarSecao('notas')">Notas</button>
-    <button onclick="mostrarSecao('advertencias')">Advertências</button>
+<!-- BOTÕES DAS SEÇÕES -->
+<div class="tabs">
+    <button class="tab-btn active" data-tab="dados">Meus Dados</button>
+    <button class="tab-btn" data-tab="professores">Professores</button>
+    <button class="tab-btn" data-tab="alunos">Alunos</button>
+    <button class="tab-btn" data-tab="turmas">Turmas</button>
+    <button class="tab-btn" data-tab="disciplinas">Disciplinas</button>
+    <button class="tab-btn" data-tab="advertencias">Advertências</button>
+    <button class="tab-btn" data-tab="notas">Notas</button>
 </div>
 
-{% if messages %}
-    <ul style="text-align:center; list-style:none;">
-        {% for message in messages %}
-            <li style="color: yellow;">{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+<!-- ======================= -->
+<!-- SEÇÃO: DADOS DO DIRETOR -->
+<!-- ======================= -->
+<div id="dados" class="tab-content active">
+    <h2>Minhas Informações</h2>
 
-<!-- SEÇÃO PROFESSORES -->
-<div id="professores" class="secao">
+    <div class="card">
+        <p><strong>Nome:</strong> {{ diretor.nome }}</p>
+        <p><strong>Email:</strong> {{ diretor.email }}</p>
+        <p><strong>Telefone:</strong> {{ diretor.telefone|default:"Não informado" }}</p>
+        <p><strong>CPF:</strong> {{ diretor.cpf|default:"Não informado" }}</p>
+        <p><strong>Cargo:</strong> {{ diretor.cargo }}</p>
+        <p><strong>Observações:</strong> {{ diretor.observacoes|default:"Nenhuma" }}</p>
+
+        <button class="edit-btn" onclick="document.getElementById('modal-editar').style.display='block'">
+            Editar Dados
+        </button>
+    </div>
+</div>
+
+<!-- MODAL DE EDIÇÃO -->
+<div id="modal-editar" style="
+    display:none;
+    position:fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.5);
+    padding-top:70px;
+    z-index:999;
+">
+    <div style="background:white; width:420px; margin:auto; padding:20px; border-radius:8px;">
+        <h3>Editar Informações</h3>
+
+        <!-- 🔥 CORRIGIDO: agora usa o namespace corretamente -->
+        <form method="POST" action="{% url 'usuarios:editar_diretor' %}">
+            {% csrf_token %}
+            {{ form.as_p }}
+
+            <button type="submit" class="edit-btn">Salvar</button>
+            <button type="button" class="edit-btn" style="background:#777"
+                onclick="document.getElementById('modal-editar').style.display='none'">
+                Cancelar
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- PROFESSORES -->
+<div id="professores" class="tab-content">
     <h2>Professores</h2>
-    <table>
-        <tr><th>Nome</th><th>Disciplina</th></tr>
-        {% for prof in professores %}
-        <tr>
-            <td>{{ prof.nome }}</td>
-            <td>{{ prof.disciplina }}</td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="2">Nenhum professor encontrado.</td></tr>
-        {% endfor %}
-    </table>
+
+    {% for p in professores %}
+        <div class="card">
+            <strong>{{ p.nome }}</strong><br>
+            Email: {{ p.email }}<br>
+            Disciplina: {{ p.disciplina }}
+        </div>
+    {% empty %}
+        <p>Nenhum professor cadastrado.</p>
+    {% endfor %}
 </div>
 
-<!-- SEÇÃO ALUNOS -->
-<div id="alunos" class="secao">
+<!-- ALUNOS -->
+<div id="alunos" class="tab-content">
     <h2>Alunos</h2>
-    <table>
-        <tr><th>Nome</th><th>Email</th></tr>
-        {% for aluno in alunos %}
-        <tr>
-            <td>{{ aluno.nome }}</td>
-            <td>{{ aluno.email }}</td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="2">Nenhum aluno encontrado.</td></tr>
-        {% endfor %}
-    </table>
+
+    {% for a in alunos %}
+        <div class="card">
+            <strong>{{ a.nome }}</strong><br>
+            Email: {{ a.email }}<br>
+            Turmas:
+            {% for t in a.turmas.all %}
+                {{ t.nome }}{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </div>
+    {% empty %}
+        <p>Nenhum aluno cadastrado.</p>
+    {% endfor %}
 </div>
 
-<!-- SEÇÃO NOTAS -->
-<div id="notas" class="secao">
-    <h2>Notas Lançadas</h2>
-    <table>
-        <tr><th>Aluno</th><th>Disciplina</th><th>Nota</th></tr>
-        {% for nota in notas %}
-        <tr>
-            <td>{{ nota.aluno.nome }}</td>
-            <td>{{ nota.disciplina.nome }}</td>
-            <td>{{ nota.valor }}</td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="3">Nenhuma nota encontrada.</td></tr>
-        {% endfor %}
-    </table>
+<!-- TURMAS -->
+<div id="turmas" class="tab-content">
+    <h2>Turmas</h2>
+
+    {% for t in turmas %}
+        <div class="card">
+            <strong>{{ t.nome }}</strong><br>
+            Alunos: {{ t.alunos.count }}<br>
+            Disciplinas: {{ t.disciplinas.count }}
+        </div>
+    {% empty %}
+        <p>Nenhuma turma cadastrada.</p>
+    {% endfor %}
 </div>
 
-<!-- SEÇÃO ADVERTÊNCIAS -->
-<div id="advertencias" class="secao">
+<!-- DISCIPLINAS -->
+<div id="disciplinas" class="tab-content">
+    <h2>Disciplinas</h2>
+
+    {% for d in disciplinas %}
+        <div class="card">
+            <strong>{{ d.nome }}</strong><br>
+            Professor: {{ d.professor.nome }}
+        </div>
+    {% empty %}
+        <p>Nenhuma disciplina cadastrada.</p>
+    {% endfor %}
+</div>
+
+<!-- ADVERTÊNCIAS -->
+<div id="advertencias" class="tab-content">
     <h2>Advertências</h2>
-    <table>
-        <tr><th>Aluno</th><th>Motivo</th><th>Data</th></tr>
-        {% for adv in advertencias %}
-        <tr>
-            <td>{{ adv.aluno.nome }}</td>
-            <td>{{ adv.motivo }}</td>
-            <td>{{ adv.data }}</td>
-        </tr>
-        {% empty %}
-        <tr><td colspan="3">Nenhuma advertência encontrada.</td></tr>
-        {% endfor %}
-    </table>
+
+    {% for ad in advertencias %}
+        <div class="card">
+            <strong>{{ ad.aluno.nome }}</strong> — {{ ad.get_status_display }}<br>
+            Motivo: {{ ad.motivo }}
+        </div>
+    {% empty %}
+        <p>Nenhuma advertência registrada.</p>
+    {% endfor %}
+</div>
+
+<!-- NOTAS -->
+<div id="notas" class="tab-content">
+    <h2>Notas</h2>
+
+    {% for n in notas %}
+        <div class="card">
+            <strong>{{ n.aluno.nome }}</strong> — {{ n.disciplina.nome }}<br>
+            Nota: {{ n.valor }} ({{ n.get_bimestre_display }})
+        </div>
+    {% empty %}
+        <p>Nenhuma nota lançada.</p>
+    {% endfor %}
 </div>
 
 <script>
-    function mostrarSecao(id) {
-        document.querySelectorAll('.secao').forEach(s => s.style.display = 'none');
-        document.getElementById(id).style.display = 'block';
-    }
+    const btns = document.querySelectorAll(".tab-btn");
+    const tabs = document.querySelectorAll(".tab-content");
+
+    btns.forEach(btn => {
+        btn.onclick = () => {
+            btns.forEach(b => b.classList.remove("active"));
+            tabs.forEach(t => t.classList.remove("active"));
+
+            btn.classList.add("active");
+            document.getElementById(btn.dataset.tab).classList.add("active");
+        }
+    });
 </script>
 
 {% endblock %}

@@ -1,9 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Aluno, Professor, Nota, Advertencia, Turma, Disciplina, Secretaria
+from .models import Aluno, Professor, Nota, Advertencia, Turma, Disciplina, Secretaria, Diretor
 from .forms import (
     AlunoForm, ProfessorForm, NotaForm,
-    AdvertenciaForm, TurmaForm, DisciplinaForm, SecretariaForm
+    AdvertenciaForm, TurmaForm, DisciplinaForm, SecretariaForm, DiretorForm
 )
 from .decorators import grupo_requerido
 from django.contrib.auth.models import User, Group
@@ -26,7 +26,7 @@ def login_limpo(request):
     return redirect('login_puro')
 
 # =============================
-# 🔹 ALUNO
+# ALUNO
 # =============================
 @login_required(login_url='/login/')
 @grupo_requerido("Aluno")
@@ -64,6 +64,7 @@ def aluno(request):
 # =============================
 # PROFESSOR
 # =============================
+@login_required(login_url='/login/')
 @grupo_requerido("Professor")
 def professor(request):
     professor = Professor.objects.filter(user=request.user).first()
@@ -72,31 +73,48 @@ def professor(request):
         messages.error(request, "Professor não encontrado.")
         return redirect('login')
 
+    # disciplinas e turmas do professor
     disciplinas_professor = Disciplina.objects.filter(professor=professor)
     turmas = Turma.objects.filter(disciplinas__in=disciplinas_professor).distinct()
+
+    # alunos das turmas do professor
     alunos = Aluno.objects.filter(turmas__in=turmas).distinct()
-    notas = Nota.objects.filter(disciplina__in=disciplinas_professor, aluno__in=alunos)
+
+    # notas — pegamos só notas das disciplinas do professor e com select_related para performance
+    notas = Nota.objects.filter(disciplina__in=disciplinas_professor, aluno__in=alunos)\
+                        .select_related('aluno', 'disciplina')
+
     advertencias = Advertencia.objects.filter(aluno__in=alunos)
 
-    # cria o form por padrão (GET)
+    # instancia o form e limita o queryset de 'aluno' ao conjunto de alunos acima
     form = NotaForm()
+    form.fields['aluno'].queryset = alunos
 
     if request.method == 'POST':
         form = NotaForm(request.POST)
+        form.fields['aluno'].queryset = alunos  # reafirma a limitação em POST também
         if form.is_valid():
             nova_nota = form.save(commit=False)
 
-            # se o professor tem múltiplas disciplinas, idealmente o form deveria permitir selecionar;
-            # aqui usamos a primeira — ajuste futuro: permitir seleção limitada às disciplinas do professor
+            # Se o professor tem várias disciplinas, idealmente o form permite seleção.
+            # Aqui atribuímos a primeira disciplina do professor como comportamento atual.
             disciplina_prof = disciplinas_professor.first()
             if not disciplina_prof:
                 messages.error(request, "Você não possui disciplina cadastrada.")
+                return redirect('professor')
+
+            # Garanto que a nota está sendo lançada apenas para alunos que o professor vê
+            if nova_nota.aluno not in alunos:
+                messages.error(request, "Aluno inválido para suas turmas.")
                 return redirect('professor')
 
             nova_nota.disciplina = disciplina_prof
             nova_nota.save()
             messages.success(request, "Nota lançada com sucesso!")
             return redirect('professor')
+        else:
+            # mantém o queryset restringido caso o form volte com erros
+            form.fields['aluno'].queryset = alunos
 
     return render(request, 'professor.html', {
         'professor': professor,
@@ -111,17 +129,29 @@ def professor(request):
 #  NOVAS FUNÇÕES: EDITAR / EXCLUIR NOTA
 # =============================
 @grupo_requerido("Professor")
+@login_required(login_url='/login/')
 def editar_nota(request, nota_id):
+    professor = Professor.objects.filter(user=request.user).first()
     nota = get_object_or_404(Nota, id=nota_id)
+
+    # assegura que o professor só edita nota de disciplina dele
+    if nota.disciplina.professor != professor:
+        messages.error(request, "Você não tem permissão para editar essa nota.")
+        return redirect('professor')
 
     if request.method == "POST":
         form = NotaForm(request.POST, instance=nota)
+        # limitar alunos do form à turma do professor pode ser aplicado aqui também
         if form.is_valid():
             form.save()
             messages.success(request, "Nota atualizada com sucesso!")
             return redirect('professor')
     else:
         form = NotaForm(instance=nota)
+        # limitar alunos mostrados ao conjunto de alunos do professor
+        turmas = Turma.objects.filter(disciplinas__professor=professor)
+        alunos = Aluno.objects.filter(turmas__in=turmas).distinct()
+        form.fields['aluno'].queryset = alunos
 
     return render(request, 'editar_nota.html', {
         'form': form,
@@ -130,8 +160,15 @@ def editar_nota(request, nota_id):
 
 
 @grupo_requerido("Professor")
+@login_required(login_url='/login/')
 def deletar_nota(request, nota_id):
+    professor = Professor.objects.filter(user=request.user).first()
     nota = get_object_or_404(Nota, id=nota_id)
+
+    if nota.disciplina.professor != professor:
+        messages.error(request, "Você não tem permissão para excluir essa nota.")
+        return redirect('professor')
+
     nota.delete()
     messages.success(request, "Nota excluída!")
     return redirect('professor')
@@ -139,6 +176,7 @@ def deletar_nota(request, nota_id):
 # =============================
 # SECRETARIA
 # =============================
+@login_required(login_url='/login/')
 @grupo_requerido("Secretaria")
 def secretaria(request):
 
@@ -373,6 +411,7 @@ def deletar_disciplina(request, id):
 # =============================
 #PAINÉIS
 # =============================
+@login_required(login_url='/login/')
 @grupo_requerido("Coordenacao")
 def painel_administrativo_coordenacao(request):
     turmas = Turma.objects.prefetch_related(
@@ -394,6 +433,7 @@ def painel_administrativo_coordenacao(request):
         'notas': notas
     })
 
+@login_required(login_url='/login/')
 @grupo_requerido("Direcao")
 def painel_administrativo_direcao(request):
     professores = Professor.objects.all()
@@ -411,6 +451,7 @@ def painel_administrativo_direcao(request):
 # =============================
 #COORDENAÇÃO
 # =============================
+@login_required(login_url='/login/')
 @grupo_requerido("Coordenacao")
 def coordenacao(request):
     return redirect('painel_admin_coordenacao')
@@ -418,9 +459,55 @@ def coordenacao(request):
 # =============================
 #DIREÇÃO
 # =============================
+@login_required(login_url='/login/')
 @grupo_requerido("Direcao")
 def direcao(request):
-    return redirect('painel_admin_direcao')
+
+    # Criar registro do diretor automaticamente caso não exista
+    diretor = Diretor.objects.filter(user=request.user).first()
+
+    if not diretor:
+        diretor = Diretor.objects.create(
+            user=request.user,
+            nome=request.user.get_full_name() or request.user.username,
+            email=request.user.email
+        )
+
+    professores = Professor.objects.all()
+    alunos = Aluno.objects.all()
+    disciplinas = Disciplina.objects.all()
+    turmas = Turma.objects.all()
+    notas = Nota.objects.all()
+    advertencias = Advertencia.objects.all()
+
+    return render(request, 'direcao.html', {
+        'diretor': diretor,
+        'professores': professores,
+        'alunos': alunos,
+        'disciplinas': disciplinas,
+        'turmas': turmas,
+        'notas': notas,
+        'advertencias': advertencias,
+    })
+
+@grupo_requerido("Direcao")
+def editar_diretor(request):
+    diretor = Diretor.objects.filter(user=request.user).first()
+
+    if not diretor:
+        messages.error(request, "Diretor não encontrado.")
+        return redirect('direcao')
+
+    if request.method == "POST":
+        form = DiretorForm(request.POST, instance=diretor)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Informações atualizadas com sucesso!")
+            return redirect('direcao')
+    else:
+        form = DiretorForm(instance=diretor)
+
+    return render(request, 'editar_diretor.html', {'form': form, 'diretor': diretor})
 
 # =============================
 # REDIRECIONAR APÓS LOGIN

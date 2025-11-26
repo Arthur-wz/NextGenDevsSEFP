@@ -1,5 +1,5 @@
 from django import forms
-from .models import Aluno, Professor, Disciplina, Turma, Nota, Advertencia, Secretaria
+from .models import Aluno, Professor, Disciplina, Turma, Nota, Advertencia, Secretaria, Diretor
 
 class AlunoForm(forms.ModelForm):
     class Meta:
@@ -28,6 +28,9 @@ class NotaForm(forms.ModelForm):
     class Meta:
         model = Nota
         fields = ['aluno', 'valor', 'bimestre']
+        widgets = {
+            'bimestre': forms.Select(),
+        }
 
 class AdvertenciaForm(forms.ModelForm):
     class Meta:
@@ -52,4 +55,10 @@ class DisciplinaForm(forms.ModelForm):
 class SecretariaForm(forms.ModelForm):
     class Meta:
         model = Secretaria
-        fields = ['nome', 'email', 'telefone', 'setor', 'observacoes']
+        fields = ['nome', 'email', 'telefone', 'cargo', 'observacoes', 'cpf']
+
+class DiretorForm(forms.ModelForm):
+    class Meta:
+        model = Diretor
+        fields = ['nome', 'email', 'telefone', 'cargo', 'observacoes', 'cpf']
+
