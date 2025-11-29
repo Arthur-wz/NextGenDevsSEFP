@@ -1,224 +1,73 @@
 {% extends "base.html" %}
-
-{% block title %}Direção - Painel{% endblock %}
-
 {% block content %}
+<div class="container mt-4">
 
-<h1 style="text-align:center; margin-bottom:20px;">Painel da Direção</h1>
+    <h2>Painel da Direção</h2>
+    <hr>
 
-<style>
-    .tabs {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-    .tab-btn {
-        padding: 10px 15px;
-        border: none;
-        background: #0050b3;
-        color: white;
-        cursor: pointer;
-        border-radius: 6px;
-        font-weight: bold;
-        transition: 0.2s;
-    }
-    .tab-btn:hover {
-        background: #003d80;
-    }
-    .tab-btn.active {
-        background: #002e5c;
-    }
+    <!-- Dados pessoais -->
+    <h4>Seus Dados</h4>
+    <p><b>Nome:</b> {{ diretor.nome }}</p>
+    <p><b>Email:</b> {{ diretor.email }}</p>
+    <a class="btn btn-warning btn-sm" href="{% url 'usuarios:editar_diretor' %}">Editar Dados</a>
+    <hr>
 
-    .tab-content {
-        display: none;
-        margin-top: 20px;
-    }
-    .tab-content.active {
-        display: block;
-    }
+    <ul class="nav nav-tabs">
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#alunos">Alunos</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#prof">Professores</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#turmas">Turmas</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#disc">Disciplinas</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#adv">Advertências</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#notas">Notas</a></li>
+    </ul>
 
-    .card {
-        background: white;
-        padding: 15px;
-        border-radius: 8px;
-        margin-bottom: 12px;
-        box-shadow: 0px 0px 6px #ccc;
-    }
+    <div class="tab-content mt-3">
 
-    .edit-btn {
-        margin-top: 10px;
-        padding: 8px 12px;
-        background: #008cff;
-        color: white;
-        border: none;
-        border-radius: 6px;
-        cursor: pointer;
-    }
-</style>
-
-<!-- BOTÕES DAS SEÇÕES -->
-<div class="tabs">
-    <button class="tab-btn active" data-tab="dados">Meus Dados</button>
-    <button class="tab-btn" data-tab="professores">Professores</button>
-    <button class="tab-btn" data-tab="alunos">Alunos</button>
-    <button class="tab-btn" data-tab="turmas">Turmas</button>
-    <button class="tab-btn" data-tab="disciplinas">Disciplinas</button>
-    <button class="tab-btn" data-tab="advertencias">Advertências</button>
-    <button class="tab-btn" data-tab="notas">Notas</button>
-</div>
-
-<!-- ======================= -->
-<!-- SEÇÃO: DADOS DO DIRETOR -->
-<!-- ======================= -->
-<div id="dados" class="tab-content active">
-    <h2>Minhas Informações</h2>
-
-    <div class="card">
-        <p><strong>Nome:</strong> {{ diretor.nome }}</p>
-        <p><strong>Email:</strong> {{ diretor.email }}</p>
-        <p><strong>Telefone:</strong> {{ diretor.telefone|default:"Não informado" }}</p>
-        <p><strong>CPF:</strong> {{ diretor.cpf|default:"Não informado" }}</p>
-        <p><strong>Cargo:</strong> {{ diretor.cargo }}</p>
-        <p><strong>Observações:</strong> {{ diretor.observacoes|default:"Nenhuma" }}</p>
-
-        <button class="edit-btn" onclick="document.getElementById('modal-editar').style.display='block'">
-            Editar Dados
-        </button>
-    </div>
-</div>
-
-<!-- MODAL DE EDIÇÃO -->
-<div id="modal-editar" style="
-    display:none;
-    position:fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background: rgba(0,0,0,0.5);
-    padding-top:70px;
-    z-index:999;
-">
-    <div style="background:white; width:420px; margin:auto; padding:20px; border-radius:8px;">
-        <h3>Editar Informações</h3>
-
-        <!-- 🔥 CORRIGIDO: agora usa o namespace corretamente -->
-        <form method="POST" action="{% url 'usuarios:editar_diretor' %}">
-            {% csrf_token %}
-            {{ form.as_p }}
-
-            <button type="submit" class="edit-btn">Salvar</button>
-            <button type="button" class="edit-btn" style="background:#777"
-                onclick="document.getElementById('modal-editar').style.display='none'">
-                Cancelar
-            </button>
-        </form>
-    </div>
-</div>
-
-<!-- PROFESSORES -->
-<div id="professores" class="tab-content">
-    <h2>Professores</h2>
-
-    {% for p in professores %}
-        <div class="card">
-            <strong>{{ p.nome }}</strong><br>
-            Email: {{ p.email }}<br>
-            Disciplina: {{ p.disciplina }}
-        </div>
-    {% empty %}
-        <p>Nenhum professor cadastrado.</p>
-    {% endfor %}
-</div>
-
-<!-- ALUNOS -->
-<div id="alunos" class="tab-content">
-    <h2>Alunos</h2>
-
-    {% for a in alunos %}
-        <div class="card">
-            <strong>{{ a.nome }}</strong><br>
-            Email: {{ a.email }}<br>
-            Turmas:
-            {% for t in a.turmas.all %}
-                {{ t.nome }}{% if not forloop.last %}, {% endif %}
+        <div class="tab-pane fade show active" id="alunos">
+            <h3>Alunos</h3>
+            {% for a in alunos %}
+                <p>{{ a.nome }}</p>
             {% endfor %}
         </div>
-    {% empty %}
-        <p>Nenhum aluno cadastrado.</p>
-    {% endfor %}
-</div>
 
-<!-- TURMAS -->
-<div id="turmas" class="tab-content">
-    <h2>Turmas</h2>
-
-    {% for t in turmas %}
-        <div class="card">
-            <strong>{{ t.nome }}</strong><br>
-            Alunos: {{ t.alunos.count }}<br>
-            Disciplinas: {{ t.disciplinas.count }}
+        <div class="tab-pane fade" id="prof">
+            <h3>Professores</h3>
+            {% for p in professores %}
+                <p>{{ p.nome }}</p>
+            {% endfor %}
         </div>
-    {% empty %}
-        <p>Nenhuma turma cadastrada.</p>
-    {% endfor %}
-</div>
 
-<!-- DISCIPLINAS -->
-<div id="disciplinas" class="tab-content">
-    <h2>Disciplinas</h2>
-
-    {% for d in disciplinas %}
-        <div class="card">
-            <strong>{{ d.nome }}</strong><br>
-            Professor: {{ d.professor.nome }}
+        <div class="tab-pane fade" id="turmas">
+            <h3>Turmas</h3>
+            {% for t in turmas %}
+                <p>{{ t.nome }}</p>
+            {% endfor %}
         </div>
-    {% empty %}
-        <p>Nenhuma disciplina cadastrada.</p>
-    {% endfor %}
-</div>
 
-<!-- ADVERTÊNCIAS -->
-<div id="advertencias" class="tab-content">
-    <h2>Advertências</h2>
-
-    {% for ad in advertencias %}
-        <div class="card">
-            <strong>{{ ad.aluno.nome }}</strong> — {{ ad.get_status_display }}<br>
-            Motivo: {{ ad.motivo }}
+        <div class="tab-pane fade" id="disc">
+            <h3>Disciplinas</h3>
+            {% for d in disciplinas %}
+                <p>{{ d.nome }}</p>
+            {% endfor %}
         </div>
-    {% empty %}
-        <p>Nenhuma advertência registrada.</p>
-    {% endfor %}
-</div>
 
-<!-- NOTAS -->
-<div id="notas" class="tab-content">
-    <h2>Notas</h2>
-
-    {% for n in notas %}
-        <div class="card">
-            <strong>{{ n.aluno.nome }}</strong> — {{ n.disciplina.nome }}<br>
-            Nota: {{ n.valor }} ({{ n.get_bimestre_display }})
+        <div class="tab-pane fade" id="adv">
+            <h3>Advertências</h3>
+            {% for adv in advertencias %}
+                <div class="alert alert-warning">
+                    {{ adv.aluno.nome }} — {{ adv.descricao }}
+                </div>
+            {% endfor %}
         </div>
-    {% empty %}
-        <p>Nenhuma nota lançada.</p>
-    {% endfor %}
+
+        <div class="tab-pane fade" id="notas">
+            <h3>Notas</h3>
+            {% for nota in notas %}
+                <p>{{ nota.aluno.nome }} — {{ nota.disciplina.nome }} → {{ nota.valor }}</p>
+            {% endfor %}
+        </div>
+
+    </div>
+
 </div>
-
-<script>
-    const btns = document.querySelectorAll(".tab-btn");
-    const tabs = document.querySelectorAll(".tab-content");
-
-    btns.forEach(btn => {
-        btn.onclick = () => {
-            btns.forEach(b => b.classList.remove("active"));
-            tabs.forEach(t => t.classList.remove("active"));
-
-            btn.classList.add("active");
-            document.getElementById(btn.dataset.tab).classList.add("active");
-        }
-    });
-</script>
-
 {% endblock %}

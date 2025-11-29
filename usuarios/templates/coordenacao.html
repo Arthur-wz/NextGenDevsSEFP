@@ -1,76 +1,84 @@
-<body style="background: linear-gradient(to right,rgb(30, 0, 255),blueviolet);"> 
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
+<div class="container mt-4">
 
-<h1 style="text-align:center;">Painel da Coordenação</h1>
+    <h2>Painel da Coordenação</h2>
+    <hr>
 
-<a href="{% url 'painel_admin_coordenacao' %}" 
-   style="display:block; text-align:center; margin:10px auto; padding:10px; width:200px;
-          background:#007bff; color:white; text-decoration:none; border-radius:8px;">
-    Painel Administrativo
-</a>
+    <h4>Dados Pessoais</h4>
+    <p><b>Nome:</b> {{ user.get_full_name }}</p>
+    <hr>
 
-{% if messages %}
-    <ul style="color: green; text-align:center; list-style:none;">
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
+    <ul class="nav nav-tabs">
+        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#alunos">Alunos</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#prof">Professores</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#turmas">Turmas</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#disc">Disciplinas</a></li>
+        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#adv">Advertências</a></li>
     </ul>
-{% endif %}
 
-<!-- Formulário -->
-<h3 style="text-align:center;">Registrar Nova Advertência</h3>
-<form method="POST" style="text-align:center;">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Salvar</button>
-</form>
+    <div class="tab-content mt-3">
 
-<form method="get" style="text-align:center; margin-bottom:15px;">
-    <select name="status">
-        <option value="">Todas</option>
-        <option value="em_andamento" {% if request.GET.status == 'em_andamento' %}selected{% endif %}>Em andamento</option>
-        <option value="finalizada" {% if request.GET.status == 'finalizada' %}selected{% endif %}>Finalizadas</option>
-    </select>
-    <button type="submit">Filtrar</button>
-</form>
+        <!-- ALUNOS -->
+        <div class="tab-pane fade show active" id="alunos">
+            <h3>Alunos</h3>
+            {% for a in alunos %}
+                <div class="d-flex justify-content-between">
+                    <span>{{ a.nome }}</span>
+                </div>
+            {% endfor %}
+        </div>
 
-<hr>
+        <!-- PROFESSORES -->
+        <div class="tab-pane fade" id="prof">
+            <h3>Professores</h3>
+            {% for p in professores %}
+                <p>{{ p.nome }}</p>
+            {% endfor %}
+        </div>
 
-<!-- Lista de Advertências -->
-<h3 style="text-align:center;">Advertências Registradas</h3>
-<table border="1" style="margin:auto; text-align:center;">
-    <tr>
-        <th>Aluno</th>
-        <th>Motivo</th>
-        <th>Data</th>
-        <th>Coordenador</th>
-        <th>Status</th>
-        <th>Ações</th>
-    </tr>
-    {% for adv in advertencias %}
-        <tr>
-            <td>{{ adv.aluno.nome }}</td>
-            <td>{{ adv.motivo }}</td>
-            <td>{{ adv.data }}</td>
-            <td>
-                {% if adv.coordenador %}
-                {{ adv.coordenador.get_full_name|default:adv.coordenador.username }}
-                {% else %}
-                <em>Não informado</em>
-                {% endif %}
-            </td>
-            <td>{{ adv.get_status_display }}</td>
-            <td>
-                <a href="{% url 'editar_advertencia' adv.id %}">Editar</a> |
-                <a href="{% url 'deletar_advertencia' adv.id %}" onclick="return confirm('Excluir esta advertência?')">Excluir</a>
-            </td>
-        </tr>
-    {% empty %}
-        <tr><td colspan="6">Nenhuma advertência registrada.</td></tr>
-    {% endfor %}
-</table>
+        <!-- TURMAS -->
+        <div class="tab-pane fade" id="turmas">
+            <h3>Turmas</h3>
+            {% for turma in turmas %}
+                <div class="mb-2">
+                    <b>{{ turma.nome }}</b>
+                    <br>
+                    <a href="{% url 'usuarios:editar_turma' turma.id %}" class="btn btn-sm btn-warning">Editar</a>
+                    <a href="{% url 'usuarios:deletar_turma' turma.id %}" class="btn btn-sm btn-danger">Excluir</a>
+                </div>
+            {% endfor %}
+            <a href="{% url 'usuarios:cadastrar_turma' %}" class="btn btn-primary mt-3">Cadastrar Turma</a>
+        </div>
 
+        <!-- DISCIPLINAS -->
+        <div class="tab-pane fade" id="disc">
+            <h3>Disciplinas</h3>
+            {% for d in disciplinas %}
+                <div class="mb-2">
+                    <b>{{ d.nome }}</b>
+                    <br>
+                    <a href="{% url 'usuarios:editar_disciplina' d.id %}" class="btn btn-sm btn-warning">Editar</a>
+                    <a href="{% url 'usuarios:deletar_disciplina' d.id %}" class="btn btn-sm btn-danger">Excluir</a>
+                </div>
+            {% endfor %}
+            <a href="{% url 'usuarios:cadastrar_disciplina' %}" class="btn btn-primary mt-3">Cadastrar Disciplina</a>
+        </div>
 
+        <!-- ADVERTÊNCIAS -->
+        <div class="tab-pane fade" id="adv">
+            <h3>Advertências</h3>
+            {% for adv in advertencias %}
+                <div class="alert alert-warning">
+                    <b>{{ adv.aluno.nome }}</b>: {{ adv.descricao }}
+                    <br>
+                    <a class="btn btn-sm btn-warning" href="{% url 'usuarios:editar_advertencia' adv.id %}">Editar</a>
+                    <a class="btn btn-sm btn-danger" href="{% url 'usuarios:deletar_advertencia' adv.id %}">Excluir</a>
+                </div>
+            {% endfor %}
+        </div>
+
+    </div>
+
+</div>
 {% endblock %}
-</body>

@@ -1,98 +1,104 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %} Painel do Aluno {% endblock %}
 
 {% block content %}
-<h1 style="text-align:center;">Área do Aluno</h1>
 
-{% if aluno %}
-    <div style="max-width: 600px; margin: auto;">
+<h2>Bem-vindo, {{ aluno.nome }}</h2>
 
-        <h2>Informações do Aluno</h2>
+<!-- =======================
+     DADOS PESSOAIS
+======================= -->
+<section style="margin-top: 25px;">
+    <h3>Dados Pessoais</h3>
+    <div style="padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
         <p><strong>Nome:</strong> {{ aluno.nome }}</p>
-        <p><strong>Matrícula:</strong> {{ aluno.matricula }}</p>
         <p><strong>Email:</strong> {{ aluno.email }}</p>
-        <p><strong>Data de Nascimento:</strong> {{ aluno.data_nascimento }}</p>
-
-        <p><strong>CPF:</strong> {{ aluno.cpf }}</p>
-        <p><strong>Cartão SUS:</strong> {{ aluno.cartao_sus }}</p>
-        <p><strong>Telefone dos Responsáveis:</strong> {{ aluno.telefone_responsaveis }}</p>
-
-        <p><strong>Deficiência:</strong>
-            {% if aluno.tem_deficiencia %}
-                Sim — {{ aluno.tipo_deficiencia }}
-            {% else %}
-                Não
-            {% endif %}
-        </p>
-
-        <p><strong>Restrição Alimentar:</strong>
-            {% if aluno.tem_restricao_alimentar %}
-                Sim — {{ aluno.descricao_restricao }}
-            {% else %}
-                Não
-            {% endif %}
-        </p>
-
-        <p><strong>Alergia a Medicação:</strong>
-            {{ aluno.alergia_medicacao|default:"Nenhuma" }}
-        </p>
-
-        <p><strong>Autorização para ir embora sozinho:</strong>
-            {% if aluno.autorizacao_ir_sozinho %}
-                Sim
-            {% else %}
-                Não
-            {% endif %}
-        </p>
-
-        <p><strong>Pessoas Autorizadas a Retirar o Aluno:</strong><br>
-            {% if aluno.pessoas_autorizadas %}
-                {{ aluno.pessoas_autorizadas }}
-            {% else %}
-                Nenhuma pessoa cadastrada.
-            {% endif %}
-        </p>
-
-        <p><strong>Turmas:</strong>
-            {% for turma in aluno.turmas.all %}
-                {{ turma.nome }}{% if not forloop.last %}, {% endif %}
-            {% empty %}
-                Nenhuma turma associada.
-            {% endfor %}
-        </p>
-
     </div>
+</section>
 
-    <hr>
+<!-- =======================
+     TURMAS
+======================= -->
+<section style="margin-top: 25px;">
+    <h3>Minhas Turmas</h3>
 
-    <h2 style="text-align:center;">Boletim</h2>
+    {% if aluno.turmas.all %}
+        {% for t in aluno.turmas.all %}
+            <div style="padding:10px; margin-bottom:10px; border:1px solid #ddd; border-radius:6px;">
+                <strong>{{ t.nome }}</strong>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p>Você ainda não está em nenhuma turma.</p>
+    {% endif %}
+</section>
+
+<!-- =======================
+     BOLETIM
+======================= -->
+<section style="margin-top: 25px;">
+    <h3>Boletim</h3>
 
     {% if boletim %}
-        <table border="1" style="margin:auto; text-align:center;">
-            <tr>
-                <th>Disciplina</th>
-                <th>1º Bimestre</th>
-                <th>2º Bimestre</th>
-                <th>3º Bimestre</th>
-                <th>4º Bimestre</th>
-            </tr>
-
-            {% for disciplina, bimestres in boletim.items %}
-            <tr>
-                <td>{{ disciplina.nome }}</td>
-
-                <td>{{ bimestres.1|default:"-" }}</td>
-                <td>{{ bimestres.2|default:"-" }}</td>
-                <td>{{ bimestres.3|default:"-" }}</td>
-                <td>{{ bimestres.4|default:"-" }}</td>
-            </tr>
-            {% endfor %}
+        <table style="width:100%; border-collapse:collapse;">
+            <thead>
+                <tr>
+                    <th style="border:1px solid #ccc; padding:5px;">Disciplina</th>
+                    <th style="border:1px solid #ccc; padding:5px;">1º Bimestre</th>
+                    <th style="border:1px solid #ccc; padding:5px;">2º Bimestre</th>
+                    <th style="border:1px solid #ccc; padding:5px;">3º Bimestre</th>
+                    <th style="border:1px solid #ccc; padding:5px;">4º Bimestre</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for disciplina, notas in boletim.items %}
+                    <tr>
+                        <td style="border:1px solid #ccc; padding:5px;">{{ disciplina.nome }}</td>
+                        <td style="border:1px solid #ccc; padding:5px;">
+                            {{ notas.1|default:"-" }}
+                        </td>
+                        <td style="border:1px solid #ccc; padding:5px;">
+                            {{ notas.2|default:"-" }}
+                        </td>
+                        <td style="border:1px solid #ccc; padding:5px;">
+                            {{ notas.3|default:"-" }}
+                        </td>
+                        <td style="border:1px solid #ccc; padding:5px;">
+                            {{ notas.4|default:"-" }}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
         </table>
-    {% else %}
-        <p style="text-align:center;">Nenhuma disciplina ou nota encontrada.</p>
-    {% endif %}
 
-{% else %}
-    <p style="text-align:center;">Aluno não encontrado.</p>
-{% endif %}
+    {% else %}
+        <p>Nenhuma nota disponível.</p>
+    {% endif %}
+</section>
+
+<!-- =======================
+     ADVERTÊNCIAS
+======================= -->
+<section style="margin-top: 25px;">
+    <h3>Minhas Advertências</h3>
+
+    {% with aluno.advertencia_set.all as advs %}
+        {% if advs %}
+            <ul>
+                {% for a in advs %}
+                    <li>
+                        <strong>{{ a.titulo }}:</strong> {{ a.descricao }}
+                        <br>
+                        <small>{{ a.data|date:"d/m/Y" }}</small>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>Você não possui advertências.</p>
+        {% endif %}
+    {% endwith %}
+</section>
 
 {% endblock %}

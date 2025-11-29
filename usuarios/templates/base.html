@@ -64,19 +64,19 @@
                 {% with user.groups.all as grupos %}
                     {% for g in grupos %}
                         {% if g.name == "Secretaria" %}
-                            <li><a href="{% url 'secretaria' %}">Secretaria</a></li>
+                            <li><a href="{% url 'usuarios:secretaria' %}">Secretaria</a></li>
 
                         {% elif g.name == "Professor" %}
-                            <li><a href="{% url 'professor' %}">Professor</a></li>
+                            <li><a href="{% url 'usuarios:professor' %}">Professor</a></li>
 
                         {% elif g.name == "Aluno" %}
-                            <li><a href="{% url 'aluno' %}">Aluno</a></li>
+                            <li><a href="{% url 'usuarios:aluno' %}">Aluno</a></li>
 
                         {% elif g.name == "Coordenacao" %}
-                            <li><a href="{% url 'coordenacao' %}">Coordenação</a></li>
+                            <li><a href="{% url 'usuarios:coordenacao' %}">Coordenação</a></li>
 
                         {% elif g.name == "Direcao" %}
-                            <li><a href="{% url 'direcao' %}">Direção</a></li>
+                            <li><a href="{% url 'usuarios:direcao' %}">Direção</a></li>
                         {% endif %}
                     {% endfor %}
                 {% endwith %}

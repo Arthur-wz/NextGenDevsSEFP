@@ -1,164 +1,152 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Professor - Painel{% endblock %}
+
 {% block content %}
 
-<h1 style="text-align:center;">Painel do Professor</h1>
+<h1>Painel do Professor</h1>
 
-{% if messages %}
-    <ul style="text-align:center; color:green; list-style:none;">
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+<style>
+    .box {
+        border: 1px solid #ccc;
+        padding: 15px;
+        margin: 20px 0;
+        border-radius: 6px;
+    }
+    .subtitulo {
+        margin-top: 0;
+        margin-bottom: 10px;
+        font-size: 20px;
+        font-weight: bold;
+    }
 
-{% if professor %}
+    .btn-area button {
+        margin-right: 10px;
+        margin-bottom: 10px;
+        padding: 8px 14px;
+        cursor: pointer;
+        border: 1px solid #000;
+        background: white;
+        border-radius: 5px;
+    }
 
-    <p style="text-align:center;">
-        <strong>Bem-vindo, {{ professor.nome }}</strong>
-    </p>
+    .hidden {
+        display: none;
+    }
+</style>
 
-    <!-- Navegação das seções -->
-    <div style="text-align:center; margin-bottom:20px;">
-        <button onclick="mostrarSecao('info')">Informações</button>
-        <button onclick="mostrarSecao('turmas')">Turmas</button>
-        <button onclick="mostrarSecao('alunos')">Alunos</button>
-        <button onclick="mostrarSecao('notas')">Notas</button>
-        <button onclick="mostrarSecao('advertencias')">Advertências</button>
-    </div>
+<div class="btn-area">
+    <button onclick="showSection('dados')">Dados Pessoais</button>
+    <button onclick="showSection('disciplinas')">Disciplinas</button>
+    <button onclick="showSection('turmas')">Turmas</button>
+    <button onclick="showSection('alunos')">Alunos</button>
+    <button onclick="showSection('notas')">Notas</button>
+    <button onclick="showSection('advertencias')">Advertências</button>
+    <button onclick="showSection('lancar')">Lançar Nota</button>
+</div>
 
-    <hr>
+<!-- ============================
+     DADOS PESSOAIS
+============================= -->
+<div id="dados" class="box">
+    <h2 class="subtitulo">Dados Pessoais</h2>
+    <p><strong>Nome:</strong> {{ professor.nome }}</p>
+    <p><strong>Email:</strong> {{ professor.email }}</p>
+</div>
 
-    <!-- ============================= -->
-    <!-- 1) INFORMAÇÕES PESSOAIS -->
-    <!-- ============================= -->
-    <div id="info" class="secao">
-        <h3>Informações do Professor</h3>
+<!-- ============================
+     DISCIPLINAS
+============================= -->
+<div id="disciplinas" class="box hidden">
+    <h2 class="subtitulo">Disciplinas</h2>
 
-        <p><strong>Nome:</strong> {{ professor.nome }}</p>
-        <p><strong>Email:</strong> {{ professor.email }}</p>
-        <p><strong>Disciplina:</strong> {{ professor.disciplina }}</p>
-        <p><strong>Matrícula:</strong> {{ professor.matricula }}</p>
-    </div>
+    {% for d in professor.disciplina_set.all %}
+        <p>{{ d.nome }}</p>
+    {% empty %}
+        <p>Nenhuma disciplina cadastrada.</p>
+    {% endfor %}
+</div>
 
-    <!-- ============================= -->
-    <!-- 2) TURMAS -->
-    <!-- ============================= -->
-    <div id="turmas" class="secao" style="display:none;">
-        <h3>Turmas que você leciona</h3>
-        <ul>
-            {% for turma in turmas %}
-                <li>{{ turma.nome }}</li>
-            {% empty %}
-                <li>Você não está associado a nenhuma turma.</li>
-            {% endfor %}
-        </ul>
-    </div>
+<!-- ============================
+     TURMAS
+============================= -->
+<div id="turmas" class="box hidden">
+    <h2 class="subtitulo">Turmas das suas disciplinas</h2>
 
-    <!-- ============================= -->
-    <!-- 3) ALUNOS -->
-    <!-- ============================= -->
-    <div id="alunos" class="secao" style="display:none;">
-        <h3>Alunos das suas turmas</h3>
-        <ul>
-            {% for aluno in alunos %}
-                <li>{{ aluno.nome }}</li>
-            {% empty %}
-                <li>Nenhum aluno encontrado.</li>
-            {% endfor %}
-        </ul>
-    </div>
+    {% for t in turmas %}
+        <p>{{ t.nome }}</p>
+    {% empty %}
+        <p>Você ainda não tem turmas atribuídas.</p>
+    {% endfor %}
+</div>
 
-    <!-- ============================= -->
-    <!-- 4) NOTAS -->
-    <!-- ============================= -->
-    <div id="notas" class="secao" style="display:none;">
-        
-        <h3>Lançar Nota</h3>
+<!-- ============================
+     LISTA DE ALUNOS
+============================= -->
+<div id="alunos" class="box hidden">
+    <h2 class="subtitulo">Alunos das suas turmas</h2>
 
-        <form method="POST">
-            {% csrf_token %}
-            <p><strong>Aluno:</strong> {{ form.aluno }}</p>
+    {% for a in alunos %}
+        <p>{{ a.nome }} ({{ a.email }})</p>
+    {% empty %}
+        <p>Nenhum aluno encontrado.</p>
+    {% endfor %}
+</div>
 
-            <p><strong>Bimestre:</strong> {{ form.bimestre }}</p>
+<!-- ============================
+     NOTAS (VISUALIZAR)
+============================= -->
+<div id="notas" class="box hidden">
+    <h2 class="subtitulo">Notas Lançadas</h2>
 
-            <p><strong>Nota:</strong> {{ form.valor }}</p>
+    {% for n in notas %}
+        <p>
+            <strong>{{ n.aluno.nome }}</strong> — {{ n.disciplina.nome }}
+            → {{ n.valor }} ({{ n.bimestre }}º bimestre)
+        </p>
+    {% empty %}
+        <p>Nenhuma nota lançada ainda.</p>
+    {% endfor %}
+</div>
 
-            <button type="submit">Salvar Nota</button>
-        </form>
+<!-- ============================
+     ADVERTÊNCIAS (SOMENTE VER)
+============================= -->
+<div id="advertencias" class="box hidden">
+    <h2 class="subtitulo">Advertências dos alunos</h2>
 
-        <hr>
+    {% for adv in advertencias %}
+        <p>
+            <strong>{{ adv.aluno.nome }}</strong> — {{ adv.motivo }}  
+            <em>({{ adv.data }})</em>
+        </p>
+    {% empty %}
+        <p>Nenhuma advertência registrada.</p>
+    {% endfor %}
+</div>
 
-        <h3>Notas Lançadas</h3>
-        <table border="1" style="margin:auto;">
-            <tr>
-                <th>Aluno</th>
-                <th>Disciplina</th>
-                <th>Bimestre</th>
-                <th>Nota</th>
-                <th>Data</th>
-                <th>Ações</th>
-            </tr>
+<!-- ============================
+     LANÇAR NOTA
+============================= -->
+<div id="lancar" class="box hidden">
+    <h2 class="subtitulo">Lançar nova nota</h2>
 
-            {% for nota in notas %}
-                <tr>
-                    <td>{{ nota.aluno.nome }}</td>
-                    <td>{{ nota.disciplina.nome }}</td>
-                    <td>{{ nota.get_bimestre_display }}</td>
-                    <td>{{ nota.valor }}</td>
-                    <td>{{ nota.data_lancamento }}</td>
-                    <td>
-                        <a href="{% url 'editar_nota' nota.id %}">Editar</a> |
-                        <a href="{% url 'deletar_nota' nota.id %}" onclick="return confirm('Excluir esta nota?')">Excluir</a>
-                    </td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="6">Nenhuma nota lançada ainda.</td>
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
 
-    <!-- ============================= -->
-    <!-- 5) ADVERTÊNCIAS -->
-    <!-- ============================= -->
-    <div id="advertencias" class="secao" style="display:none;">
-        <h3>Advertências</h3>
-
-        <table border="1" style="margin:auto;">
-            <tr>
-                <th>Aluno</th>
-                <th>Motivo</th>
-                <th>Status</th>
-                <th>Data</th>
-            </tr>
-
-            {% for adv in advertencias %}
-                <tr>
-                    <td>{{ adv.aluno.nome }}</td>
-                    <td>{{ adv.motivo }}</td>
-                    <td>{{ adv.get_status_display }}</td>
-                    <td>{{ adv.data }}</td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="4">Nenhuma advertência encontrada.</td>
-                </tr>
-            {% endfor %}
-        </table>
-    </div>
-
-{% else %}
-    <p style="text-align:center;">Professor não encontrado.</p>
-{% endif %}
+        <button type="submit">Salvar</button>
+    </form>
+</div>
 
 <script>
-function mostrarSecao(id) {
-    document.querySelectorAll('.secao').forEach(function(sec){
-        sec.style.display = 'none';
-    });
-    document.getElementById(id).style.display = 'block';
-}
+    function showSection(id) {
+        document.querySelectorAll('.box').forEach(box => {
+            box.classList.add('hidden');
+        });
+        document.getElementById(id).classList.remove('hidden');
+    }
 </script>
 
 {% endblock %}
