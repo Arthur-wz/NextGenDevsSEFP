@@ -1765,6 +1765,42 @@
   }
 },
 {
+  "model": "auth.permission",
+  "pk": 57,
+  "fields": {
+    "name": "Can add diretor",
+    "content_type": 15,
+    "codename": "add_diretor"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 58,
+  "fields": {
+    "name": "Can change diretor",
+    "content_type": 15,
+    "codename": "change_diretor"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 59,
+  "fields": {
+    "name": "Can delete diretor",
+    "content_type": 15,
+    "codename": "delete_diretor"
+  }
+},
+{
+  "model": "auth.permission",
+  "pk": 60,
+  "fields": {
+    "name": "Can view diretor",
+    "content_type": 15,
+    "codename": "view_diretor"
+  }
+},
+{
   "model": "auth.group",
   "pk": 1,
   "fields": {
@@ -1827,7 +1863,7 @@
   "pk": 2,
   "fields": {
     "password": "pbkdf2_sha256$1000000$dzEQm4iuKmDtmIuI1DeB46$EFTir7HWIYjhCHBDaVrooW6WJS41PJb4Dub4SjfSXAM=",
-    "last_login": "2025-11-25T14:22:46.152Z",
+    "last_login": "2025-11-26T21:26:06.846Z",
     "is_superuser": false,
     "username": "mohamed",
     "first_name": "",
@@ -1847,7 +1883,7 @@
   "pk": 7,
   "fields": {
     "password": "pbkdf2_sha256$1000000$rJeBCbsYm5cMdCRiGya5CS$IG2RMKn0rK29e+XWk1sU8gdPNdxHvIqEv5al+2ikKHo=",
-    "last_login": "2025-11-25T14:24:43.730Z",
+    "last_login": "2025-11-26T21:26:17.112Z",
     "is_superuser": false,
     "username": "valter",
     "first_name": "",
@@ -1867,7 +1903,7 @@
   "pk": 8,
   "fields": {
     "password": "pbkdf2_sha256$1000000$F14uFsRmwFEM0F5ncmwPNf$Wn1UCB4CQRqbzdNuILw22HyiZchQU7MD7v+VJIl62SM=",
-    "last_login": "2025-11-25T14:23:05.049Z",
+    "last_login": "2025-11-26T21:25:39.263Z",
     "is_superuser": false,
     "username": "enzo",
     "first_name": "",
@@ -1905,7 +1941,7 @@
   "pk": 26,
   "fields": {
     "password": "pbkdf2_sha256$1000000$2XtmmLJSw7bwRHAFMwHwun$TyWfjD/GvKWNfRxlcU+rR/jGSVNTBpYE0DwGJ8zNRSI=",
-    "last_login": "2025-11-25T14:25:05.695Z",
+    "last_login": "2025-11-26T21:26:31.431Z",
     "is_superuser": false,
     "username": "jorge",
     "first_name": "",
@@ -1965,7 +2001,7 @@
   "pk": 29,
   "fields": {
     "password": "pbkdf2_sha256$1000000$kD86RsNdl3RHNCXybIUiVe$CAjOmzTyA4DIXvP65IieGLsqc2XvQdbsMBqMEcKvkAA=",
-    "last_login": "2025-11-25T14:23:17.310Z",
+    "last_login": "2025-11-26T21:25:52.114Z",
     "is_superuser": false,
     "username": "astolfo",
     "first_name": "",
@@ -2169,6 +2205,14 @@
   }
 },
 {
+  "model": "contenttypes.contenttype",
+  "pk": 15,
+  "fields": {
+    "app_label": "usuarios",
+    "model": "diretor"
+  }
+},
+{
   "model": "sessions.session",
   "pk": "8lbwppljnob9208hg6mcml1dz8nwxzvr",
   "fields": {
@@ -2218,10 +2262,10 @@
 },
 {
   "model": "sessions.session",
-  "pk": "tzth37ymkn32lkoq8bxwvurwktnvx1aw",
+  "pk": "yb7jj605xd894zjsa3iz8a1w8ot7tgvm",
   "fields": {
-    "session_data": ".eJxVjDsOwjAQBe_iGlmOE_8o6TmDtd714gCypTipEHeHSCmgfTPzXiLCtpa49bzEmcRZaHH63RLgI9cd0B3qrUlsdV3mJHdFHrTLa6P8vBzu30GBXr614YFwAIWePQOOPumgyaXkVCAyFtII5AwF5UYMPDmwRKwVoDWMehLvDw2wOPI:1vNgYT:STKdi12Wg7KBYu8Qv4tzsmxguaztjaWe38zpqVBn5b4",
-    "expire_date": "2025-12-09T00:05:13.973Z"
+    "session_data": ".eJxVjEEOwiAQRe_C2hBKCzPj0r1nIDNApWpoUtqV8e7apAvd_vfef6nA21rC1vISpqTOynp1-h2F4yPXnaQ719us41zXZRK9K_qgTV_nlJ-Xw_07KNzKt0YGy8woRkzvSBIQ9ilKRwNRJIOQGJ0YBznbUUh8N1gATygOcCT1_gANSzfR:1vON1z:525aZUgDeKPjccqkHoqNz724sq5XXpHpWWAcHiRu7cQ",
+    "expire_date": "2025-12-10T21:26:31.436Z"
   }
 },
 {
@@ -2374,6 +2418,17 @@
   }
 },
 {
+  "model": "usuarios.nota",
+  "pk": 1,
+  "fields": {
+    "aluno": 12,
+    "disciplina": 9,
+    "valor": "3.00",
+    "data_lancamento": "2025-11-25",
+    "bimestre": 1
+  }
+},
+{
   "model": "usuarios.secretaria",
   "pk": 1,
   "fields": {
@@ -2382,6 +2437,21 @@
     "email": "",
     "telefone": null,
     "setor": null,
+    "observacoes": null,
+    "cpf": null,
+    "cargo": null
+  }
+},
+{
+  "model": "usuarios.diretor",
+  "pk": 1,
+  "fields": {
+    "user": 7,
+    "nome": "valter",
+    "email": "",
+    "cpf": null,
+    "telefone": null,
+    "cargo": "Direção",
     "observacoes": null
   }
 }
