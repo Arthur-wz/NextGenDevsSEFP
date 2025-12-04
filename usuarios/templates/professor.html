@@ -1,163 +1,213 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
+
 {% block content %}
 
-<h1 style="text-align:center;">Painel do Professor</h1>
+<style>
+    .painel-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
 
-{% if messages %}
-    <ul style="text-align:center; color:green; list-style:none;">
-        {% for message in messages %}
-            <li>{{ message }}</li>
+    .painel-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .painel-buttons button {
+        padding: 10px 18px;
+        border: none;
+        background: #1e3a8a;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+    }
+
+    .painel-buttons button:hover {
+        background: #3b82f6;
+    }
+
+    .section {
+        display: none;
+        padding: 15px;
+        background: #f3f4f6;
+        border-radius: 6px;
+        margin-bottom: 20px;
+    }
+
+    .section.active {
+        display: block;
+    }
+
+    .info-card {
+        background: white;
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #d1d5db;
+        text-align: center;
+    }
+
+    th {
+        background: #e2e8f0;
+    }
+</style>
+
+<div class="painel-container">
+
+    <h1>Painel do Professor</h1>
+    <h3>Bem-vindo, {{ professor.nome }}</h3>
+
+    <!-- BOTÕES -->
+    <div class="painel-buttons">
+        <button onclick="mostrar('sec-info')">Suas Informações</button>
+        <button onclick="mostrar('sec-disciplina')">Disciplina</button>
+        <button onclick="mostrar('sec-turmas')">Turmas</button>
+        <button onclick="mostrar('sec-alunos')">Alunos</button>
+        <button onclick="mostrar('sec-notas')">Notas</button>
+        <button onclick="mostrar('sec-advertencias')">Advertências</button>
+    </div>
+
+    <!-- ========================================= -->
+    <!-- INFO DO PROFESSOR (corrigido pelo form) -->
+    <!-- ========================================= -->
+<div id="sec-info" class="section active">
+    <h2>Informações do Professor</h2>
+
+    <div class="info-card"><strong>Nome:</strong> {{ professor.nome }}</div>
+    <div class="info-card"><strong>Email:</strong> {{ professor.email }}</div>
+    <div class="info-card"><strong>Matrícula:</strong> {{ professor.matricula }}</div>
+</div>
+
+    <!-- ========================================= -->
+    <!-- DISCIPLINA ÚNICA (correto pelo model/form) -->
+    <!-- ========================================= -->
+    <div id="sec-disciplina" class="section">
+        <h2>Sua Disciplina</h2>
+
+        {% if professor.disciplina %}
+            <div class="info-card">{{ professor.disciplina }}</div>
+        {% else %}
+            <p>Você não possui disciplina cadastrada.</p>
+        {% endif %}
+    </div>
+
+    <!-- ========================================= -->
+    <!-- TURMAS -->
+    <!-- ========================================= -->
+    <div id="sec-turmas" class="section">
+        <h2>Turmas</h2>
+
+        {% for t in turmas %}
+            <div class="info-card">{{ t.nome }}</div>
+        {% empty %}
+            <p>Nenhuma turma encontrada.</p>
         {% endfor %}
-    </ul>
-{% endif %}
-
-{% if professor %}
-
-    <p style="text-align:center;">
-        <strong>Bem-vindo, {{ professor.nome }}</strong>
-    </p>
-
-    <!-- Navegação das seções -->
-    <div style="text-align:center; margin-bottom:20px;">
-        <button onclick="mostrarSecao('info')">Informações</button>
-        <button onclick="mostrarSecao('turmas')">Turmas</button>
-        <button onclick="mostrarSecao('alunos')">Alunos</button>
-        <button onclick="mostrarSecao('notas')">Notas</button>
-        <button onclick="mostrarSecao('advertencias')">Advertências</button>
     </div>
 
-    <hr>
+    <!-- ========================================= -->
+    <!-- ALUNOS -->
+    <!-- ========================================= -->
+    <div id="sec-alunos" class="section">
+        <h2>Alunos</h2>
 
-    <!-- ============================= -->
-    <!-- 1) INFORMAÇÕES PESSOAIS -->
-    <!-- ============================= -->
-    <div id="info" class="secao">
-        <h3>Informações do Professor</h3>
-
-        <p><strong>Nome:</strong> {{ professor.nome }}</p>
-        <p><strong>Email:</strong> {{ professor.email }}</p>
-        <p><strong>Disciplina:</strong> {{ professor.disciplina }}</p>
-        <p><strong>Matrícula:</strong> {{ professor.matricula }}</p>
+        {% for a in alunos %}
+            <div class="info-card">{{ a.nome }}</div>
+        {% empty %}
+            <p>Nenhum aluno encontrado.</p>
+        {% endfor %}
     </div>
 
-    <!-- ============================= -->
-    <!-- 2) TURMAS -->
-    <!-- ============================= -->
-    <div id="turmas" class="secao" style="display:none;">
-        <h3>Turmas que você leciona</h3>
-        <ul>
-            {% for turma in turmas %}
-                <li>{{ turma.nome }}</li>
-            {% empty %}
-                <li>Você não está associado a nenhuma turma.</li>
-            {% endfor %}
-        </ul>
-    </div>
+    <!-- ========================================= -->
+    <!-- NOTAS (corrigido pelo NotaForm) -->
+    <!-- ========================================= -->
+    <div id="sec-notas" class="section">
+        <h2>Notas</h2>
 
-    <!-- ============================= -->
-    <!-- 3) ALUNOS -->
-    <!-- ============================= -->
-    <div id="alunos" class="secao" style="display:none;">
-        <h3>Alunos das suas turmas</h3>
-        <ul>
-            {% for aluno in alunos %}
-                <li>{{ aluno.nome }}</li>
-            {% empty %}
-                <li>Nenhum aluno encontrado.</li>
-            {% endfor %}
-        </ul>
-    </div>
+        <div class="info-card">
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button class="btn btn-primary">Lançar Nota</button>
+            </form>
+        </div>
 
-    <!-- ============================= -->
-    <!-- 4) NOTAS -->
-    <!-- ============================= -->
-    <div id="notas" class="secao" style="display:none;">
-        
-        <h3>Lançar Nota</h3>
-
-        <form method="POST">
-            {% csrf_token %}
-            <p><strong>Aluno:</strong> {{ form.aluno }}</p>
-
-            <p><strong>Bimestre:</strong> {{ form.bimestre }}</p>
-
-            <p><strong>Nota:</strong> {{ form.valor }}</p>
-
-            <button type="submit">Salvar Nota</button>
-        </form>
-
-        <hr>
-
-        <h3>Notas Lançadas</h3>
-        <table border="1" style="margin:auto;">
-            <tr>
-                <th>Aluno</th>
-                <th>Disciplina</th>
-                <th>Bimestre</th>
-                <th>Nota</th>
-                <th>Data</th>
-                <th>Ações</th>
-            </tr>
-
-            {% for nota in notas %}
+        <table>
+            <thead>
                 <tr>
-                    <td>{{ nota.aluno.nome }}</td>
-                    <td>{{ nota.disciplina.nome }}</td>
-                    <td>{{ nota.get_bimestre_display }}</td>
-                    <td>{{ nota.valor }}</td>
-                    <td>{{ nota.data_lancamento }}</td>
+                    <th>Aluno</th>
+                    <th>Disciplina</th>
+                    <th>Bimestre</th>
+                    <th>Nota</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for n in notas %}
+                <tr>
+                    <td>{{ n.aluno.nome }}</td>
+                    <td>{{ n.disciplina.nome }}</td>
+                    <td>{{ n.get_bimestre_display }}</td>
+                    <td>{{ n.valor }}</td>
                     <td>
-                        <a href="{% url 'editar_nota' nota.id %}">Editar</a> |
-                        <a href="{% url 'deletar_nota' nota.id %}" onclick="return confirm('Excluir esta nota?')">Excluir</a>
+                        <a href="{% url 'usuarios:editar_nota' n.id %}" class="btn btn-warning btn-sm">Editar</a>
+
+                        <form method="POST" action="{% url 'usuarios:deletar_nota' n.id %}"
+                              style="display:inline;">
+                            {% csrf_token %}
+                            <button class="btn btn-danger btn-sm"
+                                    onclick="return confirm('Excluir esta nota?');">
+                                Excluir
+                            </button>
+                        </form>
                     </td>
                 </tr>
             {% empty %}
-                <tr>
-                    <td colspan="6">Nenhuma nota lançada ainda.</td>
-                </tr>
+                <tr><td colspan="5">Nenhuma nota cadastrada.</td></tr>
             {% endfor %}
+            </tbody>
         </table>
     </div>
 
-    <!-- ============================= -->
-    <!-- 5) ADVERTÊNCIAS -->
-    <!-- ============================= -->
-    <div id="advertencias" class="secao" style="display:none;">
-        <h3>Advertências</h3>
+    <!-- ========================================= -->
+    <!-- ADVERTÊNCIAS -->
+    <!-- ========================================= -->
+    <div id="sec-advertencias" class="section">
+        <h2>Advertências</h2>
 
-        <table border="1" style="margin:auto;">
-            <tr>
-                <th>Aluno</th>
-                <th>Motivo</th>
-                <th>Status</th>
-                <th>Data</th>
-            </tr>
-
-            {% for adv in advertencias %}
-                <tr>
-                    <td>{{ adv.aluno.nome }}</td>
-                    <td>{{ adv.motivo }}</td>
-                    <td>{{ adv.get_status_display }}</td>
-                    <td>{{ adv.data }}</td>
-                </tr>
-            {% empty %}
-                <tr>
-                    <td colspan="4">Nenhuma advertência encontrada.</td>
-                </tr>
-            {% endfor %}
-        </table>
+        {% for adv in advertencias %}
+            <div class="info-card">
+                <strong>{{ adv.aluno.nome }}:</strong> {{ adv.motivo }}  
+                <br>Status: {{ adv.get_status_display }}
+            </div>
+        {% empty %}
+            <p>Nenhuma advertência registrada.</p>
+        {% endfor %}
     </div>
 
-{% else %}
-    <p style="text-align:center;">Professor não encontrado.</p>
-{% endif %}
+</div>
 
 <script>
-function mostrarSecao(id) {
-    document.querySelectorAll('.secao').forEach(function(sec){
-        sec.style.display = 'none';
-    });
-    document.getElementById(id).style.display = 'block';
+function mostrar(id) {
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
 }
 </script>
 

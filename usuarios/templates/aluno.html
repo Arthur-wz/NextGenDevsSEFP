@@ -1,98 +1,292 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
 
 {% block content %}
-<h1 style="text-align:center;">Área do Aluno</h1>
 
-{% if aluno %}
-    <div style="max-width: 600px; margin: auto;">
+<style>
+    .painel-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
 
-        <h2>Informações do Aluno</h2>
-        <p><strong>Nome:</strong> {{ aluno.nome }}</p>
-        <p><strong>Matrícula:</strong> {{ aluno.matricula }}</p>
-        <p><strong>Email:</strong> {{ aluno.email }}</p>
-        <p><strong>Data de Nascimento:</strong> {{ aluno.data_nascimento }}</p>
+    .painel-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
 
-        <p><strong>CPF:</strong> {{ aluno.cpf }}</p>
-        <p><strong>Cartão SUS:</strong> {{ aluno.cartao_sus }}</p>
-        <p><strong>Telefone dos Responsáveis:</strong> {{ aluno.telefone_responsaveis }}</p>
+    .painel-buttons button {
+        padding: 10px 18px;
+        border: none;
+        background: #1e3a8a;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+    }
 
-        <p><strong>Deficiência:</strong>
-            {% if aluno.tem_deficiencia %}
-                Sim — {{ aluno.tipo_deficiencia }}
-            {% else %}
-                Não
-            {% endif %}
-        </p>
+    .painel-buttons button:hover {
+        background: #3b82f6;
+    }
 
-        <p><strong>Restrição Alimentar:</strong>
-            {% if aluno.tem_restricao_alimentar %}
-                Sim — {{ aluno.descricao_restricao }}
-            {% else %}
-                Não
-            {% endif %}
-        </p>
+    .section {
+        display: none;
+        padding: 15px;
+        background: #f3f4f6;
+        border-radius: 6px;
+        margin-bottom: 20px;
+    }
 
-        <p><strong>Alergia a Medicação:</strong>
-            {{ aluno.alergia_medicacao|default:"Nenhuma" }}
-        </p>
+    .section.active {
+        display: block;
+    }
 
-        <p><strong>Autorização para ir embora sozinho:</strong>
-            {% if aluno.autorizacao_ir_sozinho %}
-                Sim
-            {% else %}
-                Não
-            {% endif %}
-        </p>
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+    }
 
-        <p><strong>Pessoas Autorizadas a Retirar o Aluno:</strong><br>
-            {% if aluno.pessoas_autorizadas %}
-                {{ aluno.pessoas_autorizadas }}
-            {% else %}
-                Nenhuma pessoa cadastrada.
-            {% endif %}
-        </p>
+    .info-card {
+        background: white;
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+    }
 
-        <p><strong>Turmas:</strong>
-            {% for turma in aluno.turmas.all %}
-                {{ turma.nome }}{% if not forloop.last %}, {% endif %}
-            {% empty %}
-                Nenhuma turma associada.
-            {% endfor %}
-        </p>
+    h2 {
+        margin-top: 0;
+        color: #1e40af;
+    }
 
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #d1d5db;
+        text-align: center;
+    }
+
+    th {
+        background: #e2e8f0;
+    }
+
+    .tag {
+        padding: 3px 7px;
+        border-radius: 4px;
+        font-size: 12px;
+        color: white;
+    }
+
+    .tag-finalizada {
+        background: #16a34a;
+    }
+
+    .tag-andamento {
+        background: #dc2626;
+    }
+</style>
+
+<div class="painel-container">
+
+    <h1>Painel do Aluno</h1>
+    <h3>Bem-vindo, {{ aluno.nome }}</h3>
+
+    <!-- BOTÕES DE NAVEGAÇÃO -->
+    <div class="painel-buttons">
+        <button onclick="mostrar('sec-info')">Informações Pessoais</button>
+        <button onclick="mostrar('sec-disciplinas')">Disciplinas</button>
+        <button onclick="mostrar('sec-boletim')">Boletim</button>
+        <button onclick="mostrar('sec-advertencias')">Advertências</button>
     </div>
 
-    <hr>
+    <!-- =============================== -->
+    <!-- SEÇÃO 1 — INFORMAÇÕES PESSOAIS -->
+    <!-- =============================== -->
+    <div id="sec-info" class="section active">
+        <h2>Informações Pessoais</h2>
 
-    <h2 style="text-align:center;">Boletim</h2>
+        <div class="info-grid">
+
+            <div class="info-card">
+                <strong>Nome:</strong> {{ aluno.nome|default:"Não informado" }}
+            </div>
+
+            <div class="info-card">
+                <strong>Matrícula:</strong> {{ aluno.matricula }}
+            </div>
+
+            <div class="info-card">
+                <strong>Turma:</strong> {{ aluno.turma|default:"Não informado" }}
+            </div>
+
+            <div class="info-card">
+                <strong>Email:</strong> {{ aluno.email|default:"Não informado" }}
+            </div>
+
+            <div class="info-card">
+                <strong>Data de Nascimento:</strong> {{ aluno.data_nascimento|default:"Não informado" }}
+            </div>
+
+            <div class="info-card">
+                <strong>CPF:</strong> {{ aluno.cpf|default:"Não informado" }}
+            </div>
+
+            <div class="info-card">
+                <strong>Cartão SUS:</strong> {{ aluno.cartao_sus|default:"Não informado" }}
+            </div>
+
+            <div class="info-card">
+                <strong>Telefone dos Responsáveis:</strong> {{ aluno.telefone_responsaveis|default:"Não informado" }}
+            </div>
+
+            <div class="info-card">
+                <strong>Tem Deficiência?</strong> 
+                {% if aluno.tem_deficiencia %}
+                    Sim — {{ aluno.deficiencia_descricao }}
+                {% else %}
+                    Não
+                {% endif %}
+            </div>
+
+            <div class="info-card">
+                <strong>Restrições Alimentares:</strong>
+                {% if aluno.restricao_alimentar %}
+                    Sim — {{ aluno.restricao_alimentar_descricao }}
+                {% else %}
+                    Não
+                {% endif %}
+            </div>
+
+            <div class="info-card">
+                <strong>Alergia a Medicação:</strong>
+                {% if aluno.alergia_medicacao %}
+                    Sim — {{ aluno.alergia_medicacao_descricao }}
+                {% else %}
+                    Não
+                {% endif %}
+            </div>
+
+            <div class="info-card">
+                <strong>Autorização para Ir Sozinho:</strong>
+                {% if aluno.autorizacao_ir_sozinho %}
+                    Sim
+                {% else %}
+                    Não
+                {% endif %}
+            </div>
+
+            <div class="info-card">
+                <strong>Pessoas Autorizadas a Retirar:</strong>
+                {{ aluno.pessoas_autorizadas_retirar|default:"Nenhum" }}
+            </div>
+
+            <div class="info-card" style="grid-column: span 2;">
+                <strong>Observações Médicas:</strong><br>
+                {{ aluno.observacoes_medicas|default:"Nenhuma observação" }}
+            </div>
+
+        </div>
+    </div>
+
+    <!-- =============================== -->
+    <!-- SEÇÃO 2 — DISCIPLINAS -->
+    <!-- =============================== -->
+    <div id="sec-disciplinas" class="section">
+        <h2>Disciplinas</h2>
+
+        {% if disciplinas %}
+        <ul>
+            {% for d in disciplinas %}
+                <li><strong>{{ d.nome }}</strong> — Professor: {{ d.professor.nome }}</li>
+            {% endfor %}
+        </ul>
+        {% else %}
+            <p>Nenhuma disciplina encontrada.</p>
+        {% endif %}
+    </div>
+
+    <!-- =============================== -->
+<!-- SEÇÃO 3 — BOLETIM (CORRIGIDO) -->
+<!-- =============================== -->
+<div id="sec-boletim" class="section">
+    <h2>Boletim</h2>
 
     {% if boletim %}
-        <table border="1" style="margin:auto; text-align:center;">
+    <table>
+        <thead>
             <tr>
                 <th>Disciplina</th>
-                <th>1º Bimestre</th>
-                <th>2º Bimestre</th>
-                <th>3º Bimestre</th>
-                <th>4º Bimestre</th>
+                <th>1º Bim</th>
+                <th>2º Bim</th>
+                <th>3º Bim</th>
+                <th>4º Bim</th>
+                <th>Média</th>
             </tr>
-
-            {% for disciplina, bimestres in boletim.items %}
+        </thead>
+        <tbody>
+            {% for item in boletim %}
             <tr>
-                <td>{{ disciplina.nome }}</td>
-
-                <td>{{ bimestres.1|default:"-" }}</td>
-                <td>{{ bimestres.2|default:"-" }}</td>
-                <td>{{ bimestres.3|default:"-" }}</td>
-                <td>{{ bimestres.4|default:"-" }}</td>
+                <td>{{ item.disciplina.nome }}</td>
+                <td>{{ item.notas.1|default:"-" }}</td>
+                <td>{{ item.notas.2|default:"-" }}</td>
+                <td>{{ item.notas.3|default:"-" }}</td>
+                <td>{{ item.notas.4|default:"-" }}</td>
+                <td>
+                    {% if item.media %}
+                        {{ item.media }}
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
             </tr>
             {% endfor %}
-        </table>
+        </tbody>
+    </table>
     {% else %}
-        <p style="text-align:center;">Nenhuma disciplina ou nota encontrada.</p>
+        <p>Nenhuma nota lançada.</p>
     {% endif %}
+</div>
 
-{% else %}
-    <p style="text-align:center;">Aluno não encontrado.</p>
-{% endif %}
+    <!-- =============================== -->
+    <!-- SEÇÃO 4 — ADVERTÊNCIAS -->
+    <!-- =============================== -->
+    <div id="sec-advertencias" class="section">
+        <h2>Advertências</h2>
+
+        {% if advertencias %}
+            {% for a in advertencias %}
+                <div class="info-card" style="margin-bottom: 10px;">
+                    <strong>Data:</strong> {{ a.data }}<br>
+                    <strong>Motivo:</strong> {{ a.motivo }}<br>
+                    <strong>Status:</strong>
+                    {% if a.status == "finalizada" %}
+                        <span class="tag tag-finalizada">Finalizada</span>
+                    {% else %}
+                        <span class="tag tag-andamento">Em andamento</span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>Nenhuma advertência registrada.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+<script>
+function mostrar(id) {
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+</script>
 
 {% endblock %}

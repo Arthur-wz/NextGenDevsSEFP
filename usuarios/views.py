@@ -1,541 +1,666 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
-from .models import Aluno, Professor, Nota, Advertencia, Turma, Disciplina, Secretaria, Diretor
+from django.urls import reverse
+from django.contrib import messages
+from django.contrib.auth import logout
+from django.contrib.auth.models import User, Group
+from django.utils.text import slugify
+
+from .models import (
+    Aluno, Professor, Nota, Advertencia,
+    Turma, Disciplina, Secretaria, Diretor, Coordenador
+)
+
 from .forms import (
     AlunoForm, ProfessorForm, NotaForm,
-    AdvertenciaForm, TurmaForm, DisciplinaForm, SecretariaForm, DiretorForm
+    AdvertenciaForm, TurmaForm, DisciplinaForm,
+    SecretariaForm, DiretorForm, coordenadorForm
 )
-from .decorators import grupo_requerido
-from django.contrib.auth.models import User, Group
-from django.contrib import messages
-from django.utils.text import slugify
-from django.db.models import Prefetch
-from django.contrib.auth import logout
 
-# =============================
-# HOME
-# =============================
+from .decorators import grupo_requerido
+
+
+# =====================================================
+# HELPERS
+# =====================================================
+
+def obter_aluno_por_user(user):
+    if not user.is_authenticated:
+        return None
+    aluno = Aluno.objects.filter(user=user).first()
+    if not aluno:
+        aluno = Aluno.objects.filter(nome__iexact=user.username).first()
+    return aluno
+
+def obter_professor_por_user(user):
+    if not user.is_authenticated:
+        return None
+    return Professor.objects.filter(user=user).first()
+
+def obter_secretaria_por_user(user):
+    if not user.is_authenticated:
+        return None
+    return Secretaria.objects.filter(user=user).first()
+
+def obter_diretor_por_user(user):
+    if not user.is_authenticated:
+        return None
+    return Diretor.objects.filter(user=user).first()
+
+
+# =====================================================
+# LOGIN / LOGOUT / REDIRECIONAMENTO
+# =====================================================
+
 def home(request):
     return redirect('login')
 
-#login
-
 def login_limpo(request):
-    logout(request)            # encerra sessão anterior
-    request.session.flush()    # limpa cookies/sessão
+    logout(request)
+    request.session.flush()
     return redirect('login_puro')
 
-# =============================
-# ALUNO
-# =============================
-@login_required(login_url='/login/')
-@grupo_requerido("Aluno")
-def aluno(request):
-    try:
-        aluno = Aluno.objects.get(email=request.user.email)
-    except Aluno.DoesNotExist:
-        return render(request, 'aluno.html', {
-            'aluno': None,
-            'notas': [],
-        })
-
-    # Disciplinas das turmas do aluno
-    disciplinas = Disciplina.objects.filter(turmas__alunos=aluno).distinct()
-
-    # Todas as notas do aluno
-    notas = Nota.objects.filter(aluno=aluno)
-
-    # Montar estrutura: disciplina -> bimestre -> nota
-    boletim = {}
-
-    for disciplina in disciplinas:
-        boletim[disciplina] = {1: None, 2: None, 3: None, 4: None}
-
-    for nota in notas:
-        if nota.disciplina in boletim:
-            boletim[nota.disciplina][nota.bimestre] = nota.valor
-
-    return render(request, 'aluno.html', {
-        'aluno': aluno,
-        'boletim': boletim,   # dicionário organizado
-        'disciplinas': disciplinas,
-    })
-
-# =============================
-# PROFESSOR
-# =============================
-@login_required(login_url='/login/')
-@grupo_requerido("Professor")
-def professor(request):
-    professor = Professor.objects.filter(user=request.user).first()
-
-    if not professor:
-        messages.error(request, "Professor não encontrado.")
+def redirecionar_usuario(request):
+    if not request.user.is_authenticated:
         return redirect('login')
 
-    # disciplinas e turmas do professor
-    disciplinas_professor = Disciplina.objects.filter(professor=professor)
-    turmas = Turma.objects.filter(disciplinas__in=disciplinas_professor).distinct()
+    grupo = request.user.groups.first()
+    if not grupo:
+        messages.error(request, "Usuário sem grupo.")
+        return redirect("login")
 
-    # alunos das turmas do professor
+    mapping = {
+        "Aluno": "usuarios:aluno",
+        "Professor": "usuarios:professor",
+        "Secretaria": "usuarios:secretaria",
+        "Coordenacao": "usuarios:coordenacao",
+        "Direcao": "usuarios:direcao",
+    }
+
+    if grupo.name in mapping:
+        return redirect(mapping[grupo.name])
+
+    messages.error(request, "Grupo desconhecido.")
+    return redirect('login')
+
+
+# =====================================================
+# PAINEL ALUNO
+# =====================================================
+
+@login_required(login_url='login')
+@grupo_requerido("Aluno")
+def aluno(request):
+    aluno = obter_aluno_por_user(request.user)
+
+    if not aluno:
+        return render(request, "aluno.html")
+
+    disciplinas = Disciplina.objects.filter(turmas__alunos=aluno).distinct()
+    notas_qs = Nota.objects.filter(aluno=aluno).select_related("disciplina")
+
+    boletim = []
+    for disc in disciplinas:
+        notas_disc = notas_qs.filter(disciplina=disc)
+        mapa = {1: None, 2: None, 3: None, 4: None}
+
+        soma = 0
+        count = 0
+
+        for n in notas_disc:
+            if n.bimestre in mapa:
+                mapa[n.bimestre] = n.valor
+                soma += n.valor
+                count += 1
+
+        media = round(soma / count, 2) if count else None
+
+        boletim.append({
+            'disciplina': disc,
+            'notas': mapa,
+            'media': media,
+        })
+
+    return render(request, "aluno.html", {
+        'aluno': aluno,
+        'disciplinas': disciplinas,
+        'boletim': boletim,
+        'advertencias': aluno.advertencias.all(),
+    })
+
+
+# =====================================================
+# PAINEL PROFESSOR
+# =====================================================
+
+@login_required(login_url='login')
+@grupo_requerido("Professor")
+def professor(request):
+    prof = obter_professor_por_user(request.user)
+    if not prof:
+        messages.error(request, "Professor não encontrado.")
+        return redirect("login")
+
+    disciplinas = Disciplina.objects.filter(professor=prof)
+    turmas = Turma.objects.filter(disciplinas__in=disciplinas).distinct()
     alunos = Aluno.objects.filter(turmas__in=turmas).distinct()
 
-    # notas — pegamos só notas das disciplinas do professor e com select_related para performance
-    notas = Nota.objects.filter(disciplina__in=disciplinas_professor, aluno__in=alunos)\
-                        .select_related('aluno', 'disciplina')
+    notas = Nota.objects.filter(
+        disciplina__in=disciplinas,
+        aluno__in=alunos
+    ).select_related("aluno", "disciplina")
 
     advertencias = Advertencia.objects.filter(aluno__in=alunos)
 
-    # instancia o form e limita o queryset de 'aluno' ao conjunto de alunos acima
+    # Formulário de lançamento de nota
     form = NotaForm()
     form.fields['aluno'].queryset = alunos
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = NotaForm(request.POST)
-        form.fields['aluno'].queryset = alunos  # reafirma a limitação em POST também
+        form.fields['aluno'].queryset = alunos
+
         if form.is_valid():
-            nova_nota = form.save(commit=False)
+            nota = form.save(commit=False)
+            nota.disciplina = disciplinas.first()
+            nota.save()
+            messages.success(request, "Nota lançada!")
+            return redirect("usuarios:professor")
 
-            # Se o professor tem várias disciplinas, idealmente o form permite seleção.
-            # Aqui atribuímos a primeira disciplina do professor como comportamento atual.
-            disciplina_prof = disciplinas_professor.first()
-            if not disciplina_prof:
-                messages.error(request, "Você não possui disciplina cadastrada.")
-                return redirect('professor')
-
-            # Garanto que a nota está sendo lançada apenas para alunos que o professor vê
-            if nova_nota.aluno not in alunos:
-                messages.error(request, "Aluno inválido para suas turmas.")
-                return redirect('professor')
-
-            nova_nota.disciplina = disciplina_prof
-            nova_nota.save()
-            messages.success(request, "Nota lançada com sucesso!")
-            return redirect('professor')
-        else:
-            # mantém o queryset restringido caso o form volte com erros
-            form.fields['aluno'].queryset = alunos
-
-    return render(request, 'professor.html', {
-        'professor': professor,
+    return render(request, "professor.html", {
+        'professor': prof,
+        'disciplinas': disciplinas,
         'turmas': turmas,
         'alunos': alunos,
         'notas': notas,
         'advertencias': advertencias,
-        'form': form
+        'form': form,
     })
 
-# =============================
-#  NOVAS FUNÇÕES: EDITAR / EXCLUIR NOTA
-# =============================
+
+# =====================================================
+# EDITAR / DELETAR NOTA
+# =====================================================
+
+@login_required(login_url='login')
 @grupo_requerido("Professor")
-@login_required(login_url='/login/')
 def editar_nota(request, nota_id):
-    professor = Professor.objects.filter(user=request.user).first()
+    professor = obter_professor_por_user(request.user)
     nota = get_object_or_404(Nota, id=nota_id)
 
-    # assegura que o professor só edita nota de disciplina dele
-    if nota.disciplina.professor != professor:
-        messages.error(request, "Você não tem permissão para editar essa nota.")
-        return redirect('professor')
+    if nota.disciplina.professor != professor and "Direcao" not in request.user.groups.values_list("name", flat=True):
+        messages.error(request, "Sem permissão.")
+        return redirect("usuarios:professor")
+
+    turmas = Turma.objects.filter(disciplinas__professor=nota.disciplina.professor)
+    alunos = Aluno.objects.filter(turmas__in=turmas).distinct()
 
     if request.method == "POST":
         form = NotaForm(request.POST, instance=nota)
-        # limitar alunos do form à turma do professor pode ser aplicado aqui também
+        form.fields['aluno'].queryset = alunos
         if form.is_valid():
             form.save()
-            messages.success(request, "Nota atualizada com sucesso!")
-            return redirect('professor')
+            messages.success(request, "Nota atualizada!")
+            return redirect("usuarios:professor")
     else:
         form = NotaForm(instance=nota)
-        # limitar alunos mostrados ao conjunto de alunos do professor
-        turmas = Turma.objects.filter(disciplinas__professor=professor)
-        alunos = Aluno.objects.filter(turmas__in=turmas).distinct()
         form.fields['aluno'].queryset = alunos
 
-    return render(request, 'editar_nota.html', {
-        'form': form,
-        'nota': nota
-    })
+    return render(request, "editar_nota.html", {'form': form})
 
 
+@login_required(login_url='login')
 @grupo_requerido("Professor")
-@login_required(login_url='/login/')
 def deletar_nota(request, nota_id):
-    professor = Professor.objects.filter(user=request.user).first()
+    professor = obter_professor_por_user(request.user)
     nota = get_object_or_404(Nota, id=nota_id)
 
-    if nota.disciplina.professor != professor:
-        messages.error(request, "Você não tem permissão para excluir essa nota.")
-        return redirect('professor')
+    if nota.disciplina.professor != professor and "Direcao" not in request.user.groups.values_list("name", flat=True):
+        messages.error(request, "Sem permissão.")
+        return redirect("usuarios:professor")
 
-    nota.delete()
-    messages.success(request, "Nota excluída!")
-    return redirect('professor')
+    if request.method == "POST":
+        nota.delete()
+        messages.success(request, "Nota excluída!")
+        return redirect("usuarios:professor")
 
-# =============================
-# SECRETARIA
-# =============================
-@login_required(login_url='/login/')
+    return redirect("usuarios:professor")
+
+
+# =====================================================
+# PAINEL SECRETARIA
+# =====================================================
+
+@login_required(login_url='login')
 @grupo_requerido("Secretaria")
 def secretaria(request):
+    sec = obter_secretaria_por_user(request.user)
 
-    # procura o registro da secretaria pelo usuário conectado
-    secretaria = Secretaria.objects.filter(user=request.user).first()
-
-    # cria automaticamente caso não exista
-    if not secretaria:
-        secretaria = Secretaria.objects.create(
+    if not sec:
+        sec = Secretaria.objects.create(
             user=request.user,
-            nome=request.user.get_full_name() or request.user.username,
+            nome=request.user.username,
             email=request.user.email
         )
 
-    return render(request, 'secretaria.html', {'secretaria': secretaria})
+    return render(request, "secretaria.html", {
+        'secretaria': sec,
+        'alunos': Aluno.objects.all(),
+        'professores': Professor.objects.all(),
+        'disciplinas': Disciplina.objects.all(),
+    })
 
-# =============================
-# CRUD ALUNOS
-# =============================
-@grupo_requerido("Secretaria")
+
+# =====================================================
+# CRUD SECRETARIA — ALUNOS
+# =====================================================
+
+@login_required(login_url='login')
+@grupo_requerido("Secretaria", "Direcao", "Coordenacao")
 def cadastrar_aluno(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = AlunoForm(request.POST)
         if form.is_valid():
             aluno = form.save(commit=False)
 
-            username = slugify(aluno.nome).replace('-', '_')
+            username = slugify(aluno.nome).replace("-", "_")
+            base = username
+            n = 1
+            while User.objects.filter(username=username).exists():
+                username = f"{base}{n}"
+                n += 1
 
-            if User.objects.filter(username=username).exists():
-                messages.error(request, f"O login '{username}' já existe.")
-                return render(request, 'cadastrar_aluno.html', {'form': form})
+            user = User.objects.create_user(
+                username=username,
+                password="Al123456#",
+                email=aluno.email or ""
+            )
 
-            password = "Al123456#"
-            user = User.objects.create_user(username=username, password=password, email=aluno.email)
-            user.groups.add(Group.objects.get(name="Aluno"))
+            try:
+                user.groups.add(Group.objects.get(name="Aluno"))
+            except:
+                pass
 
             aluno.user = user
             aluno.save()
 
-            messages.success(request, f"Aluno '{aluno.nome}' cadastrado! Login: {username}")
-            return redirect('listar_alunos')
+            messages.success(request, f"Aluno cadastrado! Login: {username}")
+            return redirect("usuarios:listar_alunos")
     else:
         form = AlunoForm()
 
-    return render(request, 'cadastrar_aluno.html', {'form': form})
+    return render(request, "cadastrar_aluno.html", {'form': form})
 
-@grupo_requerido("Secretaria")
+
+@login_required(login_url='login')
+@grupo_requerido("Secretaria", "Direcao", "Coordenacao")
 def listar_alunos(request):
-    termo = request.GET.get('q')
+    termo = request.GET.get("q", "")
     alunos = Aluno.objects.filter(nome__icontains=termo) if termo else Aluno.objects.all()
-    return render(request, 'listar_alunos.html', {'alunos': alunos, 'termo': termo})
+    return render(request, "listar_alunos.html", {'alunos': alunos, 'termo': termo})
 
-@grupo_requerido("Secretaria")
+
+@login_required(login_url='login')
+@grupo_requerido("Secretaria", "Direcao", "Coordenacao")
 def editar_aluno(request, id):
     aluno = get_object_or_404(Aluno, id=id)
 
-    if request.method == 'POST':
+    if request.method == "POST":
         form = AlunoForm(request.POST, instance=aluno)
         if form.is_valid():
             form.save()
-            return redirect('listar_alunos')
+            messages.success(request, "Aluno atualizado!")
+            return redirect("usuarios:listar_alunos")
     else:
         form = AlunoForm(instance=aluno)
 
-    return render(request, 'editar_aluno.html', {'form': form, 'aluno': aluno})
+    return render(request, "editar_aluno.html", {'form': form})
 
-@grupo_requerido("Secretaria")
+
+@login_required(login_url='login')
+@grupo_requerido("Secretaria", "Direcao", "Coordenacao")
 def deletar_aluno(request, id):
-    get_object_or_404(Aluno, id=id).delete()
-    return redirect('listar_alunos')
+    aluno = get_object_or_404(Aluno, id=id)
 
-# =============================
-# CRUD PROFESSORES
-# =============================
-@grupo_requerido("Secretaria")
+    if request.method == "POST":
+        aluno.delete()
+        messages.success(request, "Aluno excluído!")
+        return redirect("usuarios:listar_alunos")
+
+    return redirect("usuarios:listar_alunos")
+
+
+# =====================================================
+# CRUD SECRETARIA — PROFESSORES
+# =====================================================
+
+@login_required(login_url='login')
+@grupo_requerido("Secretaria", "Direcao", "Coordenacao")
 def cadastrar_professor(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = ProfessorForm(request.POST)
         if form.is_valid():
-            professor = form.save(commit=False)
+            prof = form.save(commit=False)
 
-            username = slugify(professor.nome).replace('-', '_')
+            username = slugify(prof.nome).replace("-", "_")
+            base = username
+            n = 1
+            while User.objects.filter(username=username).exists():
+                username = f"{base}{n}"
+                n += 1
 
-            if User.objects.filter(username=username).exists():
-                messages.error(request, f"O login '{username}' já existe.")
-                return render(request, 'cadastrar_professor.html', {'form': form})
+            user = User.objects.create_user(
+                username=username,
+                password="Pr123456#",
+                email=prof.email or ""
+            )
 
-            password = "Pr123456#"
-            user = User.objects.create_user(username=username, password=password, email=professor.email)
-            user.groups.add(Group.objects.get(name="Professor"))
+            try:
+                user.groups.add(Group.objects.get(name="Professor"))
+            except:
+                pass
 
-            professor.user = user
-            professor.save()
+            prof.user = user
+            prof.save()
 
             messages.success(request, "Professor cadastrado!")
-            return redirect('listar_professores')
+            return redirect("usuarios:listar_professores")
     else:
         form = ProfessorForm()
 
-    return render(request, 'cadastrar_professor.html', {'form': form})
+    return render(request, "cadastrar_professor.html", {'form': form})
 
-@grupo_requerido("Secretaria")
+
+@login_required(login_url='login')
+@grupo_requerido("Secretaria", "Direcao", "Coordenacao")
 def listar_professores(request):
-    termo = request.GET.get('q')
+    termo = request.GET.get("q", "")
     professores = Professor.objects.filter(nome__icontains=termo) if termo else Professor.objects.all()
-
-    return render(request, 'listar_professor.html', {
+    return render(request, "listar_professor.html", {
         'professores': professores,
         'termo': termo
     })
 
-@grupo_requerido("Secretaria")
+
+@login_required(login_url='login')
+@grupo_requerido("Secretaria", "Direcao", "Coordenacao")
 def editar_professor(request, id):
-    professor = get_object_or_404(Professor, id=id)
-
-    if request.method == 'POST':
-        form = ProfessorForm(request.POST, instance=professor)
-        if form.is_valid():
-            form.save()
-            return redirect('listar_professores')
-    else:
-        form = ProfessorForm(instance=professor)
-
-    return render(request, 'editar_professor.html', {'form': form, 'professor': professor})
-
-@grupo_requerido("Secretaria")
-def deletar_professor(request, id):
-    get_object_or_404(Professor, id=id).delete()
-    return redirect('listar_professores')
-
-# =============================
-# ADVERTÊNCIAS
-# =============================
-@grupo_requerido("Coordenacao")
-def editar_advertencia(request, id):
-    advertencia = get_object_or_404(Advertencia, id=id)
+    prof = get_object_or_404(Professor, id=id)
 
     if request.method == "POST":
-        form = AdvertenciaForm(request.POST, instance=advertencia)
+        form = ProfessorForm(request.POST, instance=prof)
         if form.is_valid():
             form.save()
-            messages.success(request, "Advertência atualizada!")
-            return redirect('coordenacao')
+            messages.success(request, "Professor atualizado!")
+            return redirect("usuarios:listar_professores")
     else:
-        form = AdvertenciaForm(instance=advertencia)
+        form = ProfessorForm(instance=prof)
 
-    return render(request, "editar_advertencia.html", {
-        "form": form,
-        "advertencia": advertencia
-    })
+    return render(request, "editar_professor.html", {'form': form})
 
-@grupo_requerido("Coordenacao")
-def deletar_advertencia(request, id):
-    get_object_or_404(Advertencia, id=id).delete()
-    messages.success(request, "Advertência excluída!")
-    return redirect('coordenacao')
 
-# =============================
-# TURMAS
-# =============================
-@grupo_requerido("Coordenacao")
-def cadastrar_turma(request):
-    if request.method == 'POST':
-        form = TurmaForm(request.POST)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Turma criada!")
-            return redirect('painel_admin_coordenacao')
-    else:
-        form = TurmaForm()
+@login_required(login_url='login')
+@grupo_requerido("Secretaria", "Direcao", "Coordenacao")
+def deletar_professor(request, id):
+    prof = get_object_or_404(Professor, id=id)
 
-    return render(request, 'cadastrar_turma.html', {'form': form})
+    if request.method == "POST":
+        prof.delete()
+        messages.success(request, "Professor excluído!")
+        return redirect("usuarios:listar_professores")
 
-@grupo_requerido("Coordenacao")
-def editar_turma(request, id):
-    turma = get_object_or_404(Turma, id=id)
+    return redirect("usuarios:listar_professores")
 
-    if request.method == 'POST':
-        form = TurmaForm(request.POST, instance=turma)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Turma atualizada!")
-            return redirect('painel_admin_coordenacao')
-    else:
-        form = TurmaForm(instance=turma)
 
-    return render(request, 'editar_turma.html', {'form': form, 'turma': turma})
+# =====================================================
+# CRUD SECRETARIA — DISCIPLINAS
+# =====================================================
 
-@grupo_requerido("Coordenacao")
-def deletar_turma(request, id):
-    get_object_or_404(Turma, id=id).delete()
-    messages.success(request, "Turma excluída!")
-    return redirect('painel_admin_coordenacao')
-
-# =============================
-#DISCIPLINAS
-# ============================= 
-@grupo_requerido("Coordenacao")
+@login_required(login_url='login')
+@grupo_requerido("Secretaria", "Direcao", "Coordenacao")
 def cadastrar_disciplina(request):
-    if request.method == 'POST':
+    if request.method == "POST":
         form = DisciplinaForm(request.POST)
         if form.is_valid():
             form.save()
             messages.success(request, "Disciplina criada!")
-            return redirect('painel_admin_coordenacao')
+            return redirect("usuarios:secretaria")
     else:
         form = DisciplinaForm()
 
-    return render(request, 'cadastrar_disciplina.html', {'form': form})
+    return render(request, "cadastrar_disciplina.html", {'form': form})
 
-@grupo_requerido("Coordenacao")
+
+@login_required(login_url='login')
+@grupo_requerido("Secretaria", "Direcao", "Coordenacao")
 def editar_disciplina(request, id):
-    disciplina = get_object_or_404(Disciplina, id=id)
+    disc = get_object_or_404(Disciplina, id=id)
 
-    if request.method == 'POST':
-        form = DisciplinaForm(request.POST, instance=disciplina)
+    if request.method == "POST":
+        form = DisciplinaForm(request.POST, instance=disc)
         if form.is_valid():
             form.save()
             messages.success(request, "Disciplina atualizada!")
-            return redirect('painel_admin_coordenacao')
+            return redirect("usuarios:secretaria")
     else:
-        form = DisciplinaForm(instance=disciplina)
+        form = DisciplinaForm(instance=disc)
 
-    return render(request, 'editar_disciplina.html', {'form': form, 'disciplina': disciplina})
+    return render(request, "editar_disciplina.html", {'form': form})
 
-@grupo_requerido("Coordenacao")
+
+@login_required(login_url='login')
+@grupo_requerido("Secretaria", "Direcao", "Coordenacao")
 def deletar_disciplina(request, id):
-    get_object_or_404(Disciplina, id=id).delete()
-    messages.success(request, "Disciplina excluída!")
-    return redirect('painel_admin_coordenacao')
+    disc = get_object_or_404(Disciplina, id=id)
 
-# =============================
-#PAINÉIS
-# =============================
-@login_required(login_url='/login/')
-@grupo_requerido("Coordenacao")
-def painel_administrativo_coordenacao(request):
-    turmas = Turma.objects.prefetch_related(
-        Prefetch('alunos', queryset=Aluno.objects.all()),
-        Prefetch('disciplinas', queryset=Disciplina.objects.all())
-    )
-    professores = Professor.objects.all()
-    alunos = Aluno.objects.all()
-    disciplinas = Disciplina.objects.all()
-    advertencias = Advertencia.objects.all()
-    notas = Nota.objects.all()
+    if request.method == "POST":
+        disc.delete()
+        messages.success(request, "Disciplina excluída!")
+        return redirect("usuarios:secretaria")
 
-    return render(request, 'painel_admin_coordenacao.html', {
-        'turmas': turmas,
-        'professores': professores,
-        'alunos': alunos,
-        'disciplinas': disciplinas,
-        'advertencias': advertencias,
-        'notas': notas
-    })
+    return redirect("usuarios:secretaria")
 
-@login_required(login_url='/login/')
-@grupo_requerido("Direcao")
-def painel_administrativo_direcao(request):
-    professores = Professor.objects.all()
-    alunos = Aluno.objects.all()
-    advertencias = Advertencia.objects.all()
-    notas = Nota.objects.all()
 
-    return render(request, 'direcao.html', {
-        'professores': professores,
-        'alunos': alunos,
-        'advertencias': advertencias,
-        'notas': notas
-    })
+# =====================================================
+# PAINEL COORDENAÇÃO
+# =====================================================
 
-# =============================
-#COORDENAÇÃO
-# =============================
-@login_required(login_url='/login/')
+@login_required(login_url='login')
 @grupo_requerido("Coordenacao")
 def coordenacao(request):
-    return redirect('painel_admin_coordenacao')
+    coordenador = Coordenador.objects.filter(user=request.user).first()
 
-# =============================
-#DIREÇÃO
-# =============================
-@login_required(login_url='/login/')
+    if not coordenador:
+        coordenador = Coordenador.objects.create(
+            user=request.user,
+            nome=request.user.username,
+            email=request.user.email
+        )
+
+    return render(request, "coordenacao.html", {
+        'coordenador': coordenador,
+        'turmas': Turma.objects.all(),
+        'professores': Professor.objects.all(),
+        'alunos': Aluno.objects.all(),
+        'disciplinas': Disciplina.objects.all(),
+        'advertencias': Advertencia.objects.all(),
+        'notas': Nota.objects.all(),
+    })
+
+
+# =====================================================
+# CRUD COORDENAÇÃO — TURMAS
+# =====================================================
+
+@login_required(login_url='login')
+@grupo_requerido("Coordenacao", "Direcao")
+def cadastrar_turma(request):
+    if request.method == "POST":
+        form = TurmaForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Turma criada!")
+            return redirect("/usuarios/coordenacao/?sec=sec-turmas")
+    else:
+        form = TurmaForm()
+
+    return render(request, "cadastrar_turma.html", {'form': form})
+
+
+@login_required(login_url='login')
+@grupo_requerido("Coordenacao", "Direcao")
+def editar_turma(request, id):
+    turma = get_object_or_404(Turma, id=id)
+
+    if request.method == "POST":
+        form = TurmaForm(request.POST, instance=turma)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Turma atualizada!")
+            return redirect("/usuarios/coordenacao/?sec=sec-turmas")
+    else:
+        form = TurmaForm(instance=turma)
+
+    return render(request, "editar_turma.html", {'form': form})
+
+
+@login_required(login_url='login')
+@grupo_requerido("Coordenacao", "Direcao")
+def deletar_turma(request, id):
+    turma = get_object_or_404(Turma, id=id)
+
+    if request.method == "POST":
+        turma.delete()
+        messages.success(request, "Turma excluída!")
+        return redirect("/usuarios/coordenacao/?sec=sec-turmas")
+
+    return redirect("/usuarios/coordenacao/?sec=sec-turmas")
+
+
+# =====================================================
+# CRUD COORDENAÇÃO — ADVERTÊNCIAS
+# =====================================================
+
+@login_required(login_url='login')
+@grupo_requerido("Coordenacao", "Direcao")
+def cadastrar_advertencia(request):
+    coordenador = Coordenador.objects.filter(user=request.user).first()
+    if not coordenador:
+        messages.error(request, "Coordenador não encontrado.")
+        return redirect("usuarios:coordenacao")
+
+    if request.method == "POST":
+        form = AdvertenciaForm(request.POST)
+        if form.is_valid():
+            adv = form.save(commit=False)
+            adv.coordenador = coordenador.user
+            adv.save()
+            messages.success(request, "Advertência criada!")
+            return redirect("/usuarios/coordenacao/?sec=sec-advertencias")
+    else:
+        form = AdvertenciaForm()
+
+    return render(request, "cadastrar_advertencia.html", {'form': form})
+
+
+@login_required(login_url='login')
+@grupo_requerido("Coordenacao", "Direcao")
+def editar_advertencia(request, id):
+    adv = get_object_or_404(Advertencia, id=id)
+
+    if request.method == "POST":
+        form = AdvertenciaForm(request.POST, instance=adv)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Advertência atualizada!")
+            return redirect("/usuarios/coordenacao/?sec=sec-advertencias")
+    else:
+        form = AdvertenciaForm(instance=adv)
+
+    return render(request, "editar_advertencia.html", {'form': form})
+
+
+@login_required(login_url='login')
+@grupo_requerido("Coordenacao", "Direcao")
+def deletar_advertencia(request, id):
+    adv = get_object_or_404(Advertencia, id=id)
+
+    if request.method == "POST":
+        adv.delete()
+        messages.success(request, "Advertência excluída!")
+        return redirect("/usuarios/coordenacao/?sec=sec-advertencias")
+
+    return redirect("/usuarios/coordenacao/?sec=sec-advertencias")
+
+
+# =====================================================
+# EDITAR COORDENADOR
+# =====================================================
+
+@login_required(login_url='login')
+@grupo_requerido("Coordenacao")
+def editar_coordenador(request, coordenador_id=None):
+    if coordenador_id:
+        coord = get_object_or_404(Coordenador, id=coordenador_id)
+    else:
+        coord = get_object_or_404(Coordenador, user=request.user)
+
+    if request.method == "POST":
+        form = coordenadorForm(request.POST, instance=coord)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Informações atualizadas!")
+            return redirect("/usuarios/coordenacao/?sec=sec-info")
+    else:
+        form = coordenadorForm(instance=coord)
+
+    return render(request, "editar_coordenador.html", {"form": form})
+
+
+# =====================================================
+# PAINEL DIREÇÃO
+# =====================================================
+
+@login_required(login_url='login')
 @grupo_requerido("Direcao")
 def direcao(request):
-
-    # Criar registro do diretor automaticamente caso não exista
-    diretor = Diretor.objects.filter(user=request.user).first()
+    diretor = obter_diretor_por_user(request.user)
 
     if not diretor:
         diretor = Diretor.objects.create(
             user=request.user,
-            nome=request.user.get_full_name() or request.user.username,
+            nome=request.user.username,
             email=request.user.email
         )
 
-    professores = Professor.objects.all()
-    alunos = Aluno.objects.all()
-    disciplinas = Disciplina.objects.all()
-    turmas = Turma.objects.all()
-    notas = Nota.objects.all()
-    advertencias = Advertencia.objects.all()
-
-    return render(request, 'direcao.html', {
+    return render(request, "direcao.html", {
         'diretor': diretor,
-        'professores': professores,
-        'alunos': alunos,
-        'disciplinas': disciplinas,
-        'turmas': turmas,
-        'notas': notas,
-        'advertencias': advertencias,
+        'professores': Professor.objects.all(),
+        'alunos': Aluno.objects.all(),
+        'disciplinas': Disciplina.objects.all(),
+        'turmas': Turma.objects.all(),
+        'notas': Nota.objects.all(),
+        'advertencias': Advertencia.objects.all(),
+        'form': DiretorForm(instance=diretor),
     })
 
+
+@login_required(login_url='login')
 @grupo_requerido("Direcao")
 def editar_diretor(request):
-    diretor = Diretor.objects.filter(user=request.user).first()
+    diretor = obter_diretor_por_user(request.user)
 
     if not diretor:
         messages.error(request, "Diretor não encontrado.")
-        return redirect('direcao')
+        return redirect("usuarios:direcao")
 
     if request.method == "POST":
         form = DiretorForm(request.POST, instance=diretor)
         if form.is_valid():
             form.save()
-            messages.success(request, "Informações atualizadas com sucesso!")
-            return redirect('direcao')
+            messages.success(request, "Informações atualizadas!")
+            return redirect("usuarios:direcao")
     else:
         form = DiretorForm(instance=diretor)
 
-    return render(request, 'editar_diretor.html', {'form': form, 'diretor': diretor})
-
-# =============================
-# REDIRECIONAR APÓS LOGIN
-# =============================
-def redirecionar_usuario(request):
-    user = request.user
-
-    if not user.is_authenticated:
-        return redirect('login')
-
-    grupo = user.groups.first()
-
-    if not grupo:
-        return redirect('login')
-
-    if grupo.name == "Aluno":
-        return redirect('aluno')
-
-    if grupo.name == "Professor":
-        return redirect('professor')
-
-    if grupo.name == "Secretaria":
-        return redirect('secretaria')
-
-    if grupo.name == "Coordenacao":
-        return redirect('coordenacao')
-
-    if grupo.name == "Direcao":
-        return redirect('direcao')
-
-    return redirect('login')
+    return render(request, "editar_diretor.html", {'form': form})

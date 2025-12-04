@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1 style="text-align: center;">Editar Disciplina: {{ disciplina.nome }}</h1>
+
+<form style="text-align: center;" method="POST">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Salvar</button>
+</form>
+
+<p style="text-align: center;">
+    <a href="{{ request.META.HTTP_REFERER|default:'/' }}">Voltar</a>
+</p>
+{% endblock %}

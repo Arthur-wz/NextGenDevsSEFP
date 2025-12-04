@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
+
 <h1 style="text-align: center;">Cadastrar Professor</h1>
 
 {% if messages %}
@@ -16,7 +17,10 @@
     <button type="submit">Salvar</button>
 </form>
 
-<p style="text-align: center;">
-    <a href="{% url 'secretaria' %}">Voltar</a>
+<p style="text-align: center; margin-top: 10px;">
+    <a href="{{ request.META.HTTP_REFERER|default:'/usuarios/secretaria/' }}">
+        Voltar
+    </a>
 </p>
+
 {% endblock %}

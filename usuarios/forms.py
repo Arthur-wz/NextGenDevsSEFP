@@ -1,5 +1,5 @@
 from django import forms
-from .models import Aluno, Professor, Disciplina, Turma, Nota, Advertencia, Secretaria, Diretor
+from .models import Aluno, Professor, Disciplina, Turma, Nota, Advertencia, Secretaria, Diretor, Coordenador
 
 class AlunoForm(forms.ModelForm):
     class Meta:
@@ -22,7 +22,10 @@ class AlunoForm(forms.ModelForm):
 class ProfessorForm(forms.ModelForm):
     class Meta:
         model = Professor
-        fields = ['nome', 'email', 'disciplina']
+        fields = ['nome', 'email', 'disciplina', 'turmas']
+        widgets = {
+            'turmas': forms.CheckboxSelectMultiple(),
+        }
 
 class NotaForm(forms.ModelForm):
     class Meta:
@@ -35,7 +38,14 @@ class NotaForm(forms.ModelForm):
 class AdvertenciaForm(forms.ModelForm):
     class Meta:
         model = Advertencia
-        fields = ['aluno', 'motivo', 'status']
+        fields = [
+            'aluno',
+            'motivo',
+            'responsavel_presente',
+            'descricao_ocorrido',
+            'status'
+        ]
+
 
 class TurmaForm(forms.ModelForm):
     class Meta:
@@ -62,3 +72,7 @@ class DiretorForm(forms.ModelForm):
         model = Diretor
         fields = ['nome', 'email', 'telefone', 'cargo', 'observacoes', 'cpf']
 
+class coordenadorForm(forms.ModelForm):
+    class Meta:
+        model = Coordenador
+        fields = ['nome', 'email', 'telefone', 'setor', 'observacoes']

@@ -1,76 +1,370 @@
-<body style="background: linear-gradient(to right,rgb(30, 0, 255),blueviolet);"> 
-{% extends 'base.html' %}
+{% extends "base.html" %}
+{% load static %}
+
 {% block content %}
 
-<h1 style="text-align:center;">Painel da Coordenação</h1>
+<style>
+    .painel-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
 
-<a href="{% url 'painel_admin_coordenacao' %}" 
-   style="display:block; text-align:center; margin:10px auto; padding:10px; width:200px;
-          background:#007bff; color:white; text-decoration:none; border-radius:8px;">
-    Painel Administrativo
-</a>
+    .painel-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
 
-{% if messages %}
-    <ul style="color: green; text-align:center; list-style:none;">
-        {% for message in messages %}
-            <li>{{ message }}</li>
-        {% endfor %}
-    </ul>
-{% endif %}
+    .painel-buttons button {
+        padding: 10px 18px;
+        border: none;
+        background: #1e3a8a;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+    }
 
-<!-- Formulário -->
-<h3 style="text-align:center;">Registrar Nova Advertência</h3>
-<form method="POST" style="text-align:center;">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Salvar</button>
-</form>
+    .painel-buttons button:hover {
+        background: #3b82f6;
+    }
 
-<form method="get" style="text-align:center; margin-bottom:15px;">
-    <select name="status">
-        <option value="">Todas</option>
-        <option value="em_andamento" {% if request.GET.status == 'em_andamento' %}selected{% endif %}>Em andamento</option>
-        <option value="finalizada" {% if request.GET.status == 'finalizada' %}selected{% endif %}>Finalizadas</option>
-    </select>
-    <button type="submit">Filtrar</button>
-</form>
+    .section {
+        display: none;
+        padding: 15px;
+        background: #f3f4f6;
+        border-radius: 6px;
+        margin-bottom: 20px;
+    }
 
-<hr>
+    .section.active {
+        display: block;
+    }
 
-<!-- Lista de Advertências -->
-<h3 style="text-align:center;">Advertências Registradas</h3>
-<table border="1" style="margin:auto; text-align:center;">
-    <tr>
-        <th>Aluno</th>
-        <th>Motivo</th>
-        <th>Data</th>
-        <th>Coordenador</th>
-        <th>Status</th>
-        <th>Ações</th>
-    </tr>
-    {% for adv in advertencias %}
-        <tr>
-            <td>{{ adv.aluno.nome }}</td>
-            <td>{{ adv.motivo }}</td>
-            <td>{{ adv.data }}</td>
-            <td>
-                {% if adv.coordenador %}
-                {{ adv.coordenador.get_full_name|default:adv.coordenador.username }}
-                {% else %}
-                <em>Não informado</em>
-                {% endif %}
-            </td>
-            <td>{{ adv.get_status_display }}</td>
-            <td>
-                <a href="{% url 'editar_advertencia' adv.id %}">Editar</a> |
-                <a href="{% url 'deletar_advertencia' adv.id %}" onclick="return confirm('Excluir esta advertência?')">Excluir</a>
-            </td>
-        </tr>
-    {% empty %}
-        <tr><td colspan="6">Nenhuma advertência registrada.</td></tr>
-    {% endfor %}
-</table>
+    .info-card {
+        background: white;
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 10px;
+    }
 
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 6px;
+        overflow: hidden;
+        margin-bottom: 10px;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #d1d5db;
+        text-align: center;
+    }
+
+    th {
+        background: #e2e8f0;
+    }
+
+    .btn {
+        padding: 4px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        text-decoration: none;
+        color: white;
+    }
+
+    .btn-edit { background: #f59e0b; }
+    .btn-delete { background: #dc2626; }
+    .btn-new { background: #16a34a; margin-bottom: 8px; display:inline-block; }
+</style>
+
+<div class="painel-container">
+
+    <h1>Painel da Coordenação</h1>
+    <h3>Bem-vindo(a), {{ coordenador.nome }}</h3>
+
+    <!-- BOTÕES DE NAVEGAÇÃO -->
+    <div class="painel-buttons">
+        <button onclick="mostrar('sec-info')">Suas Informações</button>
+        <button onclick="mostrar('sec-turmas')">Turmas</button>
+        <button onclick="mostrar('sec-professores')">Professores</button>
+        <button onclick="mostrar('sec-alunos')">Alunos</button>
+        <button onclick="mostrar('sec-disciplinas')">Disciplinas</button>
+        <button onclick="mostrar('sec-advertencias')">Advertências</button>
+        <button onclick="mostrar('sec-notas')">Notas</button>
+    </div>
+
+
+    <!-- INFORMAÇÕES PESSOAIS -->
+    <div id="sec-info" class="section">
+        <h2>Suas Informações</h2>
+
+        {% if coordenador.nome %}
+            <div class="info-card"><strong>Nome:</strong> {{ coordenador.nome }}</div>
+        {% endif %}
+
+        {% if coordenador.email %}
+            <div class="info-card"><strong>Email:</strong> {{ coordenador.email }}</div>
+        {% endif %}
+
+        {% if coordenador.telefone %}
+            <div class="info-card"><strong>Telefone:</strong> {{ coordenador.telefone }}</div>
+        {% endif %}
+
+        {% if coordenador.setor %}
+            <div class="info-card"><strong>Setor:</strong> {{ coordenador.setor }}</div>
+        {% endif %}
+
+        {% if coordenador.observacoes %}
+            <div class="info-card"><strong>Observações:</strong> {{ coordenador.observacoes }}</div>
+        {% endif %}
+
+        <a href="{% url 'usuarios:editar_coordenador' coordenador.id %}" class="btn btn-edit">
+            Editar Informações
+        </a>
+    </div>
+
+    <!-- TURMAS -->
+    <div id="sec-turmas" class="section">
+        <h2>Turmas</h2>
+
+        <a href="{% url 'usuarios:cadastrar_turma' %}" class="btn btn-new">+ Cadastrar Turma</a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Turma</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for t in turmas %}
+                <tr>
+                    <td>{{ t.nome }}</td>
+                    <td>
+                        <a href="{% url 'usuarios:editar_turma' t.id %}" class="btn btn-edit">Editar</a>
+
+                        <form action="{% url 'usuarios:deletar_turma' t.id %}"
+                              method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button class="btn btn-delete"
+                                onclick="return confirm('Excluir turma?')">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="2">Nenhuma turma cadastrada.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PROFESSORES -->
+    <div id="sec-professores" class="section">
+        <h2>Professores</h2>
+
+        <a href="{% url 'usuarios:cadastrar_professor' %}" class="btn btn-new">+ Cadastrar Professor</a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Disciplina</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for p in professores %}
+                <tr>
+                    <td>{{ p.nome }}</td>
+                    <td>{{ p.email }}</td>
+                    <td>{{ p.disciplina }}</td>
+                    <td>
+                        <a class="btn btn-edit" href="{% url 'usuarios:editar_professor' p.id %}">Editar</a>
+
+                        <form action="{% url 'usuarios:deletar_professor' p.id %}"
+                              method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button class="btn btn-delete"
+                                onclick="return confirm('Excluir professor?')">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4">Nenhum professor encontrado.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ALUNOS -->
+    <div id="sec-alunos" class="section">
+        <h2>Alunos</h2>
+
+        <a href="{% url 'usuarios:cadastrar_aluno' %}" class="btn btn-new">+ Cadastrar Aluno</a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Matrícula</th>
+                    <th>Turma</th>
+                    <th>Email</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for a in alunos %}
+                <tr>
+                    <td>{{ a.nome }}</td>
+                    <td>{{ a.matricula }}</td>
+                    <td>{{ a.turma }}</td>
+                    <td>{{ a.email }}</td>
+                    <td>
+                        <a class="btn btn-edit" href="{% url 'usuarios:editar_aluno' a.id %}">Editar</a>
+
+                        <form action="{% url 'usuarios:deletar_aluno' a.id %}"
+                              method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button class="btn btn-delete"
+                                onclick="return confirm('Excluir aluno?')">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="5">Nenhum aluno encontrado.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- DISCIPLINAS -->
+    <div id="sec-disciplinas" class="section">
+        <h2>Disciplinas</h2>
+
+        <a href="{% url 'usuarios:cadastrar_disciplina' %}" class="btn btn-new">+ Cadastrar Disciplina</a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Professor</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for d in disciplinas %}
+                <tr>
+                    <td>{{ d.nome }}</td>
+                    <td>{{ d.professor.nome }}</td>
+                    <td>
+                        <a class="btn btn-edit" href="{% url 'usuarios:editar_disciplina' d.id %}">Editar</a>
+
+                        <form action="{% url 'usuarios:deletar_disciplina' d.id %}"
+                              method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button class="btn btn-delete"
+                                onclick="return confirm('Excluir disciplina?')">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="3">Nenhuma disciplina encontrada.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ADVERTÊNCIAS -->
+    <div id="sec-advertencias" class="section">
+        <h2>Advertências</h2>
+
+        <a href="{% url 'usuarios:cadastrar_advertencia' %}" class="btn btn-new">
+            + Registrar Advertência
+        </a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Aluno</th>
+                    <th>Motivo</th>
+                    <th>Status</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for adv in advertencias %}
+                <tr>
+                    <td>{{ adv.aluno.nome }}</td>
+                    <td>{{ adv.motivo }}</td>
+                    <td>{{ adv.get_status_display }}</td>
+                    <td>
+                        <a class="btn btn-edit" href="{% url 'usuarios:editar_advertencia' adv.id %}">
+                            Editar
+                        </a>
+
+                        <form action="{% url 'usuarios:deletar_advertencia' adv.id %}"
+                              method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button class="btn btn-delete"
+                                onclick="return confirm('Excluir advertência?')">Excluir</button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4">Nenhuma advertência encontrada.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- NOTAS -->
+    <div id="sec-notas" class="section">
+        <h2>Notas</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Aluno</th>
+                    <th>Disciplina</th>
+                    <th>Bimestre</th>
+                    <th>Nota</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for n in notas %}
+                <tr>
+                    <td>{{ n.aluno.nome }}</td>
+                    <td>{{ n.disciplina.nome }}</td>
+                    <td>{{ n.get_bimestre_display }}</td>
+                    <td>{{ n.valor }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4">Nenhuma nota registrada.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<script>
+function mostrar(id) {
+    localStorage.setItem("aba_coordenacao", id);
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+
+window.onload = function() {
+    const aba = localStorage.getItem("aba_coordenacao") || "sec-info";
+    mostrar(aba);
+};
+</script>
 
 {% endblock %}
-</body>

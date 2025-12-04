@@ -1,14 +1,17 @@
 {% extends 'base.html' %}
-{% block content %}
-<h2 style="text-align:center;">Editar Nota</h2>
 
-<form method="POST" style="text-align:center;">
+{% block content %}
+<h2>Editar Nota</h2>
+
+<form method="post">
     {% csrf_token %}
     {{ form.as_p }}
-    <button type="submit">Salvar Alterações</button>
+
+    <button type="submit" class="btn btn-primary">Salvar alterações</button>
+
+    <a href="{% url 'usuarios:professor' %}" class="btn btn-secondary">
+        Cancelar
+    </a>
 </form>
 
-<p style="text-align:center;">
-    <a href="{% url 'professor' %}">Voltar</a>
-</p>
 {% endblock %}

@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1 style="text-align:center;">Editar Informações da Direção</h1>
+
+<form method="POST" style="text-align:center;">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Salvar Alterações</button>
+</form>
+
+<p style="text-align:center;">
+    <a href="{{ request.META.HTTP_REFERER|default:'/usuarios/direcao/' }}">Voltar</a>
+</p>
+
+{% endblock %}
