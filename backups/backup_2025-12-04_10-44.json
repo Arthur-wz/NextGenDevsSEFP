@@ -1941,7 +1941,7 @@
   "pk": 26,
   "fields": {
     "password": "pbkdf2_sha256$1000000$2XtmmLJSw7bwRHAFMwHwun$TyWfjD/GvKWNfRxlcU+rR/jGSVNTBpYE0DwGJ8zNRSI=",
-    "last_login": "2025-12-03T20:16:09.833Z",
+    "last_login": "2025-12-04T13:43:23.443Z",
     "is_superuser": false,
     "username": "jorge",
     "first_name": "",
@@ -2238,10 +2238,18 @@
 },
 {
   "model": "sessions.session",
+  "pk": "lpvd2xke8clk0oej33gx9rm5lqoo9co0",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlmOE_8o6TmDtd714gCypTipEHeHSCmgfTPzXiLCtpa49bzEmcRZaHH63RLgI9cd0B3qrUlsdV3mJHdFHrTLa6P8vBzu30GBXr614YFwAIWePQOOPumgyaXkVCAyFtII5AwF5UYMPDmwRKwVoDWMehLvDw2wOPI:1vQwx5:zzKWhMI_9RcwqXgKPvj1QPrWUwQ2hIOthkcCmpW5fVY",
+    "expire_date": "2025-12-18T00:12:07.441Z"
+  }
+},
+{
+  "model": "sessions.session",
   "pk": "lzcb6bc4dyhmr0ue0jjxg2qpuk65uhxy",
   "fields": {
-    "session_data": ".eJxVjEEOwiAQRe_C2hBKCzPj0r1nIDNApWpoUtqV8e7apAvd_vfef6nA21rC1vISpqTOynp1-h2F4yPXnaQ719us41zXZRK9K_qgTV_nlJ-Xw_07KNzKt0YGy8woRkzvSBIQ9ilKRwNRJIOQGJ0YBznbUUh8N1gATygOcCT1_gANSzfR:1vNtyb:hXY_tJzd5lgkCDXRagS8AuQi3UYPuh5dVJ8Nugn6qqs",
-    "expire_date": "2025-12-09T14:25:05.701Z"
+    "session_data": ".eJxVjEEOwiAQRe_C2hBKCzPj0r1nIDNApWpoUtqV8e7apAvd_vfef6nA21rC1vISpqTOynp1-h2F4yPXnaQ719us41zXZRK9K_qgTV_nlJ-Xw_07KNzKt0YGy8woRkzvSBIQ9ilKRwNRJIOQGJ0YBznbUUh8N1gATygOcCT1_gANSzfR:1vR9cB:bokWkE90ytJl7DbArtBrstIjPnsFQDtWwRRBnS8swzA",
+    "expire_date": "2025-12-18T13:43:23.469Z"
   }
 },
 {
@@ -2258,6 +2266,14 @@
   "fields": {
     "session_data": ".eJxVjEEOwiAQRe_C2pCBFDq4dO8ZyDCAVA0kpV0Z764kXej2v_f-S3jat-L3nla_RHEW2onT7xiIH6kOEu9Ub01yq9u6BDkUedAury2m5-Vw_w4K9TJqpSwiUUKIThmdZofAyWk2kCEEiznyFBgBzGwnJGty_soKjFYOJvH-AAWtN34:1vGIfW:RdLkFBx2f7Sw4PZjt9EHfTCW9_dzgc871lGPH5J1F78",
     "expire_date": "2025-11-18T15:09:58.640Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "yb7jj605xd894zjsa3iz8a1w8ot7tgvm",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hBKCzPj0r1nIDNApWpoUtqV8e7apAvd_vfef6nA21rC1vISpqTOynp1-h2F4yPXnaQ719us41zXZRK9K_qgTV_nlJ-Xw_07KNzKt0YGy8woRkzvSBIQ9ilKRwNRJIOQGJ0YBznbUUh8N1gATygOcCT1_gANSzfR:1vON1z:525aZUgDeKPjccqkHoqNz724sq5XXpHpWWAcHiRu7cQ",
+    "expire_date": "2025-12-10T21:26:31.436Z"
   }
 },
 {
@@ -2443,6 +2459,20 @@
   }
 },
 {
+  "model": "usuarios.coordenador",
+  "pk": 2,
+  "fields": {
+    "user": 7,
+    "nome": "valter",
+    "email": "",
+    "telefone": null,
+    "setor": null,
+    "observacoes": null,
+    "cpf": null,
+    "cargo": null
+  }
+},
+{
   "model": "usuarios.secretaria",
   "pk": 1,
   "fields": {
@@ -2479,7 +2509,7 @@
     "email": "",
     "cpf": null,
     "telefone": null,
-    "cargo": "DireÃ§Ã£o",
+    "cargo": "Direção",
     "observacoes": null
   }
 }

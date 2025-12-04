@@ -5,21 +5,23 @@
 
 {% block extra_head %}
 <style>
-  body { background: linear-gradient(to right, #5dbde6, #004aad); color:#fff; }
+
+
+ 
   .login-box{max-width:380px;margin:40px auto;padding:28px;border-radius:10px;background:rgba(255,255,255,0.06);}
   label{display:block;margin-bottom:6px;font-weight:600;}
-  input{width:100%;padding:8px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.04);color:#fff;}
-  .submit-btn{background:#fff;color:#004aad;padding:8px 12px;border-radius:8px;border:none;cursor:pointer;}
+  input{width:100%;padding:8px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.04);color:black;}
+  .submit-btn{color:blueviolet;padding:8px 12px;border-radius:8px;border:none;cursor:pointer;}
 </style>
 {% endblock %}
 
 {% block content %}
 <div class="login-box">
-  <h2 style="text-align:center;color:#fff;margin-top:0;">SEFP — Login</h2>
+  <h2 style="text-align:center;color:whitesmoke;margin-top:0;">SEFP — Login</h2>
   <form method="post" novalidate>
     {% csrf_token %}
     {% if form.non_field_errors %}
-      <div class="card" style="background:#ffdede;">{{ form.non_field_errors }}</div>
+      <div class="card" style="background:transparent;">{{ form.non_field_errors }}</div>
     {% endif %}
     <label for="{{ form.username.id_for_label }}">Usuário</label>
     {{ form.username }}
