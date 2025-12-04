@@ -11,7 +11,7 @@
         <button type="submit">Salvar Alterações</button>
     </form>
 
-    <p><a href="{% url 'listar_professores' %}">Voltar</a></p>
+    <p><a href="{{ request.META.HTTP_REFERER|default:'/' }}">Voltar</a></p>
 {% endblock %}
 
 

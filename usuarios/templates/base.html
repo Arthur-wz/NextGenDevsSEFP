@@ -1,101 +1,66 @@
+{# templates/base.html #}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <title>{% block title %}SEFP{% endblock %}</title>
-
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    {% block extra_head %}{% endblock %}
     <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: Arial, sans-serif;
-            background: none;
-            color: black;
-        }
-
-        nav {
-            padding: 10px;
-            border-bottom: 1px solid #ccc;
-        }
-
-        nav ul {
-            display: flex;
-            gap: 20px;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            align-items: center;
-        }
-
-        nav a {
-            text-decoration: none;
-            color: black;
-        }
-
-        nav a:hover {
-            text-decoration: underline;
-        }
-
-        .logout-btn {
-            background: none;
-            border: none;
-            color: black;
-            cursor: pointer;
-        }
-
-        .logout-btn:hover {
-            text-decoration: underline;
-        }
-
-        .content {
-            width: 95%;
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 10px;
-        }
+        body{font-family:Arial,Helvetica,sans-serif;margin:0;color:#111;background:#fff;}
+        nav{background:#f5f5f5;border-bottom:1px solid #ddd;padding:10px 20px;}
+        nav ul{margin:0;padding:0;list-style:none;display:flex;gap:12px;align-items:center;}
+        nav a{color:#111;text-decoration:none;}
+        nav a:hover{text-decoration:underline;}
+        .container{max-width:1100px;margin:18px auto;padding:10px;}
+        .btn{display:inline-block;padding:6px 10px;border-radius:6px;border:1px solid #666;background:#eee;text-decoration:none;color:#000;}
+        .card{border:1px solid #ddd;padding:12px;border-radius:6px;background:#fff;margin-bottom:12px;}
+        table{width:100%;border-collapse:collapse;}
+        th,td{border:1px solid #ddd;padding:8px;text-align:left;}
     </style>
 </head>
-
 <body>
-
-    {% if user.is_authenticated and request.resolver_match.url_name != 'login' %}
-        <nav>
-            <ul>
-                {% with user.groups.all as grupos %}
+    {% if user.is_authenticated and request.resolver_match.url_name != 'login_puro' %}
+    <nav>
+        <ul>
+            {% comment %} Mostrar link principal conforme grupo {% endcomment %}
+            {% with user.groups.all as grupos %}
+                {% if grupos %}
                     {% for g in grupos %}
                         {% if g.name == "Secretaria" %}
                             <li><a href="{% url 'usuarios:secretaria' %}">Secretaria</a></li>
-
                         {% elif g.name == "Professor" %}
                             <li><a href="{% url 'usuarios:professor' %}">Professor</a></li>
-
                         {% elif g.name == "Aluno" %}
                             <li><a href="{% url 'usuarios:aluno' %}">Aluno</a></li>
-
                         {% elif g.name == "Coordenacao" %}
                             <li><a href="{% url 'usuarios:coordenacao' %}">Coordenação</a></li>
-
                         {% elif g.name == "Direcao" %}
                             <li><a href="{% url 'usuarios:direcao' %}">Direção</a></li>
                         {% endif %}
                     {% endfor %}
-                {% endwith %}
-
-                <!-- Logout -->
-                <li>
-                    <form action="{% url 'logout' %}" method="post" style="display:inline;">
-                        {% csrf_token %}
-                        <button class="logout-btn" type="submit">Sair</button>
-                    </form>
-                </li>
-            </ul>
-        </nav>
+                {% endif %}
+            {% endwith %}
+            <li style="margin-left:auto;">
+                <form action="{% url 'logout' %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button class="btn" type="submit">Sair</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
     {% endif %}
 
-    <div class="content">
-        {% block content %}
-        {% endblock %}
+    <div class="container">
+        {% if messages %}
+            {% for message in messages %}
+                <div class="card" style="background:#fff2d9;border-color:#ffd27a;">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}{% endblock %}
     </div>
 
+    {% block extra_scripts %}{% endblock %}
 </body>
 </html>

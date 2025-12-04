@@ -1,9 +1,14 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 {% block content %}
-<h2>Editar Turma: {{ turma.nome }}</h2>
-<form method="POST">
+<h2 style="text-align:center;">Editar Turma: {{ turma.nome }}</h2>
+
+<form method="POST" style="max-width:600px;margin:auto;">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Salvar Alterações</button>
 </form>
+
+<p style="text-align:center;margin-top:10px;">
+    <a href="{{ request.META.HTTP_REFERER|default:'/' }}">Voltar</a>
+</p>
 {% endblock %}

@@ -98,7 +98,13 @@ class Advertencia(models.Model):
 
     aluno = models.ForeignKey('Aluno', on_delete=models.CASCADE, related_name='advertencias')
     coordenador = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+
     motivo = models.TextField()
+
+    # 🔹 Campos que estavam faltando:
+    responsavel_presente = models.CharField(max_length=100, blank=True, null=True)
+    descricao_ocorrido = models.TextField(blank=True, null=True)
+
     data = models.DateField(auto_now_add=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='em_andamento')
 
@@ -109,7 +115,12 @@ class Coordenador(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     nome = models.CharField(max_length=100)
     email = models.EmailField()
-
+    telefone = models.CharField(max_length=20, blank=True, null=True)
+    setor = models.CharField(max_length=50, blank=True, null=True)
+    observacoes = models.TextField(blank=True, null=True)
+    cpf = models.CharField(max_length=14, blank=True, null=True)
+    cargo = models.CharField(max_length=50, blank=True, null=True)
+    
     def __str__(self):
         return self.nome
 

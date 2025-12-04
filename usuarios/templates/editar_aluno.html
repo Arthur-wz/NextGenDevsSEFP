@@ -9,6 +9,6 @@
 </form>
 
 <p style="text-align: center;">
-    <a href="{% url 'listar_alunos' %}">Voltar</a>
+    <a href="{{ request.META.HTTP_REFERER|default:'/' }}">Voltar</a>
 </p>
 {% endblock %}

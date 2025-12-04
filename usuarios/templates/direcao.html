@@ -1,73 +1,401 @@
 {% extends "base.html" %}
+{% load static %}
+
 {% block content %}
-<div class="container mt-4">
 
-    <h2>Painel da Direção</h2>
-    <hr>
+<style>
+    .painel-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
 
-    <!-- Dados pessoais -->
-    <h4>Seus Dados</h4>
-    <p><b>Nome:</b> {{ diretor.nome }}</p>
-    <p><b>Email:</b> {{ diretor.email }}</p>
-    <a class="btn btn-warning btn-sm" href="{% url 'usuarios:editar_diretor' %}">Editar Dados</a>
-    <hr>
+    .painel-buttons {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
 
-    <ul class="nav nav-tabs">
-        <li class="nav-item"><a class="nav-link active" data-bs-toggle="tab" href="#alunos">Alunos</a></li>
-        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#prof">Professores</a></li>
-        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#turmas">Turmas</a></li>
-        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#disc">Disciplinas</a></li>
-        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#adv">Advertências</a></li>
-        <li class="nav-item"><a class="nav-link" data-bs-toggle="tab" href="#notas">Notas</a></li>
-    </ul>
+    .painel-buttons button {
+        padding: 10px 18px;
+        border: none;
+        background: #1e3a8a;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+    }
 
-    <div class="tab-content mt-3">
+    .painel-buttons button:hover {
+        background: #3b82f6;
+    }
 
-        <div class="tab-pane fade show active" id="alunos">
-            <h3>Alunos</h3>
-            {% for a in alunos %}
-                <p>{{ a.nome }}</p>
-            {% endfor %}
-        </div>
+    .section {
+        display: none;
+        padding: 15px;
+        background: #f3f4f6;
+        border-radius: 6px;
+        margin-bottom: 20px;
+    }
 
-        <div class="tab-pane fade" id="prof">
-            <h3>Professores</h3>
+    .section.active {
+        display: block;
+    }
+
+    .info-card {
+        background: white;
+        padding: 12px;
+        border-radius: 6px;
+        border: 1px solid #e5e7eb;
+        margin-bottom: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #d1d5db;
+        text-align: center;
+    }
+
+    th {
+        background: #e2e8f0;
+    }
+
+    .btn {
+        padding: 4px 10px;
+        border-radius: 5px;
+        font-size: 14px;
+        text-decoration: none;
+        color: white;
+    }
+
+    .btn-edit { background: #f59e0b; }
+    .btn-delete { background: #dc2626; }
+    .btn-new { background: #16a34a; margin-bottom: 8px; display:inline-block; }
+</style>
+
+<div class="painel-container">
+
+    <h1>Painel da Direção</h1>
+    <h3>Bem-vindo(a), {{ diretor.nome }}</h3>
+
+    <!-- BOTÕES -->
+    <div class="painel-buttons">
+        <button onclick="mostrar('sec-info')">Suas Informações</button>
+        <button onclick="mostrar('sec-professores')">Professores</button>
+        <button onclick="mostrar('sec-alunos')">Alunos</button>
+        <button onclick="mostrar('sec-turmas')">Turmas</button>
+        <button onclick="mostrar('sec-disciplinas')">Disciplinas</button>
+        <button onclick="mostrar('sec-advertencias')">Advertências</button>
+        <button onclick="mostrar('sec-notas')">Notas</button>
+    </div>
+
+
+    <!-- ===================== -->
+    <!-- INFORMAÇÕES PESSOAIS -->
+    <!-- ===================== -->
+    <div id="sec-info" class="section active">
+        <h2>Suas Informações</h2>
+
+        <div class="info-card"><strong>Nome:</strong> {{ diretor.nome }}</div>
+        <div class="info-card"><strong>Email:</strong> {{ diretor.email }}</div>
+
+        {% if diretor.telefone %}
+            <div class="info-card"><strong>Telefone:</strong> {{ diretor.telefone }}</div>
+        {% endif %}
+
+        {% if diretor.cargo %}
+            <div class="info-card"><strong>Cargo:</strong> {{ diretor.cargo }}</div>
+        {% endif %}
+
+        {% if diretor.observacoes %}
+            <div class="info-card"><strong>Observações:</strong> {{ diretor.observacoes }}</div>
+        {% endif %}
+
+        <a class="btn btn-edit" href="{% url 'usuarios:editar_diretor' %}">
+            Editar Informações
+        </a>
+    </div>
+
+
+
+    <!-- ============ -->
+    <!-- PROFESSORES -->
+    <!-- ============ -->
+    <div id="sec-professores" class="section">
+        <h2>Professores</h2>
+
+        <a href="{% url 'usuarios:cadastrar_professor' %}" class="btn btn-new">
+            + Cadastrar Professor
+        </a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Disciplina</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
             {% for p in professores %}
-                <p>{{ p.nome }}</p>
-            {% endfor %}
-        </div>
+                <tr>
+                    <td>{{ p.nome }}</td>
+                    <td>{{ p.email }}</td>
+                    <td>{{ p.disciplina }}</td>
+                    <td>
+                        <a class="btn btn-edit" href="{% url 'usuarios:editar_professor' p.id %}">
+                            Editar
+                        </a>
 
-        <div class="tab-pane fade" id="turmas">
-            <h3>Turmas</h3>
+                        <form action="{% url 'usuarios:deletar_professor' p.id %}"
+                              method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button class="btn btn-delete"
+                                    onclick="return confirm('Excluir professor?')">
+                                Excluir
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4">Nenhum professor encontrado.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <!-- ======== -->
+    <!-- ALUNOS -->
+    <!-- ======== -->
+    <div id="sec-alunos" class="section">
+        <h2>Alunos</h2>
+
+        <a href="{% url 'usuarios:cadastrar_aluno' %}" class="btn btn-new">
+            + Cadastrar Aluno
+        </a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Matrícula</th>
+                    <th>Email</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for a in alunos %}
+                <tr>
+                    <td>{{ a.nome }}</td>
+                    <td>{{ a.matricula }}</td>
+                    <td>{{ a.email }}</td>
+
+                    <td>
+                        <a class="btn btn-edit" href="{% url 'usuarios:editar_aluno' a.id %}">
+                            Editar
+                        </a>
+                        <form action="{% url 'usuarios:deletar_aluno' a.id %}"
+                              method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button class="btn btn-delete"
+                                    onclick="return confirm('Excluir aluno?')">
+                                Excluir
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4">Nenhum aluno encontrado.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <!-- ========= -->
+    <!-- TURMAS -->
+    <!-- ========= -->
+    <div id="sec-turmas" class="section">
+        <h2>Turmas</h2>
+
+        <a href="{% url 'usuarios:cadastrar_turma' %}" class="btn btn-new">
+            + Cadastrar Turma
+        </a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Turma</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
             {% for t in turmas %}
-                <p>{{ t.nome }}</p>
-            {% endfor %}
-        </div>
+                <tr>
+                    <td>{{ t.nome }}</td>
 
-        <div class="tab-pane fade" id="disc">
-            <h3>Disciplinas</h3>
+                    <td>
+                        <a href="{% url 'usuarios:editar_turma' t.id %}" class="btn btn-edit">
+                            Editar
+                        </a>
+
+                        <form action="{% url 'usuarios:deletar_turma' t.id %}"
+                              method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button class="btn btn-delete"
+                                    onclick="return confirm('Excluir turma?')">
+                                Excluir
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+            {% empty %}
+                <tr><td colspan="2">Nenhuma turma cadastrada.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <!-- =============== -->
+    <!-- DISCIPLINAS -->
+    <!-- =============== -->
+    <div id="sec-disciplinas" class="section">
+        <h2>Disciplinas</h2>
+
+        <a href="{% url 'usuarios:cadastrar_disciplina' %}" class="btn btn-new">
+            + Cadastrar Disciplina
+        </a>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Disciplina</th>
+                    <th>Professor</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+
+            <tbody>
             {% for d in disciplinas %}
-                <p>{{ d.nome }}</p>
-            {% endfor %}
-        </div>
+                <tr>
+                    <td>{{ d.nome }}</td>
+                    <td>{{ d.professor.nome }}</td>
 
-        <div class="tab-pane fade" id="adv">
-            <h3>Advertências</h3>
+                    <td>
+                        <a href="{% url 'usuarios:editar_disciplina' d.id %}"
+                           class="btn btn-edit">
+                            Editar
+                        </a>
+
+                        <form action="{% url 'usuarios:deletar_disciplina' d.id %}"
+                              method="POST" style="display:inline;">
+                            {% csrf_token %}
+                            <button class="btn btn-delete"
+                                    onclick="return confirm('Excluir disciplina?')">
+                                Excluir
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+
+            {% empty %}
+                <tr><td colspan="3">Nenhuma disciplina cadastrada.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+
+
+    <!-- ================= -->
+    <!-- ADVERTÊNCIAS -->
+    <!-- ================= -->
+    <div id="sec-advertencias" class="section">
+        <h2>Advertências</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Aluno</th>
+                    <th>Motivo</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+
+            <tbody>
             {% for adv in advertencias %}
-                <div class="alert alert-warning">
-                    {{ adv.aluno.nome }} — {{ adv.descricao }}
-                </div>
+                <tr>
+                    <td>{{ adv.aluno.nome }}</td>
+                    <td>{{ adv.motivo }}</td>
+                    <td>{{ adv.get_status_display }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="3">Nenhuma advertência cadastrada.</td></tr>
             {% endfor %}
-        </div>
+            </tbody>
+        </table>
+    </div>
 
-        <div class="tab-pane fade" id="notas">
-            <h3>Notas</h3>
-            {% for nota in notas %}
-                <p>{{ nota.aluno.nome }} — {{ nota.disciplina.nome }} → {{ nota.valor }}</p>
+
+
+    <!-- ====== -->
+    <!-- NOTAS -->
+    <!-- ====== -->
+    <div id="sec-notas" class="section">
+        <h2>Notas</h2>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Aluno</th>
+                    <th>Disciplina</th>
+                    <th>Bimestre</th>
+                    <th>Nota</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            {% for n in notas %}
+                <tr>
+                    <td>{{ n.aluno.nome }}</td>
+                    <td>{{ n.disciplina.nome }}</td>
+                    <td>{{ n.get_bimestre_display }}</td>
+                    <td>{{ n.valor }}</td>
+                </tr>
+            {% empty %}
+                <tr><td colspan="4">Nenhuma nota registrada.</td></tr>
             {% endfor %}
-        </div>
-
+            </tbody>
+        </table>
     </div>
 
 </div>
+
+
+<script>
+function mostrar(id) {
+    document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+}
+</script>
+
 {% endblock %}

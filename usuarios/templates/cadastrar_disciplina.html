@@ -1,9 +1,18 @@
 {% extends 'base.html' %}
 {% block content %}
-<h2>Cadastrar Disciplina</h2>
-<form method="POST">
+
+<h2 style="text-align: center;">Cadastrar Disciplina</h2>
+
+<form style="text-align: center;" method="POST">
     {% csrf_token %}
     {{ form.as_p }}
     <button type="submit">Salvar</button>
 </form>
+
+<p style="text-align: center; margin-top: 10px;">
+    <a href="{{ request.META.HTTP_REFERER|default:'/usuarios/secretaria/' }}">
+        Voltar
+    </a>
+</p>
+
 {% endblock %}
