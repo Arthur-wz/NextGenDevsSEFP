@@ -25,7 +25,7 @@ from .decorators import grupo_requerido
 # =====================================================
 
 def obter_aluno_por_user(user):
-    if not user.is_authenticated:
+    if not user or not user.is_authenticated:
         return None
     aluno = Aluno.objects.filter(user=user).first()
     if not aluno:
@@ -33,19 +33,43 @@ def obter_aluno_por_user(user):
     return aluno
 
 def obter_professor_por_user(user):
-    if not user.is_authenticated:
+    if not user or not user.is_authenticated:
         return None
     return Professor.objects.filter(user=user).first()
 
 def obter_secretaria_por_user(user):
-    if not user.is_authenticated:
+    if not user or not user.is_authenticated:
         return None
     return Secretaria.objects.filter(user=user).first()
 
 def obter_diretor_por_user(user):
-    if not user.is_authenticated:
+    if not user or not user.is_authenticated:
         return None
     return Diretor.objects.filter(user=user).first()
+
+def usuario_tem_grupo(user, nome_grupo):
+    return nome_grupo in user.groups.values_list("name", flat=True)
+
+def redir_painel(request, sec, fallback_reverse=None):
+    """
+    Retorna um redirect para o painel apropriado baseado no grupo do usuário.
+    - se o usuário for Direcao -> /usuarios/direcao/?sec=...
+    - se Coordenacao -> /usuarios/coordenacao/?sec=...
+    - se Secretaria -> /usuarios/secretaria/?sec=...
+    - senão usa fallback_reverse (nome reverse) ou simplesmente redirect para /
+    """
+    if request.user.is_authenticated:
+        grupos = list(request.user.groups.values_list("name", flat=True))
+        if "Direcao" in grupos:
+            return redirect(f"/usuarios/direcao/?sec={sec}")
+        if "Coordenacao" in grupos:
+            return redirect(f"/usuarios/coordenacao/?sec={sec}")
+        if "Secretaria" in grupos:
+            return redirect(f"/usuarios/secretaria/?sec={sec}")
+
+    if fallback_reverse:
+        return redirect(fallback_reverse)
+    return redirect("/")
 
 
 # =====================================================
@@ -94,6 +118,7 @@ def aluno(request):
     aluno = obter_aluno_por_user(request.user)
 
     if not aluno:
+        # mantém a renderização do template; caso queira redirecionar, mude aqui
         return render(request, "aluno.html")
 
     disciplinas = Disciplina.objects.filter(turmas__alunos=aluno).distinct()
@@ -110,8 +135,8 @@ def aluno(request):
         for n in notas_disc:
             if n.bimestre in mapa:
                 mapa[n.bimestre] = n.valor
-                soma += n.valor
-                count += 1
+                soma += (n.valor or 0)
+                count += 1 if (n.valor is not None) else 0
 
         media = round(soma / count, 2) if count else None
 
@@ -125,7 +150,7 @@ def aluno(request):
         'aluno': aluno,
         'disciplinas': disciplinas,
         'boletim': boletim,
-        'advertencias': aluno.advertencias.all(),
+        'advertencias': aluno.advertencias.all() if hasattr(aluno, "advertencias") else [],
     })
 
 
@@ -154,15 +179,20 @@ def professor(request):
 
     # Formulário de lançamento de nota
     form = NotaForm()
-    form.fields['aluno'].queryset = alunos
+    # limita o campo aluno ao conjunto de alunos da turma/professor
+    if 'aluno' in form.fields:
+        form.fields['aluno'].queryset = alunos
 
     if request.method == "POST":
         form = NotaForm(request.POST)
-        form.fields['aluno'].queryset = alunos
+        if 'aluno' in form.fields:
+            form.fields['aluno'].queryset = alunos
 
         if form.is_valid():
             nota = form.save(commit=False)
-            nota.disciplina = disciplinas.first()
+            # se o form não fornece disciplina, definimos a primeira do professor
+            if not nota.disciplina and disciplinas.exists():
+                nota.disciplina = disciplinas.first()
             nota.save()
             messages.success(request, "Nota lançada!")
             return redirect("usuarios:professor")
@@ -188,7 +218,9 @@ def editar_nota(request, nota_id):
     professor = obter_professor_por_user(request.user)
     nota = get_object_or_404(Nota, id=nota_id)
 
-    if nota.disciplina.professor != professor and "Direcao" not in request.user.groups.values_list("name", flat=True):
+    # Permissão: só o professor da disciplina ou Direcao pode editar
+    user_groups = list(request.user.groups.values_list("name", flat=True))
+    if nota.disciplina.professor != professor and "Direcao" not in user_groups:
         messages.error(request, "Sem permissão.")
         return redirect("usuarios:professor")
 
@@ -197,14 +229,16 @@ def editar_nota(request, nota_id):
 
     if request.method == "POST":
         form = NotaForm(request.POST, instance=nota)
-        form.fields['aluno'].queryset = alunos
+        if 'aluno' in form.fields:
+            form.fields['aluno'].queryset = alunos
         if form.is_valid():
             form.save()
             messages.success(request, "Nota atualizada!")
             return redirect("usuarios:professor")
     else:
         form = NotaForm(instance=nota)
-        form.fields['aluno'].queryset = alunos
+        if 'aluno' in form.fields:
+            form.fields['aluno'].queryset = alunos
 
     return render(request, "editar_nota.html", {'form': form})
 
@@ -215,7 +249,8 @@ def deletar_nota(request, nota_id):
     professor = obter_professor_por_user(request.user)
     nota = get_object_or_404(Nota, id=nota_id)
 
-    if nota.disciplina.professor != professor and "Direcao" not in request.user.groups.values_list("name", flat=True):
+    user_groups = list(request.user.groups.values_list("name", flat=True))
+    if nota.disciplina.professor != professor and "Direcao" not in user_groups:
         messages.error(request, "Sem permissão.")
         return redirect("usuarios:professor")
 
@@ -243,11 +278,14 @@ def secretaria(request):
             email=request.user.email
         )
 
+    sec_param = request.GET.get("sec", "sec-info")
+
     return render(request, "secretaria.html", {
         'secretaria': sec,
         'alunos': Aluno.objects.all(),
         'professores': Professor.objects.all(),
         'disciplinas': Disciplina.objects.all(),
+        'sec': sec_param,
     })
 
 
@@ -277,15 +315,17 @@ def cadastrar_aluno(request):
             )
 
             try:
-                user.groups.add(Group.objects.get(name="Aluno"))
-            except:
-                pass
+                g = Group.objects.get(name="Aluno")
+                user.groups.add(g)
+            except Group.DoesNotExist:
+                # se o grupo não existe, não quebra; apenas registra a situação
+                messages.warning(request, "Grupo 'Aluno' não existe. Usuário criado sem grupo.")
 
             aluno.user = user
             aluno.save()
 
             messages.success(request, f"Aluno cadastrado! Login: {username}")
-            return redirect("usuarios:listar_alunos")
+            return redir_painel(request, "sec-alunos", fallback_reverse="usuarios:listar_alunos")
     else:
         form = AlunoForm()
 
@@ -310,7 +350,7 @@ def editar_aluno(request, id):
         if form.is_valid():
             form.save()
             messages.success(request, "Aluno atualizado!")
-            return redirect("usuarios:listar_alunos")
+            return redir_painel(request, "sec-alunos", fallback_reverse="usuarios:listar_alunos")
     else:
         form = AlunoForm(instance=aluno)
 
@@ -325,9 +365,9 @@ def deletar_aluno(request, id):
     if request.method == "POST":
         aluno.delete()
         messages.success(request, "Aluno excluído!")
-        return redirect("usuarios:listar_alunos")
+        return redir_painel(request, "sec-alunos", fallback_reverse="usuarios:listar_alunos")
 
-    return redirect("usuarios:listar_alunos")
+    return redir_painel(request, "sec-alunos", fallback_reverse="usuarios:listar_alunos")
 
 
 # =====================================================
@@ -356,15 +396,16 @@ def cadastrar_professor(request):
             )
 
             try:
-                user.groups.add(Group.objects.get(name="Professor"))
-            except:
-                pass
+                g = Group.objects.get(name="Professor")
+                user.groups.add(g)
+            except Group.DoesNotExist:
+                messages.warning(request, "Grupo 'Professor' não existe. Usuário criado sem grupo.")
 
             prof.user = user
             prof.save()
 
             messages.success(request, "Professor cadastrado!")
-            return redirect("usuarios:listar_professores")
+            return redir_painel(request, "sec-professores", fallback_reverse="usuarios:listar_professores")
     else:
         form = ProfessorForm()
 
@@ -392,7 +433,7 @@ def editar_professor(request, id):
         if form.is_valid():
             form.save()
             messages.success(request, "Professor atualizado!")
-            return redirect("usuarios:listar_professores")
+            return redir_painel(request, "sec-professores", fallback_reverse="usuarios:listar_professores")
     else:
         form = ProfessorForm(instance=prof)
 
@@ -407,9 +448,9 @@ def deletar_professor(request, id):
     if request.method == "POST":
         prof.delete()
         messages.success(request, "Professor excluído!")
-        return redirect("usuarios:listar_professores")
+        return redir_painel(request, "sec-professores", fallback_reverse="usuarios:listar_professores")
 
-    return redirect("usuarios:listar_professores")
+    return redir_painel(request, "sec-professores", fallback_reverse="usuarios:listar_professores")
 
 
 # =====================================================
@@ -424,7 +465,7 @@ def cadastrar_disciplina(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Disciplina criada!")
-            return redirect("usuarios:secretaria")
+            return redir_painel(request, "sec-disciplinas", fallback_reverse="usuarios:secretaria")
     else:
         form = DisciplinaForm()
 
@@ -441,7 +482,7 @@ def editar_disciplina(request, id):
         if form.is_valid():
             form.save()
             messages.success(request, "Disciplina atualizada!")
-            return redirect("usuarios:secretaria")
+            return redir_painel(request, "sec-disciplinas", fallback_reverse="usuarios:secretaria")
     else:
         form = DisciplinaForm(instance=disc)
 
@@ -456,9 +497,9 @@ def deletar_disciplina(request, id):
     if request.method == "POST":
         disc.delete()
         messages.success(request, "Disciplina excluída!")
-        return redirect("usuarios:secretaria")
+        return redir_painel(request, "sec-disciplinas", fallback_reverse="usuarios:secretaria")
 
-    return redirect("usuarios:secretaria")
+    return redir_painel(request, "sec-disciplinas", fallback_reverse="usuarios:secretaria")
 
 
 # =====================================================
@@ -477,6 +518,8 @@ def coordenacao(request):
             email=request.user.email
         )
 
+    sec = request.GET.get("sec", "sec-info")
+
     return render(request, "coordenacao.html", {
         'coordenador': coordenador,
         'turmas': Turma.objects.all(),
@@ -485,6 +528,7 @@ def coordenacao(request):
         'disciplinas': Disciplina.objects.all(),
         'advertencias': Advertencia.objects.all(),
         'notas': Nota.objects.all(),
+        'sec': sec,
     })
 
 
@@ -500,7 +544,7 @@ def cadastrar_turma(request):
         if form.is_valid():
             form.save()
             messages.success(request, "Turma criada!")
-            return redirect("/usuarios/coordenacao/?sec=sec-turmas")
+            return redir_painel(request, "sec-turmas", fallback_reverse="usuarios:coordenacao")
     else:
         form = TurmaForm()
 
@@ -517,7 +561,7 @@ def editar_turma(request, id):
         if form.is_valid():
             form.save()
             messages.success(request, "Turma atualizada!")
-            return redirect("/usuarios/coordenacao/?sec=sec-turmas")
+            return redir_painel(request, "sec-turmas", fallback_reverse="usuarios:coordenacao")
     else:
         form = TurmaForm(instance=turma)
 
@@ -532,9 +576,9 @@ def deletar_turma(request, id):
     if request.method == "POST":
         turma.delete()
         messages.success(request, "Turma excluída!")
-        return redirect("/usuarios/coordenacao/?sec=sec-turmas")
+        return redir_painel(request, "sec-turmas", fallback_reverse="usuarios:coordenacao")
 
-    return redirect("/usuarios/coordenacao/?sec=sec-turmas")
+    return redir_painel(request, "sec-turmas", fallback_reverse="usuarios:coordenacao")
 
 
 # =====================================================
@@ -547,16 +591,17 @@ def cadastrar_advertencia(request):
     coordenador = Coordenador.objects.filter(user=request.user).first()
     if not coordenador:
         messages.error(request, "Coordenador não encontrado.")
-        return redirect("usuarios:coordenacao")
+        return redir_painel(request, "sec-info", fallback_reverse="usuarios:coordenacao")
 
     if request.method == "POST":
         form = AdvertenciaForm(request.POST)
         if form.is_valid():
             adv = form.save(commit=False)
-            adv.coordenador = coordenador.user
+            # Salva o usuário coordenador ou o id apropriado conforme seu model
+            adv.coordenador = request.user
             adv.save()
             messages.success(request, "Advertência criada!")
-            return redirect("/usuarios/coordenacao/?sec=sec-advertencias")
+            return redir_painel(request, "sec-advertencias", fallback_reverse="usuarios:coordenacao")
     else:
         form = AdvertenciaForm()
 
@@ -573,7 +618,7 @@ def editar_advertencia(request, id):
         if form.is_valid():
             form.save()
             messages.success(request, "Advertência atualizada!")
-            return redirect("/usuarios/coordenacao/?sec=sec-advertencias")
+            return redir_painel(request, "sec-advertencias", fallback_reverse="usuarios:coordenacao")
     else:
         form = AdvertenciaForm(instance=adv)
 
@@ -588,9 +633,9 @@ def deletar_advertencia(request, id):
     if request.method == "POST":
         adv.delete()
         messages.success(request, "Advertência excluída!")
-        return redirect("/usuarios/coordenacao/?sec=sec-advertencias")
+        return redir_painel(request, "sec-advertencias", fallback_reverse="usuarios:coordenacao")
 
-    return redirect("/usuarios/coordenacao/?sec=sec-advertencias")
+    return redir_painel(request, "sec-advertencias", fallback_reverse="usuarios:coordenacao")
 
 
 # =====================================================
@@ -610,7 +655,7 @@ def editar_coordenador(request, coordenador_id=None):
         if form.is_valid():
             form.save()
             messages.success(request, "Informações atualizadas!")
-            return redirect("/usuarios/coordenacao/?sec=sec-info")
+            return redir_painel(request, "sec-info", fallback_reverse="usuarios:coordenacao")
     else:
         form = coordenadorForm(instance=coord)
 
@@ -633,6 +678,8 @@ def direcao(request):
             email=request.user.email
         )
 
+    sec = request.GET.get("sec", "sec-info")
+
     return render(request, "direcao.html", {
         'diretor': diretor,
         'professores': Professor.objects.all(),
@@ -642,6 +689,7 @@ def direcao(request):
         'notas': Nota.objects.all(),
         'advertencias': Advertencia.objects.all(),
         'form': DiretorForm(instance=diretor),
+        'sec': sec
     })
 
 
@@ -652,14 +700,14 @@ def editar_diretor(request):
 
     if not diretor:
         messages.error(request, "Diretor não encontrado.")
-        return redirect("usuarios:direcao")
+        return redir_painel(request, "sec-info", fallback_reverse="usuarios:direcao")
 
     if request.method == "POST":
         form = DiretorForm(request.POST, instance=diretor)
         if form.is_valid():
             form.save()
             messages.success(request, "Informações atualizadas!")
-            return redirect("usuarios:direcao")
+            return redir_painel(request, "sec-info", fallback_reverse="usuarios:direcao")
     else:
         form = DiretorForm(instance=diretor)
 

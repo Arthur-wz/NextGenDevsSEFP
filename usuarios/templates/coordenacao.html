@@ -355,16 +355,17 @@
 </div>
 
 <script>
+
 function mostrar(id) {
-    localStorage.setItem("aba_coordenacao", id);
     document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
     document.getElementById(id).classList.add('active');
 }
 
 window.onload = function() {
-    const aba = localStorage.getItem("aba_coordenacao") || "sec-info";
+    const aba = "{{ sec|default:'sec-info' }}"; // vindo da URL
     mostrar(aba);
 };
 </script>
+
 
 {% endblock %}
