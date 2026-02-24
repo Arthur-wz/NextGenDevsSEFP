@@ -1,36 +1,95 @@
-{# templates/login.html #}
-{% extends "base.html" %}
 {% load static %}
-{% block title %}Entrar — SEFP{% endblock %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>SEFP — Login</title>
 
-{% block extra_head %}
-<style>
-  body { background: linear-gradient(to right, #5dbde6, #004aad); color:#fff; }
-  .login-box{max-width:380px;margin:40px auto;padding:28px;border-radius:10px;background:rgba(255,255,255,0.06);}
-  label{display:block;margin-bottom:6px;font-weight:600;}
-  input{width:100%;padding:8px;margin-bottom:10px;border-radius:6px;border:1px solid rgba(255,255,255,0.2);background:rgba(255,255,255,0.04);color:#fff;}
-  .submit-btn{background:#fff;color:#004aad;padding:8px 12px;border-radius:8px;border:none;cursor:pointer;}
-</style>
-{% endblock %}
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
 
-{% block content %}
-<div class="login-box">
-  <h2 style="text-align:center;color:#fff;margin-top:0;">SEFP — Login</h2>
-  <form method="post" novalidate>
-    {% csrf_token %}
-    {% if form.non_field_errors %}
-      <div class="card" style="background:#ffdede;">{{ form.non_field_errors }}</div>
-    {% endif %}
-    <label for="{{ form.username.id_for_label }}">Usuário</label>
-    {{ form.username }}
-    <label for="{{ form.password.id_for_label }}">Senha</label>
-    {{ form.password }}
-    {% if next %}
-      <input type="hidden" name="next" value="{{ next }}">
-    {% endif %}
-    <div style="text-align:center;margin-top:8px;">
-      <button class="submit-btn" type="submit">Entrar</button>
-    </div>
-  </form>
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.4), rgba(255, 255, 255, 0.4)),
+                url("{% static 'admin/img/escola.png' %}");
+
+            background-repeat: no-repeat;
+            background-position: center;
+            background-size: 108%;
+
+            height: 100vh;
+
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            width: 400px;
+            text-align: center;
+
+            background: rgba(255, 255, 255, 0.75);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0 15px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 10px;
+            border-radius: 8px;
+            border: none;
+            background: #5dbde6;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .submit-btn:hover {
+            background: #1b6a8c;
+        }
+
+        .error-box {
+            background: #ffdede;
+            padding: 8px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="login-container">
+    <h2>SEFP — Login</h2>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% if form.non_field_errors %}
+            <div class="error-box">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <label>Usuário</label>
+        {{ form.username }}
+
+        <label>Senha</label>
+        {{ form.password }}
+
+        <button type="submit" class="submit-btn">Entrar</button>
+    </form>
 </div>
-{% endblock %}
+
+</body>
+</html>
