@@ -125,7 +125,7 @@ Fim do documento / End of document
 
 Faça um dump (backup) toda vez que for encerrar o dia de trabalho:
 
-python manage.py dumpdata --indent 2 > backup_hoje.json
+python manage.py dumpdata --indent 2 > dados.json
 
 
 Assim, mesmo se der problema amanhã, você consegue restaurar instantaneamente com:
