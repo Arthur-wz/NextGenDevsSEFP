@@ -130,6 +130,6 @@ python manage.py dumpdata --indent 2 > backup_hoje.json
 
 Assim, mesmo se der problema amanhã, você consegue restaurar instantaneamente com:
 
-python manage.py loaddata backup_hoje.json
+python manage.py loaddata backups/dados.json
 
 python manage.py migrate
