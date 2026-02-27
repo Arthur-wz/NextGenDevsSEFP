@@ -332,12 +332,18 @@
     <div id="sec-advertencias" class="section">
         <h2>Advertências</h2>
 
+        <a href="{% url 'usuarios:cadastrar_advertencia' %}" class="btn btn-new">
+            + Nova Advertência
+        </a>
+
         <table>
             <thead>
                 <tr>
                     <th>Aluno</th>
                     <th>Motivo</th>
                     <th>Status</th>
+                    <th>Data</th>
+                    <th>Ações</th>
                 </tr>
             </thead>
 
@@ -347,9 +353,27 @@
                     <td>{{ adv.aluno.nome }}</td>
                     <td>{{ adv.motivo }}</td>
                     <td>{{ adv.get_status_display }}</td>
+                    <td>{{ adv.data }}</td>
+
+                    <td>
+                        <a href="{% url 'usuarios:direcao_editar_advertencia' adv.id %}"
+                            class="btn btn-edit">
+                            Editar
+                        </a>
+
+                        <form action="{% url 'usuarios:direcao_deletar_advertencia' adv.id %}"
+                            method="POST"
+                            style="display:inline;">
+                            {% csrf_token %}
+                            <button class="btn btn-delete"
+                                    onclick="return confirm('Excluir advertência?')">
+                                Excluir
+                            </button>
+                        </form>
+                    </td>
                 </tr>
             {% empty %}
-                <tr><td colspan="3">Nenhuma advertência cadastrada.</td></tr>
+                <tr><td colspan="5">Nenhuma advertência cadastrada.</td></tr>
             {% endfor %}
             </tbody>
         </table>

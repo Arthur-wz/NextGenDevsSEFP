@@ -100,15 +100,18 @@
     <!-- DISCIPLINA ÚNICA (correto pelo model/form) -->
     <!-- ========================================= -->
     <div id="sec-disciplina" class="section">
-        <h2>Sua Disciplina</h2>
+        <h2>Suas Disciplinas</h2>
 
-        {% if professor.disciplina %}
-            <div class="info-card">{{ professor.disciplina }}</div>
+        {% if disciplinas %}
+            {% for d in disciplinas %}
+                <div class="info-card">
+                    {{ d.nome }}
+                </div>
+            {% endfor %}
         {% else %}
-            <p>Você não possui disciplina cadastrada.</p>
+            <p>Você não possui disciplinas cadastradas.</p>
         {% endif %}
     </div>
-
     <!-- ========================================= -->
     <!-- TURMAS -->
     <!-- ========================================= -->
@@ -165,7 +168,7 @@
                     <td>{{ n.aluno.nome }}</td>
                     <td>{{ n.disciplina.nome }}</td>
                     <td>{{ n.get_bimestre_display }}</td>
-                    <td>{{ n.notas }}</td>
+                    <td>{{ n.valor }}</td>
                     <td>
                         <a href="{% url 'usuarios:editar_nota' n.id %}" class="btn btn-warning btn-sm">Editar</a>
 

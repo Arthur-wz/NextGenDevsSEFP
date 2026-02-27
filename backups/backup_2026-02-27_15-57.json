@@ -1862,8 +1862,8 @@
   "model": "auth.user",
   "pk": 2,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$dzEQm4iuKmDtmIuI1DeB46$EFTir7HWIYjhCHBDaVrooW6WJS41PJb4Dub4SjfSXAM=",
-    "last_login": "2025-12-03T14:28:30.382Z",
+    "password": "pbkdf2_sha256$600000$UJJlNbVd40V2gmVVp9nqrE$fqdqPcUewNNFMCJgys7u2mTM5jGxgC2PAk16e4R/kmw=",
+    "last_login": "2026-02-27T18:18:59.337Z",
     "is_superuser": false,
     "username": "mohamed",
     "first_name": "",
@@ -1882,8 +1882,8 @@
   "model": "auth.user",
   "pk": 7,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$rJeBCbsYm5cMdCRiGya5CS$IG2RMKn0rK29e+XWk1sU8gdPNdxHvIqEv5al+2ikKHo=",
-    "last_login": "2025-12-03T14:31:41.804Z",
+    "password": "pbkdf2_sha256$600000$m9dYBDcUcdeGx8LZQEUvqn$9RqgpTLmAiJF+YVSwHjXcfsn8lbLh0GcjBUoAsyKwq0=",
+    "last_login": "2026-02-27T18:49:32.629Z",
     "is_superuser": false,
     "username": "valter",
     "first_name": "",
@@ -1902,8 +1902,8 @@
   "model": "auth.user",
   "pk": 8,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$F14uFsRmwFEM0F5ncmwPNf$Wn1UCB4CQRqbzdNuILw22HyiZchQU7MD7v+VJIl62SM=",
-    "last_login": "2025-12-03T16:39:05.059Z",
+    "password": "pbkdf2_sha256$600000$Ty3lftnvwKu22X7mRB3LIV$zSXtsECA0CnTonpK6+i2ZcjAKF5Az1jwqbzlvrCbe34=",
+    "last_login": "2026-02-27T18:46:54.576Z",
     "is_superuser": false,
     "username": "enzo",
     "first_name": "",
@@ -1923,7 +1923,7 @@
   "pk": 9,
   "fields": {
     "password": "pbkdf2_sha256$1000000$g1pD4rMzLQGaZWgzoEO3VW$AaxiTdQEmpMZDSY+qCdpThggWIEdV2FXdETMvT8wd2I=",
-    "last_login": "2025-12-01T18:02:43.231Z",
+    "last_login": "2025-12-03T22:53:20.020Z",
     "is_superuser": true,
     "username": "arthur",
     "first_name": "",
@@ -1941,7 +1941,7 @@
   "pk": 26,
   "fields": {
     "password": "pbkdf2_sha256$1000000$2XtmmLJSw7bwRHAFMwHwun$TyWfjD/GvKWNfRxlcU+rR/jGSVNTBpYE0DwGJ8zNRSI=",
-    "last_login": "2025-12-03T20:16:09.833Z",
+    "last_login": "2025-12-05T11:14:41.070Z",
     "is_superuser": false,
     "username": "jorge",
     "first_name": "",
@@ -1960,8 +1960,8 @@
   "model": "auth.user",
   "pk": 27,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$cvVEcWwI465DfdzfW4qS97$NM2pn7w7YWOt3aya+j0XP4c6Sbqg4fET9P+3WsDERKA=",
-    "last_login": null,
+    "password": "pbkdf2_sha256$600000$575RZR8MTiTukSLQiNMiJ4$CfWQAfbTOGDoEBdA3/2Q1WBDsexMtA27uW/sOe/bHTQ=",
+    "last_login": "2026-02-27T18:52:48.036Z",
     "is_superuser": false,
     "username": "claudio",
     "first_name": "",
@@ -2000,8 +2000,8 @@
   "model": "auth.user",
   "pk": 29,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$kD86RsNdl3RHNCXybIUiVe$CAjOmzTyA4DIXvP65IieGLsqc2XvQdbsMBqMEcKvkAA=",
-    "last_login": "2025-12-03T20:23:48.776Z",
+    "password": "pbkdf2_sha256$600000$jf2ffK12DIUxqgQIAqu6el$G34c+KdneLWAVR1ItkvL0Xd/9ceeKEhN+RcZ1qMc7m4=",
+    "last_login": "2026-02-27T18:21:12.226Z",
     "is_superuser": false,
     "username": "astolfo",
     "first_name": "",
@@ -2041,7 +2041,7 @@
   "pk": 31,
   "fields": {
     "password": "pbkdf2_sha256$1000000$y6cSgbvvireVxmSWIKLwmE$lrO5+nEvZGOWNknKeSiwXzGz1fTxw6+95YC6DjBgPHQ=",
-    "last_login": "2025-12-01T18:56:46.159Z",
+    "last_login": "2025-12-03T23:58:30.809Z",
     "is_superuser": false,
     "username": "cleito",
     "first_name": "",
@@ -2089,6 +2089,146 @@
     "is_active": true,
     "date_joined": "2025-11-04T15:32:10Z",
     "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 35,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$QdA0vGzvlcVkbyg02zn70C$s2rgqJmGChlarPWPiMzVC+VlzWNogh5FPMBulgKoQrw=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "lewis_verstappen",
+    "first_name": "",
+    "last_name": "",
+    "email": "09@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-12-05T11:10:21.639Z",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 36,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$TwBcLnWh49sknOCa61fidC$3B7EMGaYK1x6IRunHtUzMfGSRWK2EMF5vsHKyByGW4M=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "lewis_verstappen1",
+    "first_name": "",
+    "last_name": "",
+    "email": "09@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-12-05T11:12:12.092Z",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 37,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$qxKvnJaHrF6TniN4RemqBy$EVO7XMltz8Nx3mKJMhdyzWthXe3j2jt1jiL1Tz7VjO4=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "lewis_verstappen2",
+    "first_name": "",
+    "last_name": "",
+    "email": "09@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-12-05T11:48:13.760Z",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 38,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$4i9Eda9v3LQfg7ouyDc3lR$kzCkwTFFh7fKLWtymuPE+Ziu6xFs8/M3g3eFQSD+Hv4=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "lewis_verstappen3",
+    "first_name": "",
+    "last_name": "",
+    "email": "09@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-12-05T11:49:15.808Z",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 39,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$rZ5KAcnQQYQQh0O5xTWx0R$Z/qshz6toxz/iJQaVYv8BZX6XAhN33HWNrZxy4QfVkk=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "lewis_verstappen4",
+    "first_name": "",
+    "last_name": "",
+    "email": "09@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-12-05T11:50:13.316Z",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 40,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$xAemobJYwaIvRqzcieJ5O7$E64YkDrZTm0YQEh8mXkv5m/srgpz+eefooQZp0Pih5g=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "lewis",
+    "first_name": "",
+    "last_name": "",
+    "email": "123456@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-27T18:20:06.182Z",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 41,
+  "fields": {
+    "password": "pbkdf2_sha256$600000$5AnRtZA8GxvxcjbZQoprJL$KMZ+kOtbikpAzx0GHP4150eBxRdd+0M3OJXoK92XklA=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "clodoaldo",
+    "first_name": "",
+    "last_name": "",
+    "email": "",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-02-27T18:20:35.514Z",
+    "groups": [
+      3
+    ],
     "user_permissions": []
   }
 },
@@ -2214,10 +2354,10 @@
 },
 {
   "model": "sessions.session",
-  "pk": "7m8s6px6rxcplqkctfz5d722876di5bi",
+  "pk": "5eivy7axucvkb3jy7iljabivq2z1f7jn",
   "fields": {
-    "session_data": ".eJxVjEEOwiAQRe_C2pCBFDq4dO8ZyDCAVA0kpV0Z764kXej2v_f-S3jat-L3nla_RHEW2onT7xiIH6kOEu9Ub01yq9u6BDkUedAury2m5-Vw_w4K9TJqpSwiUUKIThmdZofAyWk2kCEEiznyFBgBzGwnJGty_soKjFYOJvH-AAWtN34:1vQtO8:5xKnuoH7YpyEWR7jPAn0jO7RABsNc2pSUUYsf4d-TCU",
-    "expire_date": "2025-12-17T20:23:48.783Z"
+    "session_data": ".eJxVjDkOwjAUBe_iGlnxgn-gpM8ZrL_YOIAcKU4qxN1JpBTQvpl5bxVxXUpcW5rjKOqqLKjT70jIz1R3Ig-s90nzVJd5JL0r-qBND5Ok1-1w_w4KtrLVJOSs9MEnCi4Hk5DZm2QzcPBdf7aZwORNYQPoDHuGC_kuAwqQcaA-XyZ3OIs:1vw2xE:Dihgi6_yZAyGJzpYTPDkn2bV27TZIPMYYeLiWtPieCM",
+    "expire_date": "2026-03-13T18:52:48.040Z"
   }
 },
 {
@@ -2226,6 +2366,14 @@
   "fields": {
     "session_data": ".eJxVjMsOwiAQRf-FtSEMU4Fx6d5vIDymUjWQlHZl_HfbpAvd3nPOfQsf1qX4tfPspywugsTpd4shPbnuID9CvTeZWl3mKcpdkQft8tYyv66H-3dQQi9bfU6EQwSDPKrBsSJHCROSs-DYxA0zuhEQQFu2SDqCMhysg6iJghKfL8TdNs8:1vG3Kd:LF9G4fNjUzqsVnRYQyj7nj8bP2xLSpCK0h5WSxNbe2c",
     "expire_date": "2025-11-17T22:47:23.706Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "bmq947c8reyp02heapnm4aift1hpol37",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlkh6y8lPWewdu01DiBbipMKcXdkKQW0b2beWwTctxL2zmtYkrgIK06_G2F8ch0gPbDem4ytbutCcijyoF3eWuLX9XD_Dgr2MmplImqOCiA7TcDklTdnVp5mmNFaz9llyjlqA5xoMuzYe-IpKx0BxecLAYo45Q:1vRUJr:SyVtyXzS75GsOc9OJ35XGSDRk-GtoXRON8bobt9GpUg",
+    "expire_date": "2025-12-19T11:49:51.849Z"
   }
 },
 {
@@ -2242,6 +2390,14 @@
   "fields": {
     "session_data": ".eJxVjDsOwjAQBe_iGlnyL_ZS0nMGa9dr4wBypDipIu5OIqWAdmbe20TEdalx7XmOI4urUOLyywjTK7dD8BPbY5Jpass8kjwSedou7xPn9-1s_w4q9rqvPRQFADZY7bRLOuisqAwEpJCzM4NHXXas2BprtCsJA0OhYpC8JxKfL8vOOBI:1vBx7t:hy3x5irGKsAt_c1iNt5RwWoiURWlQ6SHOSUnJaQ-VWY",
     "expire_date": "2025-11-06T15:21:17.565Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "lpvd2xke8clk0oej33gx9rm5lqoo9co0",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlmOE_8o6TmDtd714gCypTipEHeHSCmgfTPzXiLCtpa49bzEmcRZaHH63RLgI9cd0B3qrUlsdV3mJHdFHrTLa6P8vBzu30GBXr614YFwAIWePQOOPumgyaXkVCAyFtII5AwF5UYMPDmwRKwVoDWMehLvDw2wOPI:1vQwx5:zzKWhMI_9RcwqXgKPvj1QPrWUwQ2hIOthkcCmpW5fVY",
+    "expire_date": "2025-12-18T00:12:07.441Z"
   }
 },
 {
@@ -2348,7 +2504,6 @@
     "nome": "astolfo",
     "matricula": "PROF001",
     "email": "123@gmail.com",
-    "disciplina": "matematica",
     "turmas": []
   }
 },
@@ -2360,7 +2515,6 @@
     "nome": "roberto",
     "matricula": "PROF011",
     "email": "1234@gmail.com",
-    "disciplina": "geografia",
     "turmas": []
   }
 },
@@ -2372,7 +2526,6 @@
     "nome": "cleito",
     "matricula": "PROF012",
     "email": "12345@gmail.com",
-    "disciplina": "ingles",
     "turmas": []
   }
 },
@@ -2401,6 +2554,14 @@
   }
 },
 {
+  "model": "usuarios.disciplina",
+  "pk": 10,
+  "fields": {
+    "nome": "quimica",
+    "professor": 10
+  }
+},
+{
   "model": "usuarios.turma",
   "pk": 1,
   "fields": {
@@ -2423,9 +2584,50 @@
   "fields": {
     "aluno": 12,
     "disciplina": 9,
-    "valor": "3.00",
+    "valor": "5.00",
     "data_lancamento": "2025-11-25",
     "bimestre": 1
+  }
+},
+{
+  "model": "usuarios.advertencia",
+  "pk": 10,
+  "fields": {
+    "aluno": 13,
+    "coordenador": 7,
+    "motivo": "o",
+    "responsavel_presente": "a",
+    "descricao_ocorrido": "odo",
+    "data": "2026-02-27",
+    "status": "em_andamento"
+  }
+},
+{
+  "model": "usuarios.coordenador",
+  "pk": 1,
+  "fields": {
+    "user": 8,
+    "nome": "enzo",
+    "email": "222@gmail.com",
+    "telefone": null,
+    "setor": null,
+    "observacoes": "",
+    "cpf": null,
+    "cargo": null
+  }
+},
+{
+  "model": "usuarios.coordenador",
+  "pk": 2,
+  "fields": {
+    "user": 7,
+    "nome": "valter",
+    "email": "",
+    "telefone": null,
+    "setor": null,
+    "observacoes": null,
+    "cpf": null,
+    "cargo": null
   }
 },
 {
@@ -2434,6 +2636,20 @@
   "fields": {
     "user": 2,
     "nome": "mohamed",
+    "email": "",
+    "telefone": null,
+    "setor": null,
+    "observacoes": null,
+    "cpf": null,
+    "cargo": null
+  }
+},
+{
+  "model": "usuarios.secretaria",
+  "pk": 2,
+  "fields": {
+    "user": 7,
+    "nome": "valter",
     "email": "",
     "telefone": null,
     "setor": null,

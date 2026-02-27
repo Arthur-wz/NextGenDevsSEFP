@@ -35,11 +35,10 @@ class Aluno(models.Model):
 
 
 class Professor(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)  # 🔹 novo campo
+    user = models.OneToOneField(User, on_delete=models.CASCADE, null=True, blank=True)
     nome = models.CharField(max_length=100)
     matricula = models.CharField(max_length=10, unique=True, blank=True)
     email = models.EmailField()
-    disciplina = models.CharField(max_length=100)
     turmas = models.ManyToManyField('Turma', related_name='professores', blank=True)
 
     def save(self, *args, **kwargs):

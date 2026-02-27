@@ -22,7 +22,7 @@ class AlunoForm(forms.ModelForm):
 class ProfessorForm(forms.ModelForm):
     class Meta:
         model = Professor
-        fields = ['nome', 'email', 'disciplina', 'turmas']
+        fields = ['nome', 'email','matricula', 'turmas']
         widgets = {
             'turmas': forms.CheckboxSelectMultiple(),
         }
@@ -30,7 +30,7 @@ class ProfessorForm(forms.ModelForm):
 class NotaForm(forms.ModelForm):
     class Meta:
         model = Nota
-        fields = ['aluno', 'valor', 'bimestre']
+        fields = ['aluno', 'valor', 'bimestre', 'disciplina']
         widgets = {
             'bimestre': forms.Select(),
         }

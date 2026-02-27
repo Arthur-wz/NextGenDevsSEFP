@@ -177,25 +177,43 @@ def professor(request):
 
     advertencias = Advertencia.objects.filter(aluno__in=alunos)
 
-    # Formulário de lançamento de nota
-    form = NotaForm()
-    # limita o campo aluno ao conjunto de alunos da turma/professor
-    if 'aluno' in form.fields:
-        form.fields['aluno'].queryset = alunos
+    # =========================
+    # LANÇAMENTO DE NOTA
+    # =========================
 
     if request.method == "POST":
         form = NotaForm(request.POST)
+
+        # Limita disciplinas ao professor logado
+        if 'disciplina' in form.fields:
+            form.fields['disciplina'].queryset = disciplinas
+
+        # Limita alunos às turmas do professor
         if 'aluno' in form.fields:
             form.fields['aluno'].queryset = alunos
 
         if form.is_valid():
             nota = form.save(commit=False)
-            # se o form não fornece disciplina, definimos a primeira do professor
-            if not nota.disciplina and disciplinas.exists():
-                nota.disciplina = disciplinas.first()
+
+            # Segurança extra contra manipulação de HTML
+            if nota.disciplina.professor != prof:
+                messages.error(request, "Você não pode lançar nota nessa disciplina.")
+                return redirect("usuarios:professor")
+
             nota.save()
             messages.success(request, "Nota lançada!")
             return redirect("usuarios:professor")
+
+    else:
+        form = NotaForm()
+
+        # Limita disciplinas ao professor logado
+        if 'disciplina' in form.fields:
+            form.fields['disciplina'].queryset = disciplinas
+
+        # Limita alunos às turmas do professor
+        if 'aluno' in form.fields:
+            form.fields['aluno'].queryset = alunos
 
     return render(request, "professor.html", {
         'professor': prof,
@@ -207,7 +225,6 @@ def professor(request):
         'form': form,
     })
 
-
 # =====================================================
 # EDITAR / DELETAR NOTA
 # =====================================================
@@ -218,7 +235,7 @@ def editar_nota(request, nota_id):
     professor = obter_professor_por_user(request.user)
     nota = get_object_or_404(Nota, id=nota_id)
 
-    # Permissão: só o professor da disciplina ou Direcao pode editar
+    # Permissão
     user_groups = list(request.user.groups.values_list("name", flat=True))
     if nota.disciplina.professor != professor and "Direcao" not in user_groups:
         messages.error(request, "Sem permissão.")
@@ -229,19 +246,29 @@ def editar_nota(request, nota_id):
 
     if request.method == "POST":
         form = NotaForm(request.POST, instance=nota)
+
+        # LIMITA DISCIPLINAS AO PROFESSOR
+        form.fields['disciplina'].queryset = Disciplina.objects.filter(professor=professor)
+
+        # LIMITA ALUNOS
         if 'aluno' in form.fields:
             form.fields['aluno'].queryset = alunos
+
         if form.is_valid():
             form.save()
             messages.success(request, "Nota atualizada!")
             return redirect("usuarios:professor")
     else:
         form = NotaForm(instance=nota)
+
+        # LIMITA DISCIPLINAS AO PROFESSOR
+        form.fields['disciplina'].queryset = Disciplina.objects.filter(professor=professor)
+
+        # LIMITA ALUNOS
         if 'aluno' in form.fields:
             form.fields['aluno'].queryset = alunos
 
     return render(request, "editar_nota.html", {'form': form})
-
 
 @login_required(login_url='login')
 @grupo_requerido("Professor")

@@ -267,6 +267,7 @@
                 <div class="info-card" style="margin-bottom: 10px;">
                     <strong>Data:</strong> {{ a.data }}<br>
                     <strong>Motivo:</strong> {{ a.motivo }}<br>
+                    <strong>Descrição:</strong> {{ a.descricao_ocorrido }}<br>
                     <strong>Status:</strong>
                     {% if a.status == "finalizada" %}
                         <span class="tag tag-finalizada">Finalizada</span>
@@ -279,8 +280,6 @@
             <p>Nenhuma advertência registrada.</p>
         {% endif %}
     </div>
-
-</div>
 
 <script>
 function mostrar(id) {

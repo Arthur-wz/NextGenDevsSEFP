@@ -1863,7 +1863,7 @@
   "pk": 2,
   "fields": {
     "password": "pbkdf2_sha256$1000000$dzEQm4iuKmDtmIuI1DeB46$EFTir7HWIYjhCHBDaVrooW6WJS41PJb4Dub4SjfSXAM=",
-    "last_login": "2025-11-26T21:26:06.846Z",
+    "last_login": "2025-12-05T11:49:05.277Z",
     "is_superuser": false,
     "username": "mohamed",
     "first_name": "",
@@ -1883,7 +1883,7 @@
   "pk": 7,
   "fields": {
     "password": "pbkdf2_sha256$1000000$rJeBCbsYm5cMdCRiGya5CS$IG2RMKn0rK29e+XWk1sU8gdPNdxHvIqEv5al+2ikKHo=",
-    "last_login": "2025-11-26T21:26:17.112Z",
+    "last_login": "2025-12-05T11:49:51.842Z",
     "is_superuser": false,
     "username": "valter",
     "first_name": "",
@@ -1903,7 +1903,7 @@
   "pk": 8,
   "fields": {
     "password": "pbkdf2_sha256$1000000$F14uFsRmwFEM0F5ncmwPNf$Wn1UCB4CQRqbzdNuILw22HyiZchQU7MD7v+VJIl62SM=",
-    "last_login": "2025-11-26T21:25:39.263Z",
+    "last_login": "2025-12-05T11:48:00.825Z",
     "is_superuser": false,
     "username": "enzo",
     "first_name": "",
@@ -1923,7 +1923,7 @@
   "pk": 9,
   "fields": {
     "password": "pbkdf2_sha256$1000000$g1pD4rMzLQGaZWgzoEO3VW$AaxiTdQEmpMZDSY+qCdpThggWIEdV2FXdETMvT8wd2I=",
-    "last_login": "2025-11-19T21:16:32.407Z",
+    "last_login": "2025-12-03T22:53:20.020Z",
     "is_superuser": true,
     "username": "arthur",
     "first_name": "",
@@ -1941,7 +1941,7 @@
   "pk": 26,
   "fields": {
     "password": "pbkdf2_sha256$1000000$2XtmmLJSw7bwRHAFMwHwun$TyWfjD/GvKWNfRxlcU+rR/jGSVNTBpYE0DwGJ8zNRSI=",
-    "last_login": "2025-11-26T21:26:31.431Z",
+    "last_login": "2025-12-05T11:14:41.070Z",
     "is_superuser": false,
     "username": "jorge",
     "first_name": "",
@@ -2001,7 +2001,7 @@
   "pk": 29,
   "fields": {
     "password": "pbkdf2_sha256$1000000$kD86RsNdl3RHNCXybIUiVe$CAjOmzTyA4DIXvP65IieGLsqc2XvQdbsMBqMEcKvkAA=",
-    "last_login": "2025-11-26T21:25:52.114Z",
+    "last_login": "2025-12-05T11:47:22.809Z",
     "is_superuser": false,
     "username": "astolfo",
     "first_name": "",
@@ -2041,7 +2041,7 @@
   "pk": 31,
   "fields": {
     "password": "pbkdf2_sha256$1000000$y6cSgbvvireVxmSWIKLwmE$lrO5+nEvZGOWNknKeSiwXzGz1fTxw6+95YC6DjBgPHQ=",
-    "last_login": "2025-11-19T21:13:04.850Z",
+    "last_login": "2025-12-03T23:58:30.809Z",
     "is_superuser": false,
     "username": "cleito",
     "first_name": "",
@@ -2089,6 +2089,106 @@
     "is_active": true,
     "date_joined": "2025-11-04T15:32:10Z",
     "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 35,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$QdA0vGzvlcVkbyg02zn70C$s2rgqJmGChlarPWPiMzVC+VlzWNogh5FPMBulgKoQrw=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "lewis_verstappen",
+    "first_name": "",
+    "last_name": "",
+    "email": "09@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-12-05T11:10:21.639Z",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 36,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$TwBcLnWh49sknOCa61fidC$3B7EMGaYK1x6IRunHtUzMfGSRWK2EMF5vsHKyByGW4M=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "lewis_verstappen1",
+    "first_name": "",
+    "last_name": "",
+    "email": "09@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-12-05T11:12:12.092Z",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 37,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$qxKvnJaHrF6TniN4RemqBy$EVO7XMltz8Nx3mKJMhdyzWthXe3j2jt1jiL1Tz7VjO4=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "lewis_verstappen2",
+    "first_name": "",
+    "last_name": "",
+    "email": "09@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-12-05T11:48:13.760Z",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 38,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$4i9Eda9v3LQfg7ouyDc3lR$kzCkwTFFh7fKLWtymuPE+Ziu6xFs8/M3g3eFQSD+Hv4=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "lewis_verstappen3",
+    "first_name": "",
+    "last_name": "",
+    "email": "09@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-12-05T11:49:15.808Z",
+    "groups": [
+      2
+    ],
+    "user_permissions": []
+  }
+},
+{
+  "model": "auth.user",
+  "pk": 39,
+  "fields": {
+    "password": "pbkdf2_sha256$1000000$rZ5KAcnQQYQQh0O5xTWx0R$Z/qshz6toxz/iJQaVYv8BZX6XAhN33HWNrZxy4QfVkk=",
+    "last_login": null,
+    "is_superuser": false,
+    "username": "lewis_verstappen4",
+    "first_name": "",
+    "last_name": "",
+    "email": "09@gmail.com",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2025-12-05T11:50:13.316Z",
+    "groups": [
+      2
+    ],
     "user_permissions": []
   }
 },
@@ -2222,6 +2322,14 @@
 },
 {
   "model": "sessions.session",
+  "pk": "bmq947c8reyp02heapnm4aift1hpol37",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlkh6y8lPWewdu01DiBbipMKcXdkKQW0b2beWwTctxL2zmtYkrgIK06_G2F8ch0gPbDem4ytbutCcijyoF3eWuLX9XD_Dgr2MmplImqOCiA7TcDklTdnVp5mmNFaz9llyjlqA5xoMuzYe-IpKx0BxecLAYo45Q:1vRUJr:SyVtyXzS75GsOc9OJ35XGSDRk-GtoXRON8bobt9GpUg",
+    "expire_date": "2025-12-19T11:49:51.849Z"
+  }
+},
+{
+  "model": "sessions.session",
   "pk": "cogvfqub7cylqothsksdbc6a4e8dyibz",
   "fields": {
     "session_data": ".eJxVjDsOwjAQBe_iGlkh6y8lPWewdu01DiBbipMKcXdkKQW0b2beWwTctxL2zmtYkrgIK06_G2F8ch0gPbDem4ytbutCcijyoF3eWuLX9XD_Dgr2MmplImqOCiA7TcDklTdnVp5mmNFaz9llyjlqA5xoMuzYe-IpKx0BxecLAYo45Q:1vCICt:m8ds1oSzM6r4ZcJA1gz8iayEzeUtcMsyLUU285xtyh4",
@@ -2234,6 +2342,14 @@
   "fields": {
     "session_data": ".eJxVjDsOwjAQBe_iGlnyL_ZS0nMGa9dr4wBypDipIu5OIqWAdmbe20TEdalx7XmOI4urUOLyywjTK7dD8BPbY5Jpass8kjwSedou7xPn9-1s_w4q9rqvPRQFADZY7bRLOuisqAwEpJCzM4NHXXas2BprtCsJA0OhYpC8JxKfL8vOOBI:1vBx7t:hy3x5irGKsAt_c1iNt5RwWoiURWlQ6SHOSUnJaQ-VWY",
     "expire_date": "2025-11-06T15:21:17.565Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "lpvd2xke8clk0oej33gx9rm5lqoo9co0",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlmOE_8o6TmDtd714gCypTipEHeHSCmgfTPzXiLCtpa49bzEmcRZaHH63RLgI9cd0B3qrUlsdV3mJHdFHrTLa6P8vBzu30GBXr614YFwAIWePQOOPumgyaXkVCAyFtII5AwF5UYMPDmwRKwVoDWMehLvDw2wOPI:1vQwx5:zzKWhMI_9RcwqXgKPvj1QPrWUwQ2hIOthkcCmpW5fVY",
+    "expire_date": "2025-12-18T00:12:07.441Z"
   }
 },
 {
@@ -2258,14 +2374,6 @@
   "fields": {
     "session_data": ".eJxVjEEOwiAQRe_C2pCBFDq4dO8ZyDCAVA0kpV0Z764kXej2v_f-S3jat-L3nla_RHEW2onT7xiIH6kOEu9Ub01yq9u6BDkUedAury2m5-Vw_w4K9TJqpSwiUUKIThmdZofAyWk2kCEEiznyFBgBzGwnJGty_soKjFYOJvH-AAWtN34:1vGIfW:RdLkFBx2f7Sw4PZjt9EHfTCW9_dzgc871lGPH5J1F78",
     "expire_date": "2025-11-18T15:09:58.640Z"
-  }
-},
-{
-  "model": "sessions.session",
-  "pk": "yb7jj605xd894zjsa3iz8a1w8ot7tgvm",
-  "fields": {
-    "session_data": ".eJxVjEEOwiAQRe_C2hBKCzPj0r1nIDNApWpoUtqV8e7apAvd_vfef6nA21rC1vISpqTOynp1-h2F4yPXnaQ719us41zXZRK9K_qgTV_nlJ-Xw_07KNzKt0YGy8woRkzvSBIQ9ilKRwNRJIOQGJ0YBznbUUh8N1gATygOcCT1_gANSzfR:1vON1z:525aZUgDeKPjccqkHoqNz724sq5XXpHpWWAcHiRu7cQ",
-    "expire_date": "2025-12-10T21:26:31.436Z"
   }
 },
 {
@@ -2423,9 +2531,37 @@
   "fields": {
     "aluno": 12,
     "disciplina": 9,
-    "valor": "3.00",
+    "valor": "4.00",
     "data_lancamento": "2025-11-25",
     "bimestre": 1
+  }
+},
+{
+  "model": "usuarios.coordenador",
+  "pk": 1,
+  "fields": {
+    "user": 8,
+    "nome": "enzo",
+    "email": "222@gmail.com",
+    "telefone": null,
+    "setor": null,
+    "observacoes": "",
+    "cpf": null,
+    "cargo": null
+  }
+},
+{
+  "model": "usuarios.coordenador",
+  "pk": 2,
+  "fields": {
+    "user": 7,
+    "nome": "valter",
+    "email": "",
+    "telefone": null,
+    "setor": null,
+    "observacoes": null,
+    "cpf": null,
+    "cargo": null
   }
 },
 {
@@ -2434,6 +2570,20 @@
   "fields": {
     "user": 2,
     "nome": "mohamed",
+    "email": "",
+    "telefone": null,
+    "setor": null,
+    "observacoes": null,
+    "cpf": null,
+    "cargo": null
+  }
+},
+{
+  "model": "usuarios.secretaria",
+  "pk": 2,
+  "fields": {
+    "user": 7,
+    "nome": "valter",
     "email": "",
     "telefone": null,
     "setor": null,
