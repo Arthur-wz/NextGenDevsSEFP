@@ -1882,8 +1882,8 @@
   "model": "auth.user",
   "pk": 7,
   "fields": {
-    "password": "pbkdf2_sha256$600000$m9dYBDcUcdeGx8LZQEUvqn$9RqgpTLmAiJF+YVSwHjXcfsn8lbLh0GcjBUoAsyKwq0=",
-    "last_login": "2026-02-27T18:19:22.797Z",
+    "password": "pbkdf2_sha256$1000000$86kaJDBpKuP10MjswARCaQ$DjOTZip4PCtOHenflMBVjV2iqi+Q3svVelk8jOQ1iJI=",
+    "last_login": "2026-03-02T10:47:42.107Z",
     "is_superuser": false,
     "username": "valter",
     "first_name": "",
@@ -1903,7 +1903,7 @@
   "pk": 8,
   "fields": {
     "password": "pbkdf2_sha256$600000$Ty3lftnvwKu22X7mRB3LIV$zSXtsECA0CnTonpK6+i2ZcjAKF5Az1jwqbzlvrCbe34=",
-    "last_login": "2026-02-27T18:18:39.386Z",
+    "last_login": "2026-02-27T18:46:54.576Z",
     "is_superuser": false,
     "username": "enzo",
     "first_name": "",
@@ -1923,7 +1923,7 @@
   "pk": 9,
   "fields": {
     "password": "pbkdf2_sha256$1000000$g1pD4rMzLQGaZWgzoEO3VW$AaxiTdQEmpMZDSY+qCdpThggWIEdV2FXdETMvT8wd2I=",
-    "last_login": "2025-12-03T22:53:20.020Z",
+    "last_login": "2026-03-02T10:36:09.175Z",
     "is_superuser": true,
     "username": "arthur",
     "first_name": "",
@@ -1940,8 +1940,8 @@
   "model": "auth.user",
   "pk": 26,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$2XtmmLJSw7bwRHAFMwHwun$TyWfjD/GvKWNfRxlcU+rR/jGSVNTBpYE0DwGJ8zNRSI=",
-    "last_login": "2025-12-05T11:14:41.070Z",
+    "password": "pbkdf2_sha256$600000$8uolokcVMEzxBvyvUFfbTv$VykoNbdS2dV4tS9viX3txeL1s1Yi49h5pFcuJ3R/VxI=",
+    "last_login": "2026-02-27T19:12:51.440Z",
     "is_superuser": false,
     "username": "jorge",
     "first_name": "",
@@ -1960,8 +1960,8 @@
   "model": "auth.user",
   "pk": 27,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$cvVEcWwI465DfdzfW4qS97$NM2pn7w7YWOt3aya+j0XP4c6Sbqg4fET9P+3WsDERKA=",
-    "last_login": null,
+    "password": "pbkdf2_sha256$600000$575RZR8MTiTukSLQiNMiJ4$CfWQAfbTOGDoEBdA3/2Q1WBDsexMtA27uW/sOe/bHTQ=",
+    "last_login": "2026-02-27T19:21:32.308Z",
     "is_superuser": false,
     "username": "claudio",
     "first_name": "",
@@ -1981,7 +1981,7 @@
   "pk": 28,
   "fields": {
     "password": "pbkdf2_sha256$1000000$RPmerzM134bSPXolcm72tP$mNqLpNtdeT+F9dEUh0AJlszJnkqzyLk9+GGQCl4fZMA=",
-    "last_login": "2025-11-03T22:46:32.774Z",
+    "last_login": "2026-03-02T10:40:37.808Z",
     "is_superuser": false,
     "username": "flavio",
     "first_name": "",
@@ -2001,7 +2001,7 @@
   "pk": 29,
   "fields": {
     "password": "pbkdf2_sha256$600000$jf2ffK12DIUxqgQIAqu6el$G34c+KdneLWAVR1ItkvL0Xd/9ceeKEhN+RcZ1qMc7m4=",
-    "last_login": "2026-02-27T18:21:12.226Z",
+    "last_login": "2026-02-27T19:21:36.931Z",
     "is_superuser": false,
     "username": "astolfo",
     "first_name": "",
@@ -2020,8 +2020,8 @@
   "model": "auth.user",
   "pk": 30,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$lW60Hz4H7tRNtwRNf5Z4lc$zmYZQryr/9MZIHTofxqx6CIxTCzV/zSY83Z+o3QNshw=",
-    "last_login": null,
+    "password": "pbkdf2_sha256$600000$1WD1bH32AXDFFKewWxamb0$Jg/0DZ+vF9dbJ5TVPQjcZV4XfR7KrtRu0816jnr0lIU=",
+    "last_login": "2026-02-27T19:18:23.056Z",
     "is_superuser": false,
     "username": "roberto",
     "first_name": "",
@@ -2040,8 +2040,8 @@
   "model": "auth.user",
   "pk": 31,
   "fields": {
-    "password": "pbkdf2_sha256$1000000$y6cSgbvvireVxmSWIKLwmE$lrO5+nEvZGOWNknKeSiwXzGz1fTxw6+95YC6DjBgPHQ=",
-    "last_login": "2025-12-03T23:58:30.809Z",
+    "password": "pbkdf2_sha256$600000$keFeS6KIT9Ys19qguFclDA$3M/PAtjyacbrg1+Umy7tou0rYdvn/iZosFBkSkSTNyM=",
+    "last_login": "2026-02-27T19:12:45.244Z",
     "is_superuser": false,
     "username": "cleito",
     "first_name": "",
@@ -2370,6 +2370,14 @@
 },
 {
   "model": "sessions.session",
+  "pk": "cl5glfij43rvobfnntd6czg5u77gf0gz",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlmJHSteSnrOEO3POIBsKU4qxN0hUgpo38y8l5lwW_O0NV2mWczZjOb0uxHyQ8sO5I7lVi3Xsi4z2V2xB232WkWfl8P9O8jY8rdGSRCYkYApahLo1AE4dcp99EBddMEjgLrQDUnjIJQSQfCjMLjQm_cHGk44tA:1vw3PD:ULdy1KFZKUdQAQRiH37doIbwkmbgTnNK5RDu3n468TM",
+    "expire_date": "2026-03-13T19:21:43.609Z"
+  }
+},
+{
+  "model": "sessions.session",
   "pk": "cogvfqub7cylqothsksdbc6a4e8dyibz",
   "fields": {
     "session_data": ".eJxVjDsOwjAQBe_iGlkh6y8lPWewdu01DiBbipMKcXdkKQW0b2beWwTctxL2zmtYkrgIK06_G2F8ch0gPbDem4ytbutCcijyoF3eWuLX9XD_Dgr2MmplImqOCiA7TcDklTdnVp5mmNFaz9llyjlqA5xoMuzYe-IpKx0BxecLAYo45Q:1vCICt:m8ds1oSzM6r4ZcJA1gz8iayEzeUtcMsyLUU285xtyh4",
@@ -2418,10 +2426,10 @@
 },
 {
   "model": "sessions.session",
-  "pk": "t4bo53p0kryhebzvuy9m27ngu0yd49k4",
+  "pk": "xoaylgtxny7bjoudevzhj9c653vwkvvw",
   "fields": {
-    "session_data": ".eJxVjDsOwjAQBe_iGlnexJ-Ykp4zWOvdDQ6gRIqTCnF3sJQC2jcz76US7ltJe5U1TazOqovq9DtmpIfMjfAd59uiaZm3dcq6KfqgVV8XluflcP8OCtbyrWnofaRgEDkTAglBbwUc2z64UawBYeqCs8HzEA2MNoOgJw_N9qzeHySsOLY:1vw2Se:D8sZ17UCZojfiKt3pOFr4am4Yaqa_vjq4izqYwOWXtQ",
-    "expire_date": "2026-03-13T18:21:12.230Z"
+    "session_data": ".eJxVjMsOwiAUBf-FtSEgwQsu3fsNhPuoVA0kpV01_rsh6UK3Z2bOrlLe1pK2LkuaWV0VqNPvhpleUgfgZ66PpqnVdZlRD0UftOt7Y3nfDvfvoOReRo0QhSw6ZOvJ5AgCEGgKxlsO_kI2uBgcks1EFkRQ0JzRcTAgk4_q8wUBvDie:1vx0oQ:4t4HGz5Dl3RK9A0rKSBc3vmJGNvCIrVJt-XhFVzYweg",
+    "expire_date": "2026-03-16T10:47:42.137Z"
   }
 },
 {
@@ -2504,7 +2512,6 @@
     "nome": "astolfo",
     "matricula": "PROF001",
     "email": "123@gmail.com",
-    "disciplina": "matematica",
     "turmas": []
   }
 },
@@ -2516,7 +2523,6 @@
     "nome": "roberto",
     "matricula": "PROF011",
     "email": "1234@gmail.com",
-    "disciplina": "geografia",
     "turmas": []
   }
 },
@@ -2528,7 +2534,6 @@
     "nome": "cleito",
     "matricula": "PROF012",
     "email": "12345@gmail.com",
-    "disciplina": "ingles",
     "turmas": []
   }
 },
@@ -2557,14 +2562,6 @@
   }
 },
 {
-  "model": "usuarios.disciplina",
-  "pk": 10,
-  "fields": {
-    "nome": "quimica",
-    "professor": 10
-  }
-},
-{
   "model": "usuarios.turma",
   "pk": 1,
   "fields": {
@@ -2582,14 +2579,16 @@
   }
 },
 {
-  "model": "usuarios.nota",
-  "pk": 1,
+  "model": "usuarios.advertencia",
+  "pk": 10,
   "fields": {
-    "aluno": 12,
-    "disciplina": 9,
-    "valor": "5.00",
-    "data_lancamento": "2025-11-25",
-    "bimestre": 1
+    "aluno": 13,
+    "coordenador": 7,
+    "motivo": "o",
+    "responsavel_presente": "a",
+    "descricao_ocorrido": "bPIBVBVUIUWEBVCYE",
+    "data": "2026-02-27",
+    "status": "em_andamento"
   }
 },
 {

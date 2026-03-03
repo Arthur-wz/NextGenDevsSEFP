@@ -1862,8 +1862,8 @@
   "model": "auth.user",
   "pk": 2,
   "fields": {
-    "password": "pbkdf2_sha256$600000$UJJlNbVd40V2gmVVp9nqrE$fqdqPcUewNNFMCJgys7u2mTM5jGxgC2PAk16e4R/kmw=",
-    "last_login": "2026-02-27T18:18:59.337Z",
+    "password": "pbkdf2_sha256$1000000$hreKtJSJkcDbVi0kOvPDNZ$daKg+GkpxVp9VE5U4v6/rrQ/63x6iACL0hGTzjX6poE=",
+    "last_login": "2026-03-02T11:11:14.398Z",
     "is_superuser": false,
     "username": "mohamed",
     "first_name": "",
@@ -1882,8 +1882,8 @@
   "model": "auth.user",
   "pk": 7,
   "fields": {
-    "password": "pbkdf2_sha256$600000$m9dYBDcUcdeGx8LZQEUvqn$9RqgpTLmAiJF+YVSwHjXcfsn8lbLh0GcjBUoAsyKwq0=",
-    "last_login": "2026-02-27T19:13:00.795Z",
+    "password": "pbkdf2_sha256$1000000$86kaJDBpKuP10MjswARCaQ$DjOTZip4PCtOHenflMBVjV2iqi+Q3svVelk8jOQ1iJI=",
+    "last_login": "2026-03-02T12:36:16.337Z",
     "is_superuser": false,
     "username": "valter",
     "first_name": "",
@@ -1902,8 +1902,8 @@
   "model": "auth.user",
   "pk": 8,
   "fields": {
-    "password": "pbkdf2_sha256$600000$Ty3lftnvwKu22X7mRB3LIV$zSXtsECA0CnTonpK6+i2ZcjAKF5Az1jwqbzlvrCbe34=",
-    "last_login": "2026-02-27T18:46:54.576Z",
+    "password": "pbkdf2_sha256$1000000$YxQgvW5deVwgDknm8KPK1n$eqw7W8IqZ+roWFY/xeVVGwt1FyDxzjOgMdXUADD30Po=",
+    "last_login": "2026-03-02T11:57:06.215Z",
     "is_superuser": false,
     "username": "enzo",
     "first_name": "",
@@ -1923,7 +1923,7 @@
   "pk": 9,
   "fields": {
     "password": "pbkdf2_sha256$1000000$g1pD4rMzLQGaZWgzoEO3VW$AaxiTdQEmpMZDSY+qCdpThggWIEdV2FXdETMvT8wd2I=",
-    "last_login": "2025-12-03T22:53:20.020Z",
+    "last_login": "2026-03-02T10:36:09.175Z",
     "is_superuser": true,
     "username": "arthur",
     "first_name": "",
@@ -1940,8 +1940,8 @@
   "model": "auth.user",
   "pk": 26,
   "fields": {
-    "password": "pbkdf2_sha256$600000$8uolokcVMEzxBvyvUFfbTv$VykoNbdS2dV4tS9viX3txeL1s1Yi49h5pFcuJ3R/VxI=",
-    "last_login": "2026-02-27T19:12:51.440Z",
+    "password": "pbkdf2_sha256$1000000$CI9x8o9g1DzeRMQFbKylgF$WHDq+7AXudMlB6v5eoTtQ8hTI4SKb2+niha/NLEPXdY=",
+    "last_login": "2026-03-02T11:13:06.833Z",
     "is_superuser": false,
     "username": "jorge",
     "first_name": "",
@@ -1960,8 +1960,8 @@
   "model": "auth.user",
   "pk": 27,
   "fields": {
-    "password": "pbkdf2_sha256$600000$575RZR8MTiTukSLQiNMiJ4$CfWQAfbTOGDoEBdA3/2Q1WBDsexMtA27uW/sOe/bHTQ=",
-    "last_login": "2026-02-27T18:57:42.155Z",
+    "password": "pbkdf2_sha256$1000000$N3tXxSN9oYjbK4acYysf4r$HsTwuPflQpr/XgsRgSrGUNLzerzz2vVo3c5z9x7XUzw=",
+    "last_login": "2026-03-02T11:56:43.679Z",
     "is_superuser": false,
     "username": "claudio",
     "first_name": "",
@@ -1981,7 +1981,7 @@
   "pk": 28,
   "fields": {
     "password": "pbkdf2_sha256$1000000$RPmerzM134bSPXolcm72tP$mNqLpNtdeT+F9dEUh0AJlszJnkqzyLk9+GGQCl4fZMA=",
-    "last_login": "2025-11-03T22:46:32.774Z",
+    "last_login": "2026-03-02T11:07:28.607Z",
     "is_superuser": false,
     "username": "flavio",
     "first_name": "",
@@ -2000,8 +2000,8 @@
   "model": "auth.user",
   "pk": 29,
   "fields": {
-    "password": "pbkdf2_sha256$600000$jf2ffK12DIUxqgQIAqu6el$G34c+KdneLWAVR1ItkvL0Xd/9ceeKEhN+RcZ1qMc7m4=",
-    "last_login": "2026-02-27T19:17:49.963Z",
+    "password": "pbkdf2_sha256$1000000$TQ6GU3oko9TNta5Eyhuaxz$EyuO0uxt34UXJf8uQ/1tLK8MTVIHK5HswI+wIJnsPMc=",
+    "last_login": "2026-03-02T12:20:55.786Z",
     "is_superuser": false,
     "username": "astolfo",
     "first_name": "",
@@ -2040,8 +2040,8 @@
   "model": "auth.user",
   "pk": 31,
   "fields": {
-    "password": "pbkdf2_sha256$600000$keFeS6KIT9Ys19qguFclDA$3M/PAtjyacbrg1+Umy7tou0rYdvn/iZosFBkSkSTNyM=",
-    "last_login": "2026-02-27T19:12:45.244Z",
+    "password": "pbkdf2_sha256$1000000$bHuBh9VcAw1puCfR2zPFnH$wFkww6QyQ8JZJpJs1I2fYqvAxaf1ScZT1TBThk+bp7o=",
+    "last_login": "2026-03-02T11:19:38.958Z",
     "is_superuser": false,
     "username": "cleito",
     "first_name": "",
@@ -2354,14 +2354,6 @@
 },
 {
   "model": "sessions.session",
-  "pk": "2ns8ny8tdvbcsnmzhws8p6r4ovjtgbbc",
-  "fields": {
-    "session_data": ".eJxVjDsOwjAQBe_iGln-Yi8lfc5g7fqDA8iR4qRC3B0spYD2zcx7sYD7VsPe8xrmxC5MC3b6HQnjI7dB0h3bbeFxads6Ex8KP2jn05Ly83q4fwcVe_3WLhJoNKB0NDYljxlyJGVIOOkoF2mVtiABSXssyhbph0hFeHEGLOz9ARTIOGc:1vw3Lz:n1Lfq1Ud4IgZH4nT7xQQcbDHTlcLu4Q3DdmvF4WImOw",
-    "expire_date": "2026-03-13T19:18:23.060Z"
-  }
-},
-{
-  "model": "sessions.session",
   "pk": "8lbwppljnob9208hg6mcml1dz8nwxzvr",
   "fields": {
     "session_data": ".eJxVjMsOwiAQRf-FtSEMU4Fx6d5vIDymUjWQlHZl_HfbpAvd3nPOfQsf1qX4tfPspywugsTpd4shPbnuID9CvTeZWl3mKcpdkQft8tYyv66H-3dQQi9bfU6EQwSDPKrBsSJHCROSs-DYxA0zuhEQQFu2SDqCMhysg6iJghKfL8TdNs8:1vG3Kd:LF9G4fNjUzqsVnRYQyj7nj8bP2xLSpCK0h5WSxNbe2c",
@@ -2374,6 +2366,14 @@
   "fields": {
     "session_data": ".eJxVjDsOwjAQBe_iGlkh6y8lPWewdu01DiBbipMKcXdkKQW0b2beWwTctxL2zmtYkrgIK06_G2F8ch0gPbDem4ytbutCcijyoF3eWuLX9XD_Dgr2MmplImqOCiA7TcDklTdnVp5mmNFaz9llyjlqA5xoMuzYe-IpKx0BxecLAYo45Q:1vRUJr:SyVtyXzS75GsOc9OJ35XGSDRk-GtoXRON8bobt9GpUg",
     "expire_date": "2025-12-19T11:49:51.849Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "cl5glfij43rvobfnntd6czg5u77gf0gz",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlmJHSteSnrOEO3POIBsKU4qxN0hUgpo38y8l5lwW_O0NV2mWczZjOb0uxHyQ8sO5I7lVi3Xsi4z2V2xB232WkWfl8P9O8jY8rdGSRCYkYApahLo1AE4dcp99EBddMEjgLrQDUnjIJQSQfCjMLjQm_cHGk44tA:1vw3PD:ULdy1KFZKUdQAQRiH37doIbwkmbgTnNK5RDu3n468TM",
+    "expire_date": "2026-03-13T19:21:43.609Z"
   }
 },
 {
@@ -2422,6 +2422,14 @@
   "fields": {
     "session_data": ".eJxVjEEOwiAQRe_C2pCBFDq4dO8ZyDCAVA0kpV0Z764kXej2v_f-S3jat-L3nla_RHEW2onT7xiIH6kOEu9Ub01yq9u6BDkUedAury2m5-Vw_w4K9TJqpSwiUUKIThmdZofAyWk2kCEEiznyFBgBzGwnJGty_soKjFYOJvH-AAWtN34:1vGIfW:RdLkFBx2f7Sw4PZjt9EHfTCW9_dzgc871lGPH5J1F78",
     "expire_date": "2025-11-18T15:09:58.640Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "ugsjf4mdewhnnd97zsb085ktx7f5ai1q",
+  "fields": {
+    "session_data": ".eJxVjMsOwiAUBf-FtSEgwQsu3fsNhPuoVA0kpV01_rsh6UK3Z2bOrlLe1pK2LkuaWV0VqNPvhpleUgfgZ66PpqnVdZlRD0UftOt7Y3nfDvfvoOReRo0QhSw6ZOvJ5AgCEGgKxlsO_kI2uBgcks1EFkRQ0JzRcTAgk4_q8wUBvDie:1vx2VU:nPFsHmsKITXwKy-_eQjdgkwB4oEMB4IwmcUpamYPbLs",
+    "expire_date": "2026-03-16T12:36:16.365Z"
   }
 },
 {
@@ -2554,18 +2562,10 @@
   }
 },
 {
-  "model": "usuarios.disciplina",
-  "pk": 10,
-  "fields": {
-    "nome": "quimica",
-    "professor": 10
-  }
-},
-{
   "model": "usuarios.turma",
   "pk": 1,
   "fields": {
-    "nome": "2A",
+    "nome": "2°A",
     "alunos": [
       12,
       13,
@@ -2573,9 +2573,19 @@
     ],
     "disciplinas": [
       7,
-      8,
       9
     ]
+  }
+},
+{
+  "model": "usuarios.nota",
+  "pk": 7,
+  "fields": {
+    "aluno": 13,
+    "disciplina": 9,
+    "valor": "5.00",
+    "data_lancamento": "2026-03-02",
+    "bimestre": 1
   }
 },
 {

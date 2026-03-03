@@ -1862,8 +1862,8 @@
   "model": "auth.user",
   "pk": 2,
   "fields": {
-    "password": "pbkdf2_sha256$600000$UJJlNbVd40V2gmVVp9nqrE$fqdqPcUewNNFMCJgys7u2mTM5jGxgC2PAk16e4R/kmw=",
-    "last_login": "2026-02-27T18:18:59.337Z",
+    "password": "pbkdf2_sha256$1000000$hreKtJSJkcDbVi0kOvPDNZ$daKg+GkpxVp9VE5U4v6/rrQ/63x6iACL0hGTzjX6poE=",
+    "last_login": "2026-03-02T10:57:45.767Z",
     "is_superuser": false,
     "username": "mohamed",
     "first_name": "",
@@ -1882,8 +1882,8 @@
   "model": "auth.user",
   "pk": 7,
   "fields": {
-    "password": "pbkdf2_sha256$600000$m9dYBDcUcdeGx8LZQEUvqn$9RqgpTLmAiJF+YVSwHjXcfsn8lbLh0GcjBUoAsyKwq0=",
-    "last_login": "2026-02-27T19:13:00.795Z",
+    "password": "pbkdf2_sha256$1000000$86kaJDBpKuP10MjswARCaQ$DjOTZip4PCtOHenflMBVjV2iqi+Q3svVelk8jOQ1iJI=",
+    "last_login": "2026-03-02T10:57:30.517Z",
     "is_superuser": false,
     "username": "valter",
     "first_name": "",
@@ -1923,7 +1923,7 @@
   "pk": 9,
   "fields": {
     "password": "pbkdf2_sha256$1000000$g1pD4rMzLQGaZWgzoEO3VW$AaxiTdQEmpMZDSY+qCdpThggWIEdV2FXdETMvT8wd2I=",
-    "last_login": "2025-12-03T22:53:20.020Z",
+    "last_login": "2026-03-02T10:36:09.175Z",
     "is_superuser": true,
     "username": "arthur",
     "first_name": "",
@@ -1961,7 +1961,7 @@
   "pk": 27,
   "fields": {
     "password": "pbkdf2_sha256$600000$575RZR8MTiTukSLQiNMiJ4$CfWQAfbTOGDoEBdA3/2Q1WBDsexMtA27uW/sOe/bHTQ=",
-    "last_login": "2026-02-27T18:57:42.155Z",
+    "last_login": "2026-02-27T19:21:32.308Z",
     "is_superuser": false,
     "username": "claudio",
     "first_name": "",
@@ -1981,7 +1981,7 @@
   "pk": 28,
   "fields": {
     "password": "pbkdf2_sha256$1000000$RPmerzM134bSPXolcm72tP$mNqLpNtdeT+F9dEUh0AJlszJnkqzyLk9+GGQCl4fZMA=",
-    "last_login": "2025-11-03T22:46:32.774Z",
+    "last_login": "2026-03-02T11:07:28.607Z",
     "is_superuser": false,
     "username": "flavio",
     "first_name": "",
@@ -2001,7 +2001,7 @@
   "pk": 29,
   "fields": {
     "password": "pbkdf2_sha256$600000$jf2ffK12DIUxqgQIAqu6el$G34c+KdneLWAVR1ItkvL0Xd/9ceeKEhN+RcZ1qMc7m4=",
-    "last_login": "2026-02-27T19:17:49.963Z",
+    "last_login": "2026-02-27T19:21:36.931Z",
     "is_superuser": false,
     "username": "astolfo",
     "first_name": "",
@@ -2354,10 +2354,10 @@
 },
 {
   "model": "sessions.session",
-  "pk": "2ns8ny8tdvbcsnmzhws8p6r4ovjtgbbc",
+  "pk": "0wfeuagbzbvcvf1ye50x0hkvpr7h2una",
   "fields": {
-    "session_data": ".eJxVjDsOwjAQBe_iGln-Yi8lfc5g7fqDA8iR4qRC3B0spYD2zcx7sYD7VsPe8xrmxC5MC3b6HQnjI7dB0h3bbeFxads6Ex8KP2jn05Ly83q4fwcVe_3WLhJoNKB0NDYljxlyJGVIOOkoF2mVtiABSXssyhbph0hFeHEGLOz9ARTIOGc:1vw3Lz:n1Lfq1Ud4IgZH4nT7xQQcbDHTlcLu4Q3DdmvF4WImOw",
-    "expire_date": "2026-03-13T19:18:23.060Z"
+    "session_data": ".eJxVjEEOwiAQRe_C2hBgWjrj0r1nIAMMUjVtUtqV8e7apAvd_vfef6nA21rD1mQJY1Zn5VCdfsfI6SHTTvKdp9us0zytyxj1ruiDNn2dszwvh_t3ULnVb20lMWDvyHg2ORlCjz0OAmIQCSx1Drsy-EgSxfoChoBctkXAczGg3h_m9Tc1:1vx17Y:hTH2sKn1sEYMTkKOkpUDlhWw70rnvSyY_eXPHDO6Xt8",
+    "expire_date": "2026-03-16T11:07:28.616Z"
   }
 },
 {
@@ -2374,6 +2374,14 @@
   "fields": {
     "session_data": ".eJxVjDsOwjAQBe_iGlkh6y8lPWewdu01DiBbipMKcXdkKQW0b2beWwTctxL2zmtYkrgIK06_G2F8ch0gPbDem4ytbutCcijyoF3eWuLX9XD_Dgr2MmplImqOCiA7TcDklTdnVp5mmNFaz9llyjlqA5xoMuzYe-IpKx0BxecLAYo45Q:1vRUJr:SyVtyXzS75GsOc9OJ35XGSDRk-GtoXRON8bobt9GpUg",
     "expire_date": "2025-12-19T11:49:51.849Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "cl5glfij43rvobfnntd6czg5u77gf0gz",
+  "fields": {
+    "session_data": ".eJxVjDsOwjAQBe_iGlmJHSteSnrOEO3POIBsKU4qxN0hUgpo38y8l5lwW_O0NV2mWczZjOb0uxHyQ8sO5I7lVi3Xsi4z2V2xB232WkWfl8P9O8jY8rdGSRCYkYApahLo1AE4dcp99EBddMEjgLrQDUnjIJQSQfCjMLjQm_cHGk44tA:1vw3PD:ULdy1KFZKUdQAQRiH37doIbwkmbgTnNK5RDu3n468TM",
+    "expire_date": "2026-03-13T19:21:43.609Z"
   }
 },
 {
@@ -2550,14 +2558,6 @@
   "pk": 9,
   "fields": {
     "nome": "matematica",
-    "professor": 10
-  }
-},
-{
-  "model": "usuarios.disciplina",
-  "pk": 10,
-  "fields": {
-    "nome": "quimica",
     "professor": 10
   }
 },
