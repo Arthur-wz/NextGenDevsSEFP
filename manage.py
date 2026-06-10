@@ -5,9 +5,11 @@ import sys
 import datetime
 from django.core.management import call_command
 
+
 def main():
     """Run administrative tasks."""
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'escola.settings')
+
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:
@@ -17,22 +19,35 @@ def main():
             "forget to activate a virtual environment?"
         ) from exc
 
-    data = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
-    backup_nome = f"backup_{data}.json"
-
     if len(sys.argv) > 1 and sys.argv[1] == 'runserver':
         try:
             import django
-            django.setup()  # Garante que os apps estão carregados
+
+            django.setup()
+
             data = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
+
             os.makedirs('backups', exist_ok=True)
-            backup_nome = os.path.join('backups', f"backup_{data}.json")
-            call_command('dumpdata', indent=2, output=backup_nome)
-            print(f"Backup automático criado: {backup_nome}")
+
+            backup_nome = os.path.join(
+                'backups',
+                f"backup_{data}.json"
+            )
+
+            with open(backup_nome, "w", encoding="utf-8") as f:
+                call_command(
+                    'dumpdata',
+                    indent=2,
+                    stdout=f
+                )
+
+            print(f"💾 Backup automático criado: {backup_nome}")
+
         except Exception as e:
-            print(f"Erro ao criar backup automático: {e}")
+            print(f"⚠️ Erro ao criar backup automático: {e}")
 
     execute_from_command_line(sys.argv)
+
 
 if __name__ == '__main__':
     main()
