@@ -27,7 +27,7 @@ def main():
             data = datetime.datetime.now().strftime("%Y-%m-%d_%H-%M")
             os.makedirs('backups', exist_ok=True)
             backup_nome = os.path.join('backups', f"backup_{data}.json")
-            call_command('dumpdata', indent=2, output=backup_nome)
+            call_command('dumpdata', indent=2, stdout=open(backup_nome, "w", encoding="utf-8"))
             print(f"💾 Backup automático criado: {backup_nome}")
         except Exception as e:
             print(f"⚠️ Erro ao criar backup automático: {e}")
